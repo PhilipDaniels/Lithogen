@@ -1,0 +1,118 @@
+﻿Lithogen. A static site builder for .Net with a side-salad of Node goodness.
+
+Usage:
+  Lithogen.exe (-h | --help | --fullhelp)
+  Lithogen.exe [--log=<level>] [--gen=<file> | --settings=<file>]
+               [-c | --clean] [--build=<things> | -r | --rebuild]
+               [--serve [--watch] [--port=<num>]]
+               [-- FILE...]
+
+Options:
+  -h --help          Show "Usage" and "Options".
+  --fullhelp         Show the entire help.
+  --log=<level>      Sets logging level to quiet, normal or verbose.
+                     [default: normal]
+  --settings=<file>  Specify the location of the settings file (typically
+                     called Lithogen.xml). Defaults to a file in the same
+                     directory as Lithogen.exe. The settings file must exist.
+                     Not valid in server mode.
+  --gen=<project>    Generate a default Lithogen.xml file from a project file.
+  -c --clean         Deletes the contents of the Lithogen output directory. If
+                     clean is specified it will be run before any build steps.
+  --build=<things>   Comma-separated list of things to build, in that order.
+                     Things which do not require an argument can be grouped.
+                     Valid things are:
+                       c or content: builds the Content directory
+                       i or images:  builds the Images directory
+                       s or scripts: builds the Scripts directory
+                       v or views:   builds the Views directory
+                       node <args>:  Invoke node with the specified <args>.
+                       npm <args>:   Invoke npm with the specified <args>.
+                    [default: npm run build,csiv]
+  -r --rebuild      Same as --clean followed by the --build command.
+  --serve           Enters server mode, which starts a webserver to serve the
+                    website and then listens for further commands.
+                    Ignored in server mode.
+  --watch           Enters "file watch" mode, where Lithogen will detect
+                    changed files and automatically rebuild them.
+                    Requires --serve. See discussion of FILE below.
+                    Ignored in server mode.
+  --port            Specify the port that the built-in webserver will serve
+                    your website on. [default: 8080]
+  [-- FILE...]      Specifies a list of files to be rebuilt. Use " marks if
+                    filenames have spaces in them. The files are expected to be
+                    somewhere under the project directory, those which aren't
+                    will be ignored. Lithogen will classify the files and take
+                    action accordingly:
+                      content file: a complete rebuild of the Content directory
+                      scripts file: a complete rebuild of the Scripts directory
+                      image file:   copy the file to the output directory
+                      view file:    process the file
+                    Content and Scripts cause complete rebuilds because of the
+                    way that Lithogen handles these directories.
+                    n.b. Specifying files is not required in normal usage since
+                    Lithogen will build the website specified in the settings
+                    file. Specifying individual files may be useful for
+                    scripting. The --watch option issues commands of this form.
+
+
+Server Mode
+===========
+When --serve is specified, instead of exiting after completing all actions,
+Lithogen enters "server mode". A web server is started (using a port specified
+in the settings file) to server the website. Lithogen will then wait for
+further commands. Any of the commands above will be accepted. However, in
+typical usage you will specify "--serve --watch" which will cause Lithogen to
+watch for changes in the file system and automatically run the appropriate
+action as described in FILE above.
+
+When in server mode it is not necessary to enter the "-" or "--" prefix to
+an option. Examples:
+
+   c<RET>   : do a clean
+   b<RET>   : do a build with the default options
+   b=v<RET> : build views only
+
+
+Command Line Examples
+=====================
+Command: Lithogen.exe
+Result : Causes Lithogen to run a build at normal log level, using a
+         Lithogen.xml file in the same directory as the exe.
+
+Command: Lithogen.exe --settings=C:\Lithogen.xml
+Result : Run a standard build using the specified settings. This is typical
+         usage. Note that this does not do a clean first.
+
+Command: Lithogen.exe --log=verbose --clean --settings=C:\Lithogen.xml
+Result : Turns on verbose logging, loads setting from the specified file,
+         does a clean then a standard build.
+
+Command: Lithogen.exe --build=content,images --settings=C:\Lithogen.xml
+Result : Builds only the Content and Images directories.
+
+Command: Lithogen.exe --build=ci --settings=C:\Lithogen.xml
+Result : Same as above.
+
+Command: Lithogen.exe --rebuild --serve --watch --settings=C:\Lithogen.xml
+Result : Cleans the output directory, rebuilds the website using the standard
+         build steps, then enters server mode and watches for changed files.
+
+
+A Note On Models and Yaml Front Matter
+======================================
+Lithogen is not a .Net compiler and does not rebuild model classes (though it
+can inject them into views). If your website uses models you must first build
+your website using Visual Studio or MSBuild.
+
+Models should have a public constructor which takes no parameters. Lithogen
+will call this constructor via Activator.CreateInstance(). The constructor
+should therefore completely populate the model. Normally Lithogen creates
+a new model instance for each view that needs it. But if creating the model is
+a time-consuming task you can add an ImmutableObjectAttribute to the class;
+Lithogen will then create the model once, and cache it.
+
+Within View pages Lithogen looks for "Yaml front matter" - Yaml markup between
+"---" markers at the beginning of the file. If it finds it, it will remove it
+from the processing pipeline and make it available as an object on the Viewbag
+called @Viewbag.Yaml, or on an appropriate object for other template engines.

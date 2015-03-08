@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Lithogen</id>
+    <version>0.0.0</version>
+    <title>Lithogen</title>
+    <authors>Philip Daniels</authors>
+    <owners>Philip Daniels</owners>
+    <licenseUrl>https://github.com/PhilipDaniels/Lithogen/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/PhilipDaniels/Lithogen</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A static site generator for .Net, with a side-salad of Node.js goodness.</description>
+    <releaseNotes>Initial version.</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Static HTML CSS JS Handlebars Razor</tags>
+  </metadata>
+  <files>
+    <!-- Files are relative to the nuspec file. -->
+    <file src="bin\$configuration$\" target="tools\Lithogen" />
+    <file src="Lithogen.targets" target="build\Lithogen.targets" />
+    <file src="..\Lithogen.Core\bin\$configuration$\Lithogen.Core.dll" target="build\Lithogen.Core.dll" />
+    <file src="..\Lithogen.TaskShim\bin\$configuration$\Lithogen.TaskShim.dll" target="build\Lithogen.TaskShim.dll" />
+    <file src="..\Lithogen.TaskShim\bin\$configuration$\Newtonsoft.Json.dll" target="build\Newtonsoft.Json.dll" />
+  </files>
+</package>

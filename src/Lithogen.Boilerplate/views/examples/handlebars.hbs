@@ -1,0 +1,23 @@
+﻿---
+layout: _Layout.hbs
+title: My Handlebars example
+planets: [Mercury, Venus, Earth, Mars]
+---
+
+<h2>Welcome to Lithogen.Boilerplate!</h2>
+
+<p>
+    This is the example Handlebars page. It demonstrates using a Layout,
+    partial templates and model injection from Yaml front matter.
+</p>
+
+<ol>
+{{#each planets}}
+    {{>_planet}}
+{{/each}}
+</ol>
+
+{{>_hb1}}
+
+{{FileInfo.FullName}} was created on {{FileInfo.CreationTime}}
+And was compiled using the {{Settings.Configuration}} configuration.

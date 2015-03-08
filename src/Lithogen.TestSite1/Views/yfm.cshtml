@@ -1,0 +1,16 @@
+﻿---
+tag: MyTag
+planets: [Mercury, Venus, Mars]
+---
+@{
+    Layout = @"_Layout.cshtml";
+    ViewBag.Title = "solarsystem";
+}
+
+<br />
+The tag is @ViewBag.tag
+<br />
+The second planet is @ViewBag.planets[1]
+<br />
+The second car is @ViewBag.Cars[1]
+

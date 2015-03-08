@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask AssemblyFile="Lithogen.TaskShim.dll" TaskName="LithogenBuildTask" />
+
+  <!-- Import the user's customisations, if any -->
+  <Import Project="$(MSBuildProjectDirectory)\Lithogen.user.targets" Condition="Exists('$(MSBuildProjectDirectory)\Lithogen.user.targets')"/>
+
+  <ItemGroup>
+    <LithogenAssemblyLoadDirectories Include="$(TargetDir)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <LithogenMessageImportance Condition="'$(LithogenMessageImportance)'=='' And '$(Configuration)'=='Debug'">High</LithogenMessageImportance>
+    <LithogenMessageImportance Condition="'$(LithogenMessageImportance)'==''">Normal</LithogenMessageImportance>
+    <!-- Where to find things. -->
+    <LithogenThisFile>$(MSBuildThisFileDirectory)</LithogenThisFile>
+    <LithogenInstallationDirectory Condition="'$(LithogenInstallationDirectory)'==''">$(MSBuildThisFileDirectory)\..\tools\Lithogen</LithogenInstallationDirectory>
+    <LithogenExePath Condition="'$(LithogenExePath)'==''">$(LithogenInstallationDirectory)\Lithogen.exe</LithogenExePath>
+    <LithogenNodeExePath Condition="'$(LithogenNodeExePath)'==''">$(LithogenInstallationDirectory)\node\node.exe</LithogenNodeExePath>
+    <LithogenNpmExePath Condition="'$(LithogenNpmExePath)'==''">$(LithogenInstallationDirectory)\node\npm.cmd</LithogenNpmExePath>
+    <!-- Where to get things from. Based on MVC defaults. -->
+    <LithogenContentDirectory Condition="'$(LithogenContentDirectory)'==''">$(MSBuildProjectDirectory)\content</LithogenContentDirectory>
+    <LithogenImagesDirectory Condition="'$(LithogenImagesDirectory)'==''">$(MSBuildProjectDirectory)\images</LithogenImagesDirectory>
+    <LithogenScriptsDirectory Condition="'$(LithogenScriptsDirectory)'==''">$(MSBuildProjectDirectory)\scripts</LithogenScriptsDirectory>
+    <LithogenViewsDirectory Condition="'$(LithogenViewsDirectory)'==''">$(MSBuildProjectDirectory)\views</LithogenViewsDirectory>
+    <LithogenPartialsDirectory Condition="'$(LithogenPartialsDirectory)'==''">$(LithogenViewsDirectory)\shared</LithogenPartialsDirectory>
+    <!-- Where to put the finished static web site. -->
+    <LithogenWebsiteDirectory Condition="'$(LithogenWebsiteDirectory)'==''">$(TargetDir)Lithogen.website</LithogenWebsiteDirectory>
+    <!-- The config/log files we generate. -->
+    <LithogenXmlConfigFile Condition="'$(LithogenXmlConfigFile)'==''">$(TargetDir)Lithogen.xml</LithogenXmlConfigFile>
+    <LithogenJsonConfigFile Condition="'$(LithogenJsonConfigFile)'==''">$(TargetDir)Lithogen.json</LithogenJsonConfigFile>
+    <LithogenLogFile Condition="'$(LithogenLogFile)'==''">$(TargetDir)Lithogen.log</LithogenLogFile>
+    <!-- Config for the built-in web server. -->
+    <LithogenServeUrl Condition="'$(LithogenServeUrl)'==''">http://localhost:8080</LithogenServeUrl>
+    <LithogenReloadUrl Condition="'$(LithogenReloadUrl)'==''">http://localhost:35729</LithogenReloadUrl>
+  </PropertyGroup>
+  
+  <Target Name="LithogenClean">
+    <Message Text="Running Lithogen Clean" />
+    <Delete Files="$(LithogenXmlConfigFile);$(LithogenJsonConfigFile);$(LithogenLogFile)" />
+    <RemoveDir Directories="$(LithogenWebsiteTargetDirectory)" />
+  </Target>
+  
+  <Target Name="LithogenBuild">
+    <LithogenBuildTask  MessageImportance="$(LithogenMessageImportance)"
+                        InstallationDirectory="$(LithogenInstallationDirectory)"
+                        LithogenExePath="$(LithogenExePath)"
+                        NodeExePath="$(LithogenNodeExePath)"
+                        NpmExePath="$(LithogenNpmExePath)"
+                        
+                        ContentDirectory="$(LithogenContentDirectory)"
+                        ImagesDirectory="$(LithogenImagesDirectory)"
+                        ScriptsDirectory="$(LithogenScriptsDirectory)"
+                        ViewsDirectory="$(LithogenViewsDirectory)"
+                        PartialsDirectory="$(LithogenPartialsDirectory)"
+                        
+                        SolutionFile="$(SolutionPath)"
+                        ProjectFile="$(ProjectPath)"
+                        Configuration="$(Configuration)"
+                        
+                        TargetDirectory="$(TargetDir)"
+                        LithogenWebsiteDirectory="$(LithogenWebsiteDirectory)"
+                        
+                        XmlConfigFile="$(LithogenXmlConfigFile)"
+                        JsonConfigFile="$(LithogenJsonConfigFile)"
+                        LogFile="$(LithogenLogFile)"
+                        
+                        ServeUrl="$(LithogenServeUrl)"
+                        ReloadUrl="$(LithogenReloadUrl)"
+                        
+                        AssemblyLoadDirectories="@(LithogenAssemblyLoadDirectories)"
+                      />
+  </Target>
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      LithogenBuild;
+    </BuildDependsOn>
+    <CleanDependsOn>
+      $(CleanDependsOn);
+      LithogenClean;
+    </CleanDependsOn>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,8 @@
+﻿# This is to test embedded plugins.
+mappings:
+  - extensions: [emb]
+    processors: [Lithogen.TestSite1.Plugins.EmbeddedProcessor]
+    publish: false
+
+  - extensions: [hbs]
+    layout: _layout.hbs

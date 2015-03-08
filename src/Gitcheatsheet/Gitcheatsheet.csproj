@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{85384454-BC7B-4E0B-A825-5E696958C620}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Gitcheatsheet</RootNamespace>
+    <AssemblyName>Gitcheatsheet</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="content\gitcheatsheet.css.bundle" />
+    <None Include="Lithogen.user.targets" />
+    <None Include="package.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+    <None Include="scripts\gitcheatsheet.js.bundle" />
+    <None Include="views\.htaccess" />
+    <Content Include="views\_readme.txt" />
+    <None Include="views\index.hbs" />
+    <None Include="views\shared\_layout.hbs" />
+    <None Include="views\_unused_index.hjson" />
+    <None Include="views\_index.yaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="content\gitcheatsheet.less" />
+    <None Include="views\tile.png" />
+    <None Include="views\tile-wide.png" />
+    <None Include="views\crossdomain.xml" />
+    <None Include="views\browserconfig.xml" />
+    <None Include="views\apple-touch-icon.png" />
+    <None Include="views\404.html" />
+    <None Include="scripts\modernizr-2.8.3.js" />
+    <None Include="scripts\consoleshim.js" />
+    <None Include="content\h5bpmain.css" />
+    <None Include="content\normalize.css" />
+    <Content Include="content\colorbox.css" />
+    <Content Include="images\border.png" />
+    <Content Include="images\controls.png" />
+    <Content Include="images\loading.gif" />
+    <Content Include="images\loading_background.png" />
+    <Content Include="images\overlay.png" />
+    <Content Include="content\theme.colorful.css" />
+    <Content Include="content\theme.orangeramp.css" />
+    <Content Include="content\theme.solarized_dark.css" />
+    <Content Include="content\theme.solarized_light.css" />
+    <Content Include="content\theme.tealesque.css" />
+    <Content Include="content\theme.yellowramp.css" />
+    <Content Include="scripts\jquery.cookie.js" />
+    <Content Include="views\examplegitignore.txt" />
+    <Content Include="views\favicon.ico" />
+    <Content Include="views\humans.txt" />
+    <Content Include="scripts\gitcheatsheet.js" />
+    <Content Include="scripts\jquery-1.10.2.min.js" />
+    <Content Include="scripts\jquery.colorbox-min.js" />
+    <Content Include="scripts\underscore-min.js" />
+    <Content Include="views\examplegitattributes.txt" />
+    <Content Include="views\examplegitconfig.txt" />
+    <Content Include="views\robots.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Gitcheatsheet.Model\Gitcheatsheet.Model.csproj">
+      <Project>{bce1aa14-028e-46dd-87eb-d6811341a5ad}</Project>
+      <Name>Gitcheatsheet.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lithogen.Core\Lithogen.Core.csproj">
+      <Project>{ae718a62-41e3-4902-8e04-71611fbb9611}</Project>
+      <Name>Lithogen.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="CommandHandlers\PreBuildCommandHandler.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Lithogen.0.1.202.0\build\Lithogen.targets" Condition="Exists('..\packages\Lithogen.0.1.202.0\build\Lithogen.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Lithogen.0.1.202.0\build\Lithogen.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Lithogen.0.1.202.0\build\Lithogen.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

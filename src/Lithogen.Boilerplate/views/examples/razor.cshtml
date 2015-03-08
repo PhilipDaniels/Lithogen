@@ -1,0 +1,18 @@
+﻿@{
+    Layout = "_layout.cshtml";
+    ViewBag.Title = "The Razor Example Page";
+}
+
+<h2>Welcome to Lithogen.Boilerplate!</h2>
+
+<p>
+    This is the example Razor page. It demonstrates using a Layout, standard .Net model injection
+    and side-by-side injection from a Yaml file.
+</p>
+
+<ul>
+    @foreach (var item in @ViewBag.items)
+    {
+        <li>@item["part_no"] - @item["descrip"]</li>
+    }
+</ul>

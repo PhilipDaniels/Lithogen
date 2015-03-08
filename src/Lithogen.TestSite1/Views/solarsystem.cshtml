@@ -1,0 +1,16 @@
+﻿@model Lithogen.TestSite1.Models.SolarSystem
+
+@{
+    Layout = @"_Layout.cshtml";
+    ViewBag.Title = "solarsystem";
+}
+
+<h1>This is solarsystem.cshtml</h1>
+It is being rendered with the aid of a layout and an automatically created model.
+
+<ol>
+    @foreach(var planet in Model.Planets)
+    {
+    <li>@planet.Name</li>
+    }
+</ol>

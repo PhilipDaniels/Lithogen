@@ -1,0 +1,19 @@
+﻿###
+{
+  "tag" : "My Json tag value",
+  "planets": [
+    "Jupiter", "Saturn", "Uranus", "Neptune"
+  ]
+}
+###
+
+@{
+    Layout = @"_Layout.cshtml";
+    ViewBag.Title = "solarsystem";
+}
+
+<br />
+The tag is <b>@ViewBag.tag</b>
+<br />
+The second planet is <b>@ViewBag.planets[1]</b>
+

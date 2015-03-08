@@ -1,0 +1,71 @@
+---
+layout: _layout.hbs
+---
+<div class="topBlock">
+    <div class="extras">
+        <a href="#inline_content" id="cboxLink">
+            <i class="fa fa-bars fa-3x"></i>
+        </a>
+    </div>
+    <div class="boxes">
+    <svg id="newBoxes" width="640px" height="100px" viewbox="0 0 640 100" zoomAndPan="disable" preserveAspectRatio="none" version="1.1">
+        <marker id="arrowhead" viewBox="0 0 10 10" refX="1" refY="5" orient="auto" markerUnits="strokeWidth" markerWidth="4" markerHeight="3">
+            <polyline points="0,0 10,5 0,10 1,5" class="arrowline" />
+        </marker>
+        <line id="theline" x1="460" y1="-60" x2="160" y2="-60" class="arrowhead" stroke-width="15" marker-start="url(#arrowhead)" marker-end="url(#arrowhead)" />
+    </svg>
+    </div>
+    <div class="info">
+        <h3 id="headingHint"></h3>
+        <span id="spanHint"></span>
+    </div>
+</div>
+
+<div class="cheatsheet">
+{{#each Sections}}
+    <div class="section cs{{@index}}">
+        <h2>{{Title}}</h2>
+        {{#each SubSections}}
+            <dl class="subsection">
+                <h3>{{Title}}</h3>
+                {{#each Cheats}}
+                    <dt data-what="{{Affected}}" data-hint="{{Hint}}" data-url="{{Url}}">{{Text}}</dt>
+                {{/each}}
+            </dl>
+        {{/each}}
+    </div>
+{{/each}}
+</div>
+
+<div style='display:none'>
+    <div id='inline_content' class="inline_content">
+        <p class="credits">
+            Inspired by Oscar Otero's wonderful <a href="http://oscarotero.com/jquery/">jQuery Cheatsheet</a> and
+            much reading of Scott Chacon's <a href="http://git-scm.com/">git-scm.com</a> from where I borrowed
+            the favicon <a href="http://creativecommons.org/licenses/by/3.0/">(Licence)</a>.
+            Andrew Peterson's funky <a href="http://www.ndpsoftware.com/git-cheatsheet.html">Git Cheatsheet</a>
+            supplied the inspiration for the SWILR boxes. 
+        </p>
+        <p class="poweredBy">
+            Built with <a href="https://github.com/PhilipDaniels/Lithogen/">Lithogen</a> and 
+            <a href="http://html5boilerplate.com/">HTML 5 Boilerplate</a> with
+            popups by <a href="http://www.jacklmoore.com/colorbox/">jQuery Colorbox</a>.
+        </p>
+        <p class="contactMe">
+            All errors and omissions are my own. If you like this,
+            <a href="mailto:Philip.Daniels1971@gmail.com">Email me</a>.
+        </p>
+        <p>
+        <strong>Theme:</strong>
+            <select id="themeSelector">
+                <option value="theme.solarized_dark.css">Solarized Dark</option>
+                <option value="theme.solarized_light.css">Solarized Light</option>
+                <option value="theme.colorful.css">Colorful</option>
+                <option value="theme.orangeramp.css">Orange Ramp</option>
+                <option value="theme.yellowramp.css">Yellow Ramp</option>
+                <option value="theme.tealesque.css">Teal-esque</option>
+            </select>
+        </p>
+    </div>
+</div>
+

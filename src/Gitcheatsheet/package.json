@@ -1,0 +1,31 @@
+{
+  "name": "lithogen",
+  "description": "Static site generator for .Net",
+  "version": "0.1.0",
+  "author": {
+    "name": "Philip Daniels",
+    "email": "Philip.Daniels1971@gmail.com",
+    "url": "https://github.com/PhilipDaniels/Lithogen"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:PhilipDaniels/Lithogen.git"
+  },
+  "devDependencies": {
+	"npm" : "2.5.1"
+  },
+  "bin": {
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PhilipDaniels/Lithogen/issues"
+  },
+  "homepage": "https://github.com/PhilipDaniels/Lithogen",
+  "main": "./lithogen",
+  "scripts": {
+    "build": "echo MESSAGE FROM GITCHEAT SHEET doing nothing for script 'build' in package.json."
+  },
+  "engines": {
+    "node": ">=0.4.2"
+  }
+}

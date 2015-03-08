@@ -1,0 +1,13 @@
+﻿# A file extension may only appear once.
+mappings:
+  - extensions: [cshtml]
+    processors: [Lithogen.Engine.Implementations.RazorProcessor]
+    publish: true
+
+  - extensions: [vbhtml]
+    processors: [Lithogen.Engine.Implementations.RazorProcessor]
+    publish: true
+
+  - extensions: [hb, hbs, handlebars]
+    processors: [Lithogen.Engine.Implementations.HandlebarsProcessor]
+    publish: true  

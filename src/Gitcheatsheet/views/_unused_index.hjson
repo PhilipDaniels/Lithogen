@@ -1,0 +1,1306 @@
+{
+  Leader:
+    '''
+    Each command shown below should be prefixed with "git", for example
+    "git init".
+    '''
+  Sections:
+  [
+    {
+      Title: Getting Started
+      SubSections:
+      [
+        {
+          Title: Do this first!!!
+          Cheats:
+          [
+            {
+              Affected: ,NG
+              Text: Setup .gitattributes correctly
+              Hint: Every project should have a .gitattributes file that says how to deal with line endings, it will prevent huge amounts of grief caused by people not setting up their configuration correctly. By using a .gitattributes file that choice is made in the repository, not left up to each individual user. The example file linked here should be good enough in 99% of cases.
+              Url: examplegitattributes.txt
+            }
+            {
+              Affected: ,NG
+              Text: Setup .gitignore correctly
+              Hint: Configure your .gitignore for each repository. Example configs are available at https://github.com/github/gitignore but beware, the Visual Studio one is very aggressive, it will ignore 'bin' folders within node_modules, for example. See my example at the (more) link, and also http://git-scm.com/docs/gitignore
+              Url: examplegitignore.txt
+            }
+            {
+              Affected: ,NG
+              Text: Setup ~/.gitconfig correctly
+              Hint: While you can use individual 'git config' commands to set an examine your configuration, it is just as easy to edit the file in a text editor. As an absolute minimum, you should set user.name and user.email
+              Url: examplegitconfig.txt
+            }
+            {
+              Affected: ""
+              Text: config [--global] --unset user.email
+              Hint: Unset a setting.
+              Url: http://git-scm.com/docs/git-config
+            }
+            {
+              Affected: ""
+              Text: config [--global] --edit
+              Hint: Open the .gitconfig file in your chosen editor.
+              Url: http://git-scm.com/docs/git-config
+            }
+            {
+              Affected: ""
+              Text: config [--global] user.email Phil@foo.com
+              Hint: Set email address to appear in commits.
+              Url: http://git-scm.com/docs/git-config
+            }
+            {
+              Affected: ""
+              Text: config --list
+              Hint: Display current settings
+              Url: http://git-scm.com/docs/git-config
+            }
+          ]
+        }
+        {
+          Title: Help
+          Cheats:
+          [
+            {
+              Affected: ""
+              Text: verb --help
+              Hint: Display man page for verb, e.g. 'git commit --help'.
+              Url: "#"
+            }
+            {
+              Affected: ,NG
+              Text: man git-verb
+              Hint: Display man page for verb.
+              Url: "#"
+            }
+          ]
+        }
+        {
+          Title: Repository Creation and Cloning
+          Cheats:
+          [
+            {
+              Affected: L
+              Text: init
+              Hint: Create new repo (.git folder) in current directory. Does not add any files to start with, you need to use 'git add'.
+              Url: http://git-scm.com/docs/git-init
+            }
+            {
+              Affected: RLWA
+              Text: clone url [mydir]
+              Hint: Create local copy (in the mydir folder) of repo at url. Automatically sets up a remote called 'origin' that links back to the source and creates local branches to track remote branches and checks out the active branch, populating your local workspace.
+              Url: http://git-scm.com/docs/git-clone
+            }
+          ]
+        }
+        {
+          Title: Using a Bare Repo as a Central Repo
+          Cheats:
+          [
+            {
+              Affected: L
+              Text: 1a. init --bare newrepo.git
+              Hint: Initialise an empty bare repo in the current directory. The normal practice is to do this on a central server to which you have access, then clone it or connect an existing repo to it (one of 2a, 2b or 2c). You will probably have to widen permissions (chmod ugo+rw) on the files in the .git folder to enable other users to push to it. It is a convention that bare repos are named with a .git suffix.
+              Url: http://git-scm.com/docs/git-init
+            }
+            {
+              Affected: L
+              Text: 1b. clone --bare url
+              Hint: As an alternative, you can clone an existing repo but do it in a bare form, which doesn't populate the workspace.
+              Url: http://git-scm.com/docs/git-clone
+            }
+            {
+              Affected: L
+              Text: 2a. remote add origin user@server:path/to/newrepo.git
+              Hint: In an existing local repository, add a new SSH remote called origin which connects to your bare repo. The path is relative to the home directory of 'user'. The user is often 'git', which can be confusing: this is where 'git@github.com' comes from. The syntax for HTTPS is https://server/user/project
+              Url: http://git-scm.com/docs/git-remote
+            }
+            {
+              Affected: L
+              Text: 2b. remote set-url origin user@server:path/to/newrepo.git
+              Hint: Change the remote url of an existing remote called 'origin' so that it points to your new bare repo.
+              Url: http://git-scm.com/docs/git-remote
+            }
+            {
+              Affected: RLWA
+              Text: 2c. clone user@server:path/to/newrepo.git
+              Hint: Alternatively, just clone the bare repo (it will have no files) and start adding files locally, then just push when you are ready.
+              Url: http://git-scm.com/docs/git-clone
+            }
+            {
+              Affected: LRA
+              Text: 3. push --all origin
+              Hint: Push all changes to remote called origin.
+              Url: http://git-scm.com/docs/git-push
+            }
+          ]
+        }
+        {
+          Title: Graphical Tools
+          Cheats:
+          [
+            {
+              Affected: ""
+              Text: gui
+              Hint: Start a graphical tool for making commits, branches etc. See also gitk, a graphical tool for browsing history.
+              Url: http://git-scm.com/docs/git-gui
+            }
+            {
+              Affected: L,NG
+              Text: gitk [--all] [file]
+              Hint: Display graphical repository browser. Accepts the same options as 'git log'. The --all option makes it display the branching history for every branch, otherwise it just shows your current branch. Pass a file to look at the history of an individual file.
+              Url: http://git-scm.com/docs/gitk
+            }
+            {
+              Affected: L
+              Text: gui blame filespec
+              Hint: Graphical blame.
+              Url: http://git-scm.com/docs/git-gui
+            }
+          ]
+        }
+      ]
+    }
+    {
+      Title: Daily Work
+      SubSections:
+      [
+        {
+          Title: Index Management (Staging)
+          Cheats:
+          [
+            {
+              Affected: WIA
+              Text: add pathspec
+              Hint: Update the index using the current content of the workspace. Pathspec can be a file or directory (such as '.'), which will be added recursively. Adding a file to the index is also known as 'staging' the file.
+              Url: http://git-scm.com/docs/git-add
+            }
+            {
+              Affected: WIA
+              Text: add -A pathspec
+              Hint: A synonym for '--all'. If you have removed files from your working tree you need to issue this command to have the removal added to the index. This will be the default in git v2.0.
+              Url: http://git-scm.com/docs/git-add
+            }
+            {
+              Affected: WIA
+              Text: add -i pathspec
+              Hint: Add interactively. Can be useful for picking subsets of files.
+              Url: http://git-scm.com/docs/git-add
+            }
+            {
+              Affected: WIA
+              Text: rm pathspec
+              Hint: Remove file(s) from the workspace AND the index. This command can be used after a /bin/rm, i.e. when the file is already physically gone from your workspace. After this command, git is no longer tracking the file.
+              Url: http://git-scm.com/docs/git-rm
+            }
+            {
+              Affected: I
+              Text: rm --cached pathspec
+              Hint: Remove file(s) from the index. The workspace is not touched at all. After this command git is no longer tracking the file.
+              Url: http://git-scm.com/docs/git-rm
+            }
+            {
+              Affected: WIA
+              Text: rm 'foo/*.log'
+              Hint: Glob patterns work. Escape '*' to stop the shell expanding it. See the example at the link for a discussion on the effects of quoting.
+              Url: http://git-scm.com/docs/git-rm
+            }
+            {
+              Affected: WIA
+              Text: mv oldfile newfile
+              Hint: Rename oldfile to newfile. Often unnecessary because git will detect renamed files automatically if their content has not greatly changed.
+              Url: http://git-scm.com/docs/git-mv
+            }
+          ]
+        }
+        {
+          Title: Committing
+          Cheats:
+          [
+            {
+              Affected: ILA
+              Text: commit [-m "message"]
+              Hint: Take the current contents of the index and commit it to the local repo. -m is used to specify a commit message. If omitted, the editor will open to allow you to enter the message. (A blank message aborts the commit). It is recommended that a commit message consist of 1 line (known as the title), then a blank line, then a longer description. See the discussion at the link.
+              Url: http://git-scm.com/docs/git-commit
+            }
+            {
+              Affected: WILA
+              Text: commit -a
+              Hint: Add all currently tracked files that are changed or deleted to the index and commit. Untracked files are NOT added.
+              Url: http://git-scm.com/docs/git-commit
+            }
+            {
+              Affected: ILA
+              Text: commit --amend [-m "message"]
+              Hint: Revise last commit, for example if you missed some files or made a minor typo, specifying a new message. WARNING: If you have pushed the commit you are effectively rewriting history and subsequent pushes will fail with 'tip of your current branch is behind remote'. Use 'push -f' to force your changes up, but don't do this if you are in a team.
+              Url: http://git-scm.com/docs/git-commit
+            }
+            {
+              Affected: ILA
+              Text: commit --amend --no-edit
+              Hint: Revise last commit, reusing the same message. See warning in previous cheat.
+              Url: http://git-scm.com/docs/git-commit
+            }
+            {
+              Affected: WLA
+              Text: commit pathspecs
+              Hint: You can give git-commit a list of files; in this case a new commit is made that contains ONLY the mentioned files; the index is bypassed and is not modified at all. This is rarely used, but is a way to 'jump the queue' without requiring a lot of index manipulation.
+              Url: http://git-scm.com/docs/git-commit
+            }
+          ]
+        }
+        {
+          Title: Undoing
+          Cheats:
+          [
+            {
+              Affected: LIA
+              Text: reset [sha] pathspec
+              Hint: Copy files from the repo to the index. If you allow sha to default to HEAD this action effectively removes them from the index because they will then match the repo (git status mentions this as a way of unstaging a file). However the command is actually more generic than that, since sha can be anything, but if you are doing that you probably actually need the next command, 'git checkout [sha]'.
+              Url: http://git-scm.com/docs/git-reset
+            }
+            {
+              Affected: LWA
+              Text: checkout [sha] -- pathspec
+              Hint: Copy files from the repo to the workspace. (See hint in 'git status'). This is how to discard your workspace changes. sha defaults to HEAD, but you can specify an older commit: this is how to revert a file to a previous state.
+              Url: http://git-scm.com/docs/git-reset
+            }
+            {
+              Affected: LWA
+              Text: show HEAD~4:File > OldFile
+              Hint: An example of how to recover an old version of a file into a new filename. If you just want to replace in your workspace, you can do a 'git checkout' instead.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: reset --soft sha
+              Hint: Set HEAD in the repo to sha. Do not modify the index or workspace. The result is that your staged and workspace changes are still available.
+              Url: http://git-scm.com/docs/git-reset
+            }
+            {
+              Affected: L
+              Text: reset --soft HEAD^
+              Hint: Example of the previous: undo the last commit but leave all your changes in the workspace and the index.
+              Url: http://git-scm.com/docs/git-reset
+            }
+            {
+              Affected: LIA
+              Text: reset [--mixed] sha
+              Hint: Set HEAD in the repo to sha. Reset the index but leave the workspace alone. The result is that all your workspace WIP is still available, but needs staging. --mixed is the default.
+              Url: http://git-scm.com/docs/git-reset
+            }
+            {
+              Affected: LIWA
+              Text: reset --hard sha
+              Hint: Set HEAD in the repo to sha. Reset the index and the workspace (WARNING: any changes to tracked files in the workspace since sha will be lost). Untracked files however, will be left alone.
+              Url: http://git-scm.com/docs/git-reset
+            }
+            {
+              Affected: LIWA
+              Text: reset --hard HEAD^
+              Hint: Example of the previous: completely blow away the last commit.
+              Url: http://git-scm.com/docs/git-reset
+            }
+            {
+              Affected: LIWA
+              Text: reset --hard HEAD
+              Hint: Example: abort a merge in progress.
+              Url: http://git-scm.com/docs/git-reset
+            }
+            {
+              Affected: LIWA
+              Text: reset --hard ORIG_HEAD
+              Hint: Example: undo the last successful merge - after it has been committed! - AND all changes made since. Relies on the ORIG_HEAD pointer still being around.
+              Url: http://git-scm.com/docs/git-reset
+            }
+          ]
+        }
+        {
+          Title: Reverting
+          Cheats:
+          [
+            {
+              Affected: LIWA
+              Text: revert [shas]
+              Hint: Revert the changes that the shas introduced and record new commits to document this. Your workspace must be clean before beginning. n.b. git reset may be what you want, rather than revert (see Undoing, above). On the other hand, revert does provide a way to eliminate one or more commits from the MIDDLE of the history. A revert is the logical inverse of a cherry-pick.
+              Url: http://git-scm.com/docs/git-revert
+            }
+            {
+              Affected: LIWA
+              Text: revert --continue
+              Hint: Continue after resolving conflicts.
+              Url: http://git-scm.com/docs/git-revert
+            }
+            {
+              Affected: LIWA
+              Text: revert --quit
+              Hint: Forget about the current operation in progress.
+              Url: http://git-scm.com/docs/git-revert
+            }
+            {
+              Affected: LIWA
+              Text: revert --abort
+              Hint: Forget about the current operation in progress and return to the pre-sequence state.
+              Url: http://git-scm.com/docs/git-revert
+            }
+          ]
+        }
+        {
+          Title: Cleaning
+          Cheats:
+          [
+            {
+              Affected: W
+              Text: clean [-f] [-d]
+              Hint: Remove untracked files (also directories if -d) from the workspace. -f (force) is normally required to get it to run.
+              Url: http://git-scm.com/docs/git-clean
+            }
+            {
+              Affected: W
+              Text: clean -i
+              Hint: Clean interactively. Does not require -f.
+              Url: http://git-scm.com/docs/git-clean
+            }
+            {
+              Affected: W
+              Text: clean -n
+              Hint: Dry run. Does not require -f.
+              Url: http://git-scm.com/docs/git-clean
+            }
+            {
+              Affected: W
+              Text: clean -x
+              Hint: Also remove ignored files.
+              Url: http://git-scm.com/docs/git-clean
+            }
+            {
+              Affected: L
+              Text: filter-branch
+              Hint: Removing files from the history: see the link.
+              Url: http://git-scm.com/en/Git-Tools-Rewriting-History
+            }
+          ]
+        }
+      ]
+    }
+    {
+      Title: Branching
+      SubSections:
+      [
+        {
+          Title: Managing
+          Cheats:
+          [
+            {
+              Affected: L
+              Text: branch -r | -a
+              Hint: List branches, * means current. -r means show remote tracking branches only, -a means show all branches.
+              Url: http://git-scm.com/docs/git-branch
+            }
+            {
+              Affected: L
+              Text: branch -v | -vv
+              Hint: List branches, -v means show hash and commit subject for each head and the relationship to the remote branch, e.g. 'behind 1'. --vv is even nicer, for each tracking branch it shows the name of the remote branch beside it.
+              Url: http://git-scm.com/docs/git-branch
+            }
+            {
+              Affected: L
+              Text: branch -merged
+              Hint: List branches that have been merged into current. Branches without * can be deleted.
+              Url: http://git-scm.com/docs/git-branch
+            }
+            {
+              Affected: L
+              Text: branch -no-merged
+              Hint: List branches that have not been merged into current.
+              Url: http://git-scm.com/docs/git-branch
+            }
+            {
+              Affected: L
+              Text: branch newbrname [sha]
+              Hint: Create a new branch. sha allows you to specify the starting point of the branch and defaults to HEAD. This command is not often used, it is easier to do 'git checkout -b newbrname' which creates a new branch and immediately switches to it.
+              Url: http://git-scm.com/docs/git-branch
+            }
+            {
+              Affected: RLA
+              Text: branch --track newbr short/brname
+              Hint: Create a new local branch called 'newbr' to track the branch 'brname' on the remote called 'short' (which will often be 'origin').
+              Url: http://git-scm.com/docs/git-branch
+            }
+            {
+              Affected: L
+              Text: branch -d brname
+              Hint: Delete a branch. Normally the branch must be fully merged, but you can use -D to force the delete.
+              Url: http://git-scm.com/docs/git-branch
+            }
+            {
+              Affected: L
+              Text: show-branch [-r] [-a] [brnames]
+              Hint: Show which commits are in which branches. Defaults to local branches, -r means remote branches and -a means all branches. The first section lists each branch (* is current), most recent commit and assigns it a column. The second section shows which commits are in which branch: + means it's in, * means it's in and this is the active branch, - means it's in and is a merge commit. Try 'gitk --all' for a graphical alternative. brnames can include wildcards, for example 'bug/*'.
+              Url: http://git-scm.com/docs/git-show-branch
+            }
+          ]
+        }
+        {
+          Title: Switching To
+          Cheats:
+          [
+            {
+              Affected: LWA
+              Text: checkout [-f | -m] brname
+              Hint: Checkout a branch. Your workspace will have files added and removed so that it reflects the state of brname. Your index will NOT be affected (in other words, there is only one index, it is not per-branch). If your workspace has file differences between the current and new branch then the checkout will fail (this is to stop you losing work). Use -f to force it and throw away current changes. -m will merge your workspace changes into into brname and leave you on brname (YOU MUST RESOLVE THE MERGE INDICATORS IN THE FILE(S)).
+              Url: http://git-scm.com/docs/git-checkout
+            }
+            {
+              Affected: L
+              Text: checkout -b newbrname [sha]
+              Hint: Create a new branch then check it out. sha allows you to specify the start point of the new branch, and defaults to HEAD, in which case because this is a new branch your workspace will not be affected. Therefore, this is a way of storing WIP on a new branch.
+              Url: http://git-scm.com/docs/git-checkout
+            }
+            {
+              Affected: RLWA
+              Text: checkout --track shortname/brname
+              Hint: Create a new local branch (with the same name) to track a remote branch, then switch to it.
+              Url: http://git-scm.com/docs/git-checkout
+            }
+            {
+              Affected: RLWA
+              Text: checkout -b newname shortname/brname
+              Hint: Create a new local branch (with a new name) to track a remote branch, then switch to it.
+              Url: http://git-scm.com/docs/git-checkout
+            }
+          ]
+        }
+        {
+          Title: Merging and Rebasing
+          Cheats:
+          [
+            {
+              Affected: LWA
+              Text: merge [--no-commit] sourcebr
+              Hint: Merge sourcebr into the current branch. The changes in sourcebr since it diverged from the current branch will be replayed on top of current and then committed (or left in the workspace if you specify --no-commit). Merges can fail if there are conflicting changes to a file, in which case the commit object is not created and you should run 'git mergetool' to resolve the differences. WARNING: Before starting a merge you should commit or stash all workspace changes, because it is difficult to back out if there is a merge failure. The --no-commit option is handy if you want to review the results of a successful merge before committing it.
+              Url: http://git-scm.com/docs/git-merge
+            }
+            {
+              Affected: LWA
+              Text: mergetool
+              Hint: Run a merge tool such as Kdiff3 to resolve merge failures. This is only necessary if a merge fails. It is usually a good idea to tweak your mergetool, for example to automatically deal with whitespace issues.
+              Url: http://git-scm.com/docs/git-merge
+            }
+            {
+              Affected: W,NG
+              Text: manual resolution
+              Hint: You do not need to run a tool to resolve merge differences. You can just edit the conflicted files, 'git add' them, then 'git commit' to complete the process. Be careful to remove any temp files that git leaves around, it is easy to accidentally stage them.
+              Url: http://git-scm.com/docs/git-merge
+            }
+            {
+              Affected: LWA
+              Text: merge --abort
+              Hint: Abort the current conflict resolution process, and try to reconstruct the pre-merge state. This might not work unless you committted or stashed everything first.
+              Url: http://git-scm.com/docs/git-merge
+            }
+            {
+              Affected: LWA
+              Text: rebase [--onto newbase] brname
+              Hint: Rebase first saves all the commits in the current branch that are not in brname to a temporary area, then checks out brname and reapplies the commits after the HEAD of brname. The result is that N commits are moved from one place in the graph to another. --onto allows you to specify an alternative commit (i.e. not HEAD) to apply the rebased commits to. This form is rarely used, but the -i form is often used in feature branches for commit squashing. WARNING: Do not rebase commits that have been pushed. CAVEAT: Rebasing makes git bisect less useful.
+              Url: http://git-scm.com/docs/git-rebase
+            }
+            {
+              Affected: LWA
+              Text: rebase -i brname
+              Hint: Interactive rebase. Opens an editor which allows you to specify how to treat each commit in the rebase. This is often used to tidy history when using feature or bug branches: leaving the line 1 commit as PICK and setting the others to S - SQUASH results in 1 big commit in the history rather than N. WARNING: Do not rebase commits that have been pushed. CAVEAT: Rebasing makes git bisect less useful.
+              Url: http://git-scm.com/docs/git-rebase
+            }
+            {
+              Affected: LWA
+              Text: rebase --continue
+              Hint: If a rebase fails with merge conflicts, you can resolve them (using git mergetool or a manual process) then issue this command to continue with the rebase.
+              Url: http://git-scm.com/docs/git-rebase
+            }
+            {
+              Affected: LWA
+              Text: rebase --abort
+              Hint: If a rebase fails with merge conflicts you can issue this command to abort the rebase.
+              Url: http://git-scm.com/docs/git-rebase
+            }
+            {
+              Affected: LWA
+              Text: checkout --ours | --theirs
+              Hint: VALID DURING A MERGE CONFLICT ONLY. Checkout 'our' version or 'their' version of a file, hence resolving the conflict. 'Ours' is defined as the branch you are on, 'theirs' is the version from the branch that you are merging in. Obviously, this throws away the changes from one side.
+              Url: http://git-scm.com/docs/git-checkout
+            }
+            {
+              Affected: LWA
+              Text: cherry-pick sha
+              Hint: Take a single commit and apply it in your current branch. A new commit is created at the tip of your branch that contains the state of the original sha. This is another way of copying work from one branch to another and is essentially a 'merge of one commit'. Like a full merge, there can be conflicts which will require resolution.
+              Url: http://git-scm.com/docs/git-cherry-pick
+            }
+            {
+              Affected: L
+              Text: merge-base sha1 sha2...
+              Hint: Find the most recent common ancestor of the specified commits. In the simple case of two diverged branches it will be the point of divergence, but in more complicated cases such as cross-cutting history it can be non-obvious what will be returned. See examples at link.
+              Url: http://git-scm.com/docs/git-merge-base
+            }
+          ]
+        }
+        {
+          Title: Feature/Bugfix Branch Workflow
+          Cheats:
+          [
+            {
+              Affected: LWA
+              Text: 1. checkout master
+              Hint: Checkout the branch that we want to use as the starting point for our new work.
+              Url: http://git-scm.com/docs/git-checkout
+            }
+            {
+              Affected: RLWA
+              Text: 2. pull
+              Hint: Ensure we have the latest changes from other people.
+              Url: http://git-scm.com/docs/git-pull
+            }
+            {
+              Affected: L
+              Text: 3. checkout -b f-my-feature
+              Hint: Create a new branch to work on new stuff. DO NOT PUSH THIS BRANCH unless other people will need to work on it. If you push the branch you won't be able to delete it at the end, though you can still rebase commits on the branch as long as they have not been pushed.
+              Url: http://git-scm.com/docs/git-checkout
+            }
+            {
+              Affected: WIL,NG
+              Text: 4. work on your feature
+              Hint: Make as many commits as you like.
+              Url: "#"
+            }
+            {
+              Affected: RLA
+              Text: 5. fetch origin (when done)
+              Hint: Get the latest changes from other people into your local repo.
+              Url: http://git-scm.com/docs/git-fetch
+            }
+            {
+              Affected: WL
+              Text: 6. diff origin/master (Optional)
+              Hint: Show the differences between your workspace and the latest changes from others. This can be useful during merging/rebasing.
+              Url: http://git-scm.com/docs/git-diff
+            }
+            {
+              Affected: LWA
+              Text: 7. rebase -i origin/master
+              Hint: (Assuming you branched from 'master'). Leave first commit as PICK and set the others to SQUASH, this squashes the commit history of the branch f-my-feature down to a single commit which is then applied on the end of everybody else's latest work. Use 'git mergetool' to resolve any merge conflicts.
+              Url: http://git-scm.com/docs/git-rebase
+            }
+            {
+              Affected: LWA
+              Text: 8. checkout master
+              Hint: Switch to the branch we started from.
+              Url: http://git-scm.com/docs/git-checkout
+            }
+            {
+              Affected: RLWA
+              Text: 9. pull
+              Hint: Updates your workspace (on 'master') with the latest changes from other people.
+              Url: http://git-scm.com/docs/git-pull
+            }
+            {
+              Affected: LWA
+              Text: 10. merge f-my-feature
+              Hint: Merge f-my-feature, which is now a single commit, onto the top of master. Because you already rebased relative to the HEAD of master this should be a fast-forward merge, i.e. no extra merge commit object will be created. If you do want to create an explicit merge object (say, the feature is public and persistent) then use the --no-ff option.
+              Url: http://git-scm.com/docs/git-merge
+            }
+            {
+              Affected: L
+              Text: 11. branch -d f-my-feature
+              Hint: Delete the feature branch, since we no longer need it.
+              Url: http://git-scm.com/docs/git-branch
+            }
+            {
+              Affected: LRA
+              Text: 12. push
+              Hint: Publish your feature to the remote.
+              Url: http://git-scm.com/docs/git-push
+            }
+          ]
+        }
+      ]
+    }
+    {
+      Title: Remotes
+      SubSections:
+      [
+        {
+          Title: Setup
+          Cheats:
+          [
+            {
+              Affected: L
+              Text: remote [-v]
+              Hint: List remotes. Without -v, just displays shortnames. With -v, also displays the urls that the shortnames are linked to.
+              Url: http://git-scm.com/docs/git-remote
+            }
+            {
+              Affected: L
+              Text: remote add shortname url
+              Hint: Add url as a remote repo which can be referenced as 'shortname'. When a repo is created by cloning from a url it will already have a remote called 'origin' but you can add others and push to them separately.
+              Url: http://git-scm.com/docs/git-remote
+            }
+            {
+              Affected: L
+              Text: remote set-url shortname url
+              Hint: Change the url that a shortname points to.
+              Url: http://git-scm.com/docs/git-remote
+            }
+            {
+              Affected: L
+              Text: remote rm shortname
+              Hint: Remove the specified remote.
+              Url: http://git-scm.com/docs/git-remote
+            }
+            {
+              Affected: L
+              Text: remote rename oldname newname
+              Hint: Change the shortname used to track a remote.
+              Url: http://git-scm.com/docs/git-remote
+            }
+            {
+              Affected: L
+              Text: remote show shortname
+              Hint: Show info about the remote.
+              Url: http://git-scm.com/docs/git-remote
+            }
+          ]
+        }
+        {
+          Title: Fetching and Pulling
+          Cheats:
+          [
+            {
+              Affected: RLA
+              Text: fetch [shortname]
+              Hint: Fetch all commits for remote shortname (defaults to origin) into your local repo. This includes new remote branches, but new local tracking branches will not be created; if you 'git checkout br'  a new local branch will be created and automatically linked to the remote branch of the same name. Use 'git branch -a' to list all branches.
+              Url: http://git-scm.com/docs/git-fetch
+            }
+            {
+              Affected: RLA
+              Text: fetch --tags [shortname]
+              Hint: Fetch all tags from the remote shortname. In git versions prior to v1.9 this does NOT fetch everthing a normal fetch does, it just gets tags. For versions > 1.9, it DOES fetch everything a normal fetch does and hence is the only command you need.
+              Url: http://git-scm.com/docs/git-fetch
+            }
+            {
+              Affected: RLWA
+              Text: pull [--rebase] [shortname]
+              Hint: Fetch all commits from remote repo into your local repo then on your CURRENT BRANCH ONLY merge the fetched commits into your workspace. The commits of other branches will not be merged, which is why you get the message 'Your branch is behind origin/master...' when you switch branches. n.b. It is NOT a good idea to try and write a function to merge all branches automatically because some might fail and you will be left with a mess. Pull is effectively a git fetch followed by a git merge. Many people prefer to use the --rebase option instead of doing a merge as it results in a simpler commit history.
+              Url: http://git-scm.com/docs/git-pull
+            }
+          ]
+        }
+        {
+          Title: Manual Fetch and Merge
+          Cheats:
+          [
+            {
+              Affected: RLA
+              Text: fetch shortname
+              Hint: Fetch the latest updates from the remote specified by shortname.
+              Url: http://git-scm.com/docs/git-fetch
+            }
+            {
+              Affected: WL
+              Text: diff master shortname/master
+              Hint: Show the differences between your local tracking branch 'master' and the remote 'master'. That is, show what changes other people have made, before the changes hit your workspace.
+              Url: "#"
+            }
+            {
+              Affected: LWA
+              Text: merge shortname/master
+              Hint: Merge other people's changes into your workspace.
+              Url: http://git-scm.com/docs/git-merge
+            }
+            {
+              Affected: LWA
+              Text: rebase [-i] shortname/master
+              Hint: Rebase other people's changes into your workspace. The rebase backs out all the commits you have made since the point of divergence, sets HEAD to the tip of origin/master, then reapplies your changes on top. Hence, in this usage, it basically means 'accept everything that everybody else has done then apply my stuff on top'.
+              Url: http://git-scm.com/docs/git-rebase
+            }
+          ]
+        }
+        {
+          Title: Pushing
+          Cheats:
+          [
+            {
+              Affected: LRA
+              Text: push
+              Hint: Push all commits on branches that exist in BOTH the local and remote repo, i.e. remote branches for which you have a local tracking branch. See following commands for ways to push new branches, however often you do NOT want to push all your local branches, especially when working with temporary bug or feature branches.
+              Url: http://git-scm.com/docs/git-push
+            }
+            {
+              Affected: LRA
+              Text: push -u shortname brname
+              Hint: Push brname to the remote repo (creating it if necessary) and (-u) create a local tracking branch so that in future you can just do 'git push'.
+              Url: http://git-scm.com/docs/git-push
+            }
+            {
+              Affected: LRA
+              Text: push --all -u shortname
+              Hint: Same as previous command, but --all means push all locally created branches. Use sparingly, other people propbably aren't interested in all your many temporary branches.
+              Url: http://git-scm.com/docs/git-push
+            }
+            {
+              Affected: LRA
+              Text: push shortname brname:brname2
+              Hint: Push brname to shortname, renaming it brname2 on the remote.
+              Url: http://git-scm.com/docs/git-push
+            }
+            {
+              Affected: LRA
+              Text: push shortname :brname
+              Hint: Delete the brname branch from the remote.
+              Url: http://git-scm.com/docs/git-push
+            }
+            {
+              Affected: LRA
+              Text: push shortname v1.5
+              Hint: Push a tag to a remote (tags are not pushed by default).
+              Url: http://git-scm.com/docs/git-push
+            }
+            {
+              Affected: LRA
+              Text: push shortname --tags
+              Hint: Push all tags to a remote (tags are not pushed by default).
+              Url: http://git-scm.com/docs/git-push
+            }
+          ]
+        }
+        {
+          Title: Subtrees (Sharing code)
+          Cheats:
+          [
+            {
+              Affected: ,NG
+              Text: Introduction
+              Hint: Subtrees supercede submodules. The usage below shows the most common case: setting up a MAIN repo that contains a sub-repo (e.g. for common code) called MiscUtils. It is a good idea to setup aliases called mupull and mupush in MAIN's .git/config. The 'mu' prefix allows you to have several different subtrees, just setup a different alias for each one. More advanced usages, such as initially splitting out a subproject, are possible, see the documentation at the link and google.
+              Url: https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt
+            }
+            {
+              Affected: RLWA
+              Text: subtree add ...
+              Hint: Full command: git subtree add --prefix MiscUtils [--squash] remote master. Fetches the 'remote' repo and checks out its files (as specified by the ref 'master') into the MiscUtils folder. For consistency it is a good idea to run all subtree commands from the root of MAIN. You don't need an alias for this command because you only need to run it once. --squash squashes all the commits in MiscUtils down to a single commit before merging - this keeps MAIN's commit history cleaner. Look in git log to see what happened.
+              Url: https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt
+            }
+            {
+              Affected: RLWA
+              Text: subtree pull ...
+              Hint: Full command: git subtree pull --prefix MiscUtils [--squash] remote master. Fetches the latest changes from the remote sub-repo and then merges them into your MAIN repo. --squash squashes all the commits in MiscUtils down to a single commit before merging - this keeps MAIN's commit history cleaner.
+              Url: https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt
+            }
+            {
+              Affected: LRA
+              Text: subtree push ...
+              Hint: Full command: git subtree push --prefix MiscUtils remote master. Push changes that you have made in your local copy of MiscUtils back up the remote repo. In other words, this is how you contribute code back to the master MiscUtils repository. It is advisable to pull the latest remote changes down first before trying to push your stuff back up. n.b. See the advice at the link about splitting out commits that affect subtrees; it's not necessary but is a good idea.
+              Url: https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt
+            }
+            {
+              Affected: ,NG
+              Text: Terminating the link
+              Hint: Nothing to do. Subtrees don't use any special files or tracking, so just stop using 'subtree pull' and 'subtree push'.
+              Url: https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt
+            }
+          ]
+        }
+      ]
+    }
+    {
+      Title: Reviewing
+      SubSections:
+      [
+        {
+          Title: Comparing
+          Cheats:
+          [
+            {
+              Affected: WI
+              Text: diff [-- path] [--stat]
+              Hint: Compare the workspace to the index. This form shows the unstaged changes. --stat draws the file modification histogram and can be used with any diff command.
+              Url: http://git-scm.com/docs/git-diff
+            }
+            {
+              Affected: IL
+              Text: diff --staged [sha] [-- path]
+              Hint: Compare the index to the repo. sha defaults to HEAD, therefore this form shows the change you are about to commit. Use a branch name to compare to the tip of that branch. --cached is a synonym for --staged.
+              Url: http://git-scm.com/docs/git-diff
+            }
+            {
+              Affected: WL
+              Text: diff sha [-- path]
+              Hint: Compare the workspace to the repo. sha will typically be HEAD, therefore this form shows your current state vs the last commit.
+              Url: http://git-scm.com/docs/git-diff
+            }
+            {
+              Affected: L
+              Text: diff sha1 sha2 [-- path]
+              Hint: Compare two arbitrary commits. The index and workspace are not involved. You may omit one commit, which will default to HEAD. n.b. sha1 and sha2 can be branch names, which is how you compare a file across branches. You can use the alternative double-dot syntax, sha1..sha2, which means exactly the same thing (diff the two commits). This is very different from the use of .. in the log command.
+              Url: http://git-scm.com/docs/git-diff
+            }
+            {
+              Affected: L
+              Text: diff HEAD~ -- filespec
+              Hint: Example of the above: compare the most recently committed version of filespec with the version prior to that ('show me the change I just committed').
+              Url: http://git-scm.com/docs/git-diff
+            }
+            {
+              Affected: L
+              Text: diff sha1\...sha2 [-- path]
+              Hint: View the changes on the branch containing the second commit, starting at the most recent common ancestor of both commits. Either commit can be omitted and defaults to HEAD.
+              Url: http://git-scm.com/docs/git-diff
+            }
+            {
+              Affected: L
+              Text: diff --name-status --oneline sha1 sha2
+              Hint: Get a list of files changed between two commits with an indicator of what happened. This is a more exotic version of the simple 'diff --name-only' command, which just gives you the file list (handy for scripting).
+              Url: http://git-scm.com/docs/git-diff
+            }
+            {
+              Affected: L
+              Text: diff :1:filespec :3:filespec
+              Hint: VALID DURING A MERGE ONLY. Compare the mergebase (1) to 'theirs' (3). In other words, this shows you the changes made on the branch that you are merging in since it diverged. 2 is 'our' version.
+              Url: http://git-scm.com/docs/git-diff
+            }
+            {
+              Affected: ""
+              Text: difftool
+              Hint: Run a graphical diff, which you must first have configured in .gitconfig. It accepts the same arguments as git-diff. Be careful not to diff binary files.
+              Url: http://git-scm.com/docs/git-difftool
+            }
+          ]
+        }
+        {
+          Title: Status and History
+          Cheats:
+          [
+            {
+              Affected: WIL
+              Text: status [--short] [--ignored]
+              Hint: Display status of files in the workspace and index vs the repo. --short is very brief, see the link for explanation. --ignored is a good way of finding the ignored files.
+              Url: http://git-scm.com/docs/git-status
+            }
+            {
+              Affected: L,NG
+              Text: gitk [--all] [file]
+              Hint: Display graphical repository browser. Accepts the same options as 'git log'. The --all option makes it display the branching history for every branch, otherwise it just shows your current branch. Pass a file to look at the history of an individual file.
+              Url: http://git-scm.com/docs/gitk
+            }
+            {
+              Affected: L
+              Text: log [options] revisionrange
+              Hint: Limit commits to those in the range, which defaults to HEAD, i.e. everything. 'origin..HEAD' means all commits reachable from the current commit (i.e. HEAD) but not from origin. So for example if you are on a branch forked from master, 'master..' will limit to the commits on that branch.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log [options] brname
+              Hint: Example of the previous: show the log of a particular branch.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log [options] -- pathspec
+              Hint: Restrict history to those commits affecting file(s) or folder(s). Pathspec is always last, after the revisionrange. The full format is not always necessary, for example 'git log README.md' will work.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log [-N]
+              Hint: N = number of commits to limit to.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log --after=datespec
+              Hint: Only show commits after datespec. You can also use 'before'. datespec can be '2.weeks',  '3 months ago' (in quotes), a date literal such as '27-09-2013' or even just a time such as '14:30'.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log -p
+              Hint: Display log with diffs.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log --stat | --shortstat
+              Hint: Display log with statistics. --stat shows the name of each file with lines inserted and deleted in a histogram. --shortstat only shows the last line, the one that says '2 files changed, 3 insertions(+), 1 deletion(-)'.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log --author=somebody
+              Hint: Show commits authored by 'somebody' (which is a regex). The author is the person who originally wrote the code. The match is against the 'Author:' line that is printed by the git log command. 'git log --author=Ph' or 'git log --author=Da' is sufficient to find commits by 'Philip Daniels', you can use parts of the email address as well.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log --committer=somebody
+              Hint: Show commits committed by 'somebody' (which is a regex). The committer is the person who applied the patch. Normally committer and author are the same, the committer is only different if you are sending patches off to someone.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log --grep=pattern
+              Hint: Show commits with messages that match the pattern.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log -S'string'
+              Hint: Show commits that add or remove the string in the content. Example: git log -S'void foo()'.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log -G'pattern'
+              Hint: Show commits that add or remove the pattern in the content. Example git log -G'^int gtk'.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log -L start,end:file
+              Hint: Show the commits that affected the line range start-end within 'file'. start and end can be numbers, regexes or offsets (see the documentation, there is also a good example at the bottom). This is a great way of finding what changed something in a file.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log -i
+              Hint: The -i option makes pattern matches for --author, --committer, --grep etc. case-insensitive.
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log --all-match
+              Hint: AND all match options together (default is OR).
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log origin/master..HEAD
+              Hint: Show commits in current branch that aren't at the remote (i.e. will be pushed).
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: log --pretty=...
+              Hint: Specify log format. Valid options are short, medium, full, fuller, email, raw and format:<string>
+              Url: http://git-scm.com/docs/git-log
+            }
+            {
+              Affected: L
+              Text: blame filespec
+              Hint: Show which commit and person was responsible for each line of a file.
+              Url: http://git-scm.com/docs/git-blame
+            }
+            {
+              Affected: L
+              Text: gui blame filespec
+              Hint: Graphical blame.
+              Url: http://git-scm.com/docs/git-gui
+            }
+          ]
+        }
+        {
+          Title: Commit Ranges
+          Cheats:
+          [
+            {
+              Affected: L
+              Text: log sha
+              Hint: Include commits that are reachable from (i.e. ancestors of) sha.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: log ^sha
+              Hint: Exclude commits that are reachable from (i.e. ancestors of) sha.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: log sha1..sha2
+              Hint: Include commits that are reachable from sha2 but exclude those that are reachable from sha1. Mnemonic: 'In end but not start.' This is exactly the same as the longhand form 'log ^sha1 sha2'. When either sha1 or sha2 is omitted, it defaults to HEAD.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: log master..f-myfeature
+              Hint: Example: show commits in branch f-myfeature that are not in master.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: log f-myfeature..master
+              Hint: Example: show commits in master that are not in your branch (useful for previewing merges).
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: log origin/master..HEAD
+              Hint: Example: show commits that are not pushed to the remote.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: log ^exc1 ^exc2 inc1 inc2
+              Hint: "The general form of 'git log' commit ranges. Specifying a commit means 'show me that commit and its ancestors'. Negating that with ^ means '...but exclude this commit and its ancestors.' "
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+          ]
+        }
+      ]
+    }
+    {
+      Title: Misc 1
+      SubSections:
+      [
+        {
+          Title: Showing Objects
+          Cheats:
+          [
+            {
+              Affected: L
+              Text: revparse ref
+              Hint: Show the sha that 'ref' refers to. ref may be a branch name, a tag, or any other type of reference.
+              Url: http://git-scm.com/docs/git-rev-parse
+            }
+            {
+              Affected: L
+              Text: show [options] [things]
+              Hint: Show details of things (blobs, trees, tags and commits). Examples of naming objects are covered in the next examples, which use git-show, but link to the gitrevisions page where revisions are described in detail.
+              Url: http://git-scm.com/docs/git-show
+            }
+            {
+              Affected: L
+              Text: show sha1
+              Hint: Show details of specified commit (defaults to HEAD).
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: show ref
+              Hint: Ref is a symbolic name, such as master, heads/master or refs/heads/master.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: show ref:pathspec
+              Hint: Show the contents of the file in the ref. For example, ref may be a branch name or HEAD~10. Therefore 'show dev~5:Makefile' shows what Makefile looks like on the dev branch 5 revisions ago.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: I
+              Text: show :pathspec
+              Hint: Show a file as it exists in the index.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: show @
+              Hint: @ by itself is a shortcut for HEAD.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: show ref@{date}
+              Hint: A point in time, e.g. 'master@{yesterday}' shows the master branch as it appeared yesterday, 'HEAD@{5 minutes ago}' shows the current branch as it was 5 minutes ago. NOTE: This is not as useful as it appears because it only works on things that are in your local reflog ('git reflog'), so it is no good on a repository you have just cloned. Use --before and --after instead.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: show ref@{N}
+              Hint: N is a number. master@{1} means the immediate prior value of master, while master@{5} means the 5th prior value. This is also dependent upon the git reflog.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: show rev~N
+              Hint: N is a number and means 'Nth ancestor', i.e. follow the commit chain back in time always using the first parent. ~ therefore allows you to examine the history of a file. It is quite different to ^N, which is only useful for merges.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: show rev^N
+              Hint: N is a number and means 'Nth parent'. Normally N is omitted and defaults to 1, which means 'the first parent'. ONLY MERGES HAVE MORE THAN ONE PARENT.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+            {
+              Affected: L
+              Text: show HEAD~4:File > OldFile
+              Hint: An example of how to recover an old version of a file into a new filename. If you just want to replace in your workspace, you can do a 'git checkout' instead.
+              Url: http://git-scm.com/docs/gitrevisions.html
+            }
+          ]
+        }
+        {
+          Title: Stashing
+          Cheats:
+          [
+            {
+              Affected: S
+              Text: stash list
+              Hint: Show stack of stashes. stash@{0} is the latest stash. The branch that was current when the stash was made is also shown.
+              Url: http://git-scm.com/docs/git-stash
+            }
+            {
+              Affected: IWSA
+              Text: stash save [--untracked | --all] [msg]
+              Hint: Copy the current state of the workspace and index into a new stash then run 'git reset --hard' to undo your changes (if there are no changes this is a no-op). --untracked will also include UNTRACKED files in the stash and then delete them using 'git clean' (you should probably do this), and --all will also include IGNORED files the stash. This is only necessary if you are planning on changing what is .gitignored.
+              Url: http://git-scm.com/docs/git-stash
+            }
+            {
+              Affected: S
+              Text: stash show [stash]
+              Hint: Show the difference between the stash and its parent, i.e. this shows the change that the stash introduces.
+              Url: http://git-scm.com/docs/git-stash
+            }
+            {
+              Affected: SWA
+              Text: stash pop [stash]
+              Hint: Apply the specified stash (defaults to stash@{0}) then delete it. If the application fails due to conflicts then resolve them manually then do 'git stash drop' to remove the stash manually.
+              Url: http://git-scm.com/docs/git-stash
+            }
+            {
+              Affected: SWA
+              Text: stash apply [stash]
+              Hint: Like pop, but does not delete the stash when done.
+              Url: http://git-scm.com/docs/git-stash
+            }
+            {
+              Affected: SWLA
+              Text: stash branch brname [stash]
+              Hint: Create and checkout brname starting from the commit at which the stash was originally created, apply the stash on top then drop the stash. This effectively converts a stash into a branch.
+              Url: http://git-scm.com/docs/git-stash
+            }
+            {
+              Affected: S
+              Text: stash drop [stash]
+              Hint: Drop a stash.
+              Url: http://git-scm.com/docs/git-stash
+            }
+            {
+              Affected: S
+              Text: stash clear
+              Hint: Drop all stashes.
+              Url: http://git-scm.com/docs/git-stash
+            }
+          ]
+        }
+        {
+          Title: Tagging
+          Cheats:
+          [
+            {
+              Affected: L,NG
+              Text: tags vs branches
+              Hint: A tag and a branch serve different purposes. A tag is meant to be a static name that does not change or move over time. Once applied, you should leave it alone. It serves as a stake in the ground and a reference point. On the other hand, a branch is dynamic and moves with each commit you make. The branch name is designed to follow your continuing development. - Jon Loeliger, Version Control with Git.
+              Url: "#"
+            }
+            {
+              Affected: L
+              Text: tag
+              Hint: List all tags.
+              Url: http://git-scm.com/docs/git-tag
+            }
+            {
+              Affected: L
+              Text: tag -l v1.4*
+              Hint: List all tags matching pattern.
+              Url: http://git-scm.com/docs/git-tag
+            }
+            {
+              Affected: L
+              Text: show v1.4
+              Hint: Show the tag message, the commit message, and a diff of the commit.
+              Url: http://git-scm.com/docs/git-tag
+            }
+            {
+              Affected: L
+              Text: tag -a v1.4 -m "message"
+              Hint: Create the annotated tag 'v1.4' with specified message. You should always use annotated tags and avoid lightweight tags.
+              Url: http://git-scm.com/docs/git-tag
+            }
+            {
+              Affected: L
+              Text: tag -a v1.4 sha
+              Hint: Tag a specific commit, can be after the fact.
+              Url: http://git-scm.com/docs/git-tag
+            }
+            {
+              Affected: LRA
+              Text: push shortname v1.5
+              Hint: Push a tag to a remote (tags are not pushed by default).
+              Url: http://git-scm.com/docs/git-tag
+            }
+            {
+              Affected: LRA
+              Text: push origin --tags
+              Hint: Push all tags to a remote (tags are not pushed by default).
+              Url: http://git-scm.com/docs/git-tag
+            }
+            {
+              Affected: L
+              Text: tag -f v1.4 sha
+              Hint: Force a tag creation on a particular commit. You can use this to move a tag from one commit to another BUT DON'T DO THIS if you have pushed the tag (see discussion at link).
+              Url: http://git-scm.com/docs/git-tag
+            }
+            {
+              Affected: L
+              Text: tag -d v1.4
+              Hint: Delete a tag.
+              Url: http://git-scm.com/docs/git-tag
+            }
+          ]
+        }
+        {
+          Title: Bisection
+          Cheats:
+          [
+            {
+              Affected: LWA
+              Text: bisect start
+              Hint: Bisect uses a binary search through your commit history to find a bug. Use 'bisect start' to start the process, then 'bisect good' and 'bisect bad' to set the bounds of the search. See link for more details.
+              Url: http://git-scm.com/docs/git-bisect
+            }
+            {
+              Affected: LWA
+              Text: bisect run my_script args
+              Hint: If you have a script (such as a compile & unit test script) that can return a code indicating whether a build is good or bad you can automate the entire process.
+              Url: http://git-scm.com/docs/git-bisect
+            }
+          ]
+        }
+        {
+          Title: Plumbing Commands
+          Cheats:
+          [
+            {
+              Affected: L
+              Text: ls-files -s | -u
+              Hint: Show staged files. -s shows all staged files, -u shows just those with conflicts. This can be useful during a merge to examine each version. The numbers are stage numbers. 1 is the merge base, 2 is 'our' version, and 3 is 'their' version. (0 means a non-conflicted staged file). Use git cat-file to examine each file. If you are on master and merging in brname, then 'ours' is the master version, and 'theirs' is the brname version.
+              Url: http://git-scm.com/docs/git-ls-files
+            }
+            {
+              Affected: L
+              Text: cat-file -p sha
+              Hint: Cat a file. This low-level command is useful for examining the 3 versions of a file during merge conflicts.
+              Url: http://git-scm.com/docs/git-cat-file
+            }
+            {
+              Affected: L
+              Text: reflog
+              Hint: Display the reflog, a history of changes to refs within your repo.
+              Url: http://git-scm.com/docs/git-reflog
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
