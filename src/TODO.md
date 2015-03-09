@@ -1,38 +1,5 @@
 TODO - Next
 ===========
-[ ] Rebasing of CSS URLs now works, it is done relative to the output directory.
-    But is this a real solution? In GCS I had to hack _Layout.hbs to contain
-	absolute links: <link rel="stylesheet" href="./content/theme.solarized_dark.css" id="themeSheet">
-	But that only works if the final generated page is in the root directory. If GCS had
-	a "views\subfolder" directory then files in that directory would not load their stylesheets.
-
-    What we could really do with is a "~" operator like in .Net.
-	How do they solve this in the node world?
-
-	http://weblog.west-wind.com/posts/2009/Dec/21/Making-Sense-of-ASPNET-Paths
-
-	Since everything is a string that we are processing, we could look for a special marker
-	such as ~APPROOT~ and replace that with appropriate ./ or ../ or ../../
-	RESOLVE(~)
-
-	Alternative: http://www.w3schools.com/TAGS/tag_base.asp
-	http://stackoverflow.com/questions/893144/equivalent-in-javascript
-	<head>
-      <base href="http://<%= Request.Url.Authority + Request.ApplicationPath%>/" />
-	</head>
-
-	Defn: A relative Url is one that does not begin with a slash or http://
-	      images/pic.jpg
-		  ./blah/foo.html
-		  ../../scripts/mine.js
-
-     Affects: potentially all files being written, including those being processed
-	 by bundler. We seem to have fixed bundler...
-
-	 content: Affected - bunder
-	 scripts: Affected - bundler
-	 views  : Affected - ViewPipeline. Replace in the FileLoadBlock?
-	    layouts: 
 
 Bugs
 ====
@@ -117,6 +84,44 @@ Deferred, Possibly Forever
 	            of time it would take to compile 100,000 templates, this is an
 				inconsequential overhead.
 
+
 Interesting Links
 =================
 http://ajorkowski.github.io/NodeAssets/
+
+
+Rebasing of Filenames (Relative filenames in views)
+===================================================
+Aim: setup 1 "website" in nginx which can be used to serve multiple independent sites.
+
+	server {
+		server_name philipdaniels.com www.philipdaniels.com;
+		root /usr/share/nginx;
+
+		location /site1 {
+			try_files $uri $uri/ /index.html
+		}
+	}
+
+- This will work with relative URLs such as "images/image1.png"
+  since the browser requests: http://www.philipdaniels.com/site1/images/image1.png
+- But for absolute URLs such as "/images/image1.png""
+  the browser requests: http://www.philipdaniels.com/images/image1.png
+  which will not work.
+
+Basically the browser does not know that this is a separate "site", so "/images"
+is always going to be relative to the real root of the website (http://www.philipdaniels.com/images/...).
+This is not something that can be fixed by tweaking nginx config.
+
+See also: http://weblog.west-wind.com/posts/2009/Dec/21/Making-Sense-of-ASPNET-Paths
+http://www.w3schools.com/TAGS/tag_base.asp
+http://stackoverflow.com/questions/893144/equivalent-in-javascript
+
+    CONCLUSION
+    ----------
+    * Do not use absolute rooted "/" URLs.
+    * Always use relative urls: "images" or "./images" or "../images"
+    * If you must use absolute URLs, they must have the full domain
+      request in them: http://www.philipdaniels.com/site1/images/image1.png
+    * If you do this you can install the resultant website anywhere on disk
+      just by copying it to a new location, without any fear that Urls will break.

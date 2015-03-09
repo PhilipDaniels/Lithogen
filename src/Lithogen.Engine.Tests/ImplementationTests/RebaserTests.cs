@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Lithogen.Core;
 using Lithogen.Engine.Implementations;
 using NUnit.Framework;
@@ -63,7 +59,7 @@ namespace Lithogen.Engine.Tests.ImplementationTests
         {
             string filename = Path.Combine(TheSettings.ViewsDirectory, @"foo.txt");
             string result = Rebaser.GetPathToRoot(filename);
-            Assert.AreEqual("", result);
+            Assert.AreEqual("./", result);
         }
 
         [Test]

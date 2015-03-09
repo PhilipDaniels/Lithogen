@@ -79,8 +79,7 @@ namespace Lithogen.Engine.Implementations
 
             if (numDirs == 0)
             {
-                // TODO: or "./"?
-                return "";
+                return "./";
             }
             else
             {

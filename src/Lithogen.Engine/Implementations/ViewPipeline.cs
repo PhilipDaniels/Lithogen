@@ -1,10 +1,10 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations
 {
@@ -28,6 +28,7 @@ namespace Lithogen.Engine.Implementations
         readonly IOutputFileWriter OutputFileWriter;
         readonly IPipelineFileLoader PipelineFileLoader;
         readonly IConfigurationResolver ConfigurationResolver;
+        readonly IRebaser Rebaser;
 
         readonly TransformManyBlock<string, Payload> ViewDirectoryReaderBlock;
         readonly ActionBlock<Payload> ViewDirectoryReaderErrorBlock;
@@ -55,7 +56,8 @@ namespace Lithogen.Engine.Implementations
             IProcessorFactory processorFactory,
             IOutputFileWriter outputFileWriter,
             IPipelineFileLoader pipelineFileLoader,
-            IConfigurationResolver configurationResolver
+            IConfigurationResolver configurationResolver,
+            IRebaser rebaser
             )
         {
             TheLogger = logger.ThrowIfNull("logger");
@@ -67,6 +69,7 @@ namespace Lithogen.Engine.Implementations
             OutputFileWriter = outputFileWriter.ThrowIfNull("outputFileWriter");
             PipelineFileLoader = pipelineFileLoader.ThrowIfNull("pipelineFileLoader");
             ConfigurationResolver = configurationResolver.ThrowIfNull("configurationResolver");
+            Rebaser = rebaser.ThrowIfNull("rebaser");
 
             // Create the TPF Dataflow pipeline.
             // This block returns all the files in a directory that we need to process.
@@ -328,6 +331,9 @@ namespace Lithogen.Engine.Implementations
                     // We go round again and pick up a new set of processors.
                 }
             }
+
+            // Replace the special marker PATHTOROOT(~) with a relative path.
+            file.Contents = Rebaser.ReplaceRootsInFile(file.Filename, file.Contents);
         }
 
         void LogException(Payload payload, string leader)
