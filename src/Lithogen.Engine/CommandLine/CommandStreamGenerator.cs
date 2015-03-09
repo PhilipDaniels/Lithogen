@@ -101,7 +101,7 @@ namespace Lithogen.Engine.CommandLine
             {
                 var file = fileList[0];
                 fileList.RemoveAt(0);
-                FileClass fc = FileClassifier.Classify(file.Filename);
+                FileClass fc = FileClassifier.Classify(file.FileName);
 
                 // Anything happening in the content or scripts folders initiates a complete rebuild of them,
                 // so we can crush this down to a single command.
@@ -110,11 +110,11 @@ namespace Lithogen.Engine.CommandLine
                     string contentDir = (fc == FileClass.Content) ? TheSettings.ContentDirectory : null;
                     string scriptsDir = (fc == FileClass.Script) ? TheSettings.ScriptsDirectory : null;
 
-                    int contentRemoved = fileList.RemoveAll(n => FileClassifier.Classify(n.Filename) == FileClass.Content);
+                    int contentRemoved = fileList.RemoveAll(n => FileClassifier.Classify(n.FileName) == FileClass.Content);
                     if (contentRemoved > 0)
                         contentDir = TheSettings.ContentDirectory;
 
-                    int scriptsRemoved = fileList.RemoveAll(n => FileClassifier.Classify(n.Filename) == FileClass.Script);
+                    int scriptsRemoved = fileList.RemoveAll(n => FileClassifier.Classify(n.FileName) == FileClass.Script);
                     if (scriptsRemoved > 0)
                         scriptsDir = TheSettings.ScriptsDirectory;
 
@@ -124,24 +124,24 @@ namespace Lithogen.Engine.CommandLine
                 {
                     // We can cope with a single image copy/delete.
                     if (file.NotificationType == FileNotificationType.Build)
-                        cmds.Add(MakeBuildImageCommand(file.Filename));
+                        cmds.Add(MakeBuildImageCommand(file.FileName));
                     else
-                        cmds.Add(MakeFileDeleteCommand(file.Filename));
+                        cmds.Add(MakeFileDeleteCommand(file.FileName));
                 }
                 else if (fc == FileClass.View)
                 {
                     if (file.NotificationType == FileNotificationType.Build)
                     {
-                        if (SideBySide.IsSideBySideFile(file.Filename))
+                        if (SideBySide.IsSideBySideFile(file.FileName))
                         {
-                            string mainFile = SideBySide.GetMainFile(file.Filename);
+                            string mainFile = SideBySide.GetMainFile(file.FileName);
                             if (mainFile != null)
                                 cmds.Add(MakeBuildViewCommand(mainFile));
                         }
                         else
                         {
-                            if (!ViewFileNameFilter.ShouldIgnore(file.Filename))
-                                cmds.Add(MakeBuildViewCommand(file.Filename));
+                            if (!ViewFileNameFilter.ShouldIgnore(file.FileName))
+                                cmds.Add(MakeBuildViewCommand(file.FileName));
                         }
                     }
                     else
@@ -160,7 +160,7 @@ namespace Lithogen.Engine.CommandLine
                 }
                 else if (fc == FileClass.Unknown)
                 {
-                    cmds.Add(MakeUnknownFileCommand(file.Filename));
+                    cmds.Add(MakeUnknownFileCommand(file.FileName));
                 }
             }
 

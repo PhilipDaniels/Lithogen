@@ -10,7 +10,7 @@ namespace Lithogen.Engine.Configuration
 
         public DirectoryConfiguration()
         {
-            _Mappings = new Dictionary<string, IExtensionConfiguration>(StringComparer.InvariantCultureIgnoreCase);
+            _Mappings = new Dictionary<string, IExtensionConfiguration>(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

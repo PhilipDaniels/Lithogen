@@ -34,12 +34,12 @@ namespace Lithogen.Engine.CommandLine
 
         public bool MatchNpm(string possible)
         {
-            return possible.StartsWith("npm ", StringComparison.InvariantCultureIgnoreCase);
+            return possible.StartsWith("npm ", StringComparison.OrdinalIgnoreCase);
         }
 
         public bool MatchNode(string possible)
         {
-            return possible.StartsWith("node ", StringComparison.InvariantCultureIgnoreCase);
+            return possible.StartsWith("node ", StringComparison.OrdinalIgnoreCase);
         }
         
         public bool MatchContent(string possible)

@@ -1,10 +1,11 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace Lithogen.Engine.Configuration
@@ -24,23 +25,24 @@ namespace Lithogen.Engine.Configuration
         {
             TheLogger = logger.ThrowIfNull("logger");
             TheSettings = settings.ThrowIfNull("settings");
-            EffectiveConfigurationsByDirectory = new Dictionary<string, DirectoryConfiguration>(StringComparer.InvariantCultureIgnoreCase);
+            EffectiveConfigurationsByDirectory = new Dictionary<string, DirectoryConfiguration>(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
         /// Gets the configuration in effect for a view file.
         /// </summary>
-        public IDirectoryConfiguration GetConfiguration(string filename)
+        /// <param name="fileName">Name of the file.</param>
+        public IDirectoryConfiguration GetConfiguration(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
 
-            if (!filename.StartsWith(TheSettings.ViewsDirectory, StringComparison.InvariantCultureIgnoreCase))
+            if (!fileName.StartsWith(TheSettings.ViewsDirectory, StringComparison.OrdinalIgnoreCase))
             {
-                string msg = String.Format("The filename {0} must be within the views directory {1}", filename, TheSettings.ViewsDirectory);
+                string msg = String.Format(CultureInfo.InvariantCulture, "The filename {0} must be within the views directory {1}", fileName, TheSettings.ViewsDirectory);
                 throw new ArgumentOutOfRangeException(msg);
             }
 
-            string dir = Path.GetDirectoryName(filename);
+            string dir = Path.GetDirectoryName(fileName);
             DirectoryConfiguration dc = GetConfigurationForDirectory(dir);
             return dc;
         }
@@ -49,12 +51,12 @@ namespace Lithogen.Engine.Configuration
         /// Checks to see whether there is a file processor for a particular extension.
         /// Whether there is depends on the configuration in the directory.
         /// </summary>
-        /// <param name="filaname">The file to check.</param>
+        /// <param name="fileName">The file to check.</param>
         /// <returns>True if the extension maps to a file processor, false otherwise.</returns>
-        public bool IsMappedExtension(string filename)
+        public bool IsMappedExtension(string fileName)
         {
-            string dir = Path.GetDirectoryName(filename);
-            string ext = FileUtils.GetCleanExtension(filename);
+            string dir = Path.GetDirectoryName(fileName);
+            string ext = FileUtils.GetCleanExtension(fileName);
             return IsMappedExtension(dir, ext);
         }
 
@@ -81,7 +83,7 @@ namespace Lithogen.Engine.Configuration
                     return config;
             }
 
-            if (dir.Equals(TheSettings.ProjectDirectory, StringComparison.InvariantCultureIgnoreCase))
+            if (dir.Equals(TheSettings.ProjectDirectory, StringComparison.OrdinalIgnoreCase))
             {
                 // Termination condition. We never go further than this.
                 string cfgFilename = GetConfigFilename(dir);
@@ -111,7 +113,7 @@ namespace Lithogen.Engine.Configuration
                 {
                     // Something here. Apply these settings over the parent settings and store.
                     config = LoadConfigFromFile(cfgFilename);
-                    ApplyDefaultsFromParent(dir, config, parentConfig);
+                    ApplyDefaultsFromParent(config, parentConfig);
                 }
 
                 lock (EffectiveConfigurationsByDirectory)
@@ -122,7 +124,7 @@ namespace Lithogen.Engine.Configuration
             }
         }
 
-        string GetConfigFilename(string dir)
+        static string GetConfigFilename(string dir)
         {
             string filename = Path.Combine(dir, CONFIG_FILENAME);
             if (File.Exists(filename))
@@ -131,7 +133,7 @@ namespace Lithogen.Engine.Configuration
                 return null;
         }
 
-        void ApplyDefaultsFromParent(string directory, DirectoryConfiguration config, DirectoryConfiguration parentConfig)
+        static void ApplyDefaultsFromParent(DirectoryConfiguration config, DirectoryConfiguration parentConfig)
         {
             // Update config to reflect its overrides of the parent.
             // Only allow processors to be merged at the Views level.
@@ -183,7 +185,7 @@ namespace Lithogen.Engine.Configuration
             }
         }
 
-        DirectoryConfiguration Convert(YamlMappings mappings)
+        static DirectoryConfiguration Convert(YamlMappings mappings)
         {
             var dc = new DirectoryConfiguration();
 

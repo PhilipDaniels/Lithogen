@@ -202,7 +202,7 @@ namespace Lithogen.Engine.Implementations
                     try
                     {
 
-                        OutputFileWriter.WriteFile(file.PipelineFile.WorkingFilename, file.PipelineFile.Contents);
+                        OutputFileWriter.WriteFile(file.PipelineFile.WorkingFileName, file.PipelineFile.Contents);
                     }
                     catch (Exception ex)
                     {
@@ -245,12 +245,12 @@ namespace Lithogen.Engine.Implementations
             ApplyProcessorsBlock.LinkTo(DoNotPublishBlock, new DataflowLinkOptions { PropagateCompletion = true }, file => !file.PipelineFile.Publish);
         }
 
-        public void ProcessFile(string filename)
+        public void ProcessFile(string fileName)
         {
             // It is ok for the file to not exist, we ignore it.
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
 
-            PostAndWait(filename);
+            PostAndWait(fileName);
         }
 
         public void ProcessDirectory(string viewsDirectory)
@@ -296,28 +296,28 @@ namespace Lithogen.Engine.Implementations
         {
             file.ThrowIfNull("file");
 
-            TheLogger.LogMessage("ApplyProcessors: Processing {0}", file.Filename);
+            TheLogger.LogMessage("ApplyProcessors: Processing {0}", file.FileName);
 
             while (true)
             {
                 // Apply all processors for the current extension. We will keep doing this until
                 // we meet an extension we don't recognise.
                 // Foo.cshtml -> Foo.html (2 processors)
-                string currentExtension = FileUtils.GetCleanExtension(file.WorkingFilename);
+                string currentExtension = FileUtils.GetCleanExtension(file.WorkingFileName);
                 var processors = ProcessorFactory.MakeProcessors(file.GetProcessorNames(currentExtension));
                 foreach (var processor in processors)
                     processor.Process(file);
 
-                string newExtension = FileUtils.GetCleanExtension(file.WorkingFilename);
-                if (newExtension.Equals(currentExtension, System.StringComparison.InvariantCultureIgnoreCase))
+                string newExtension = FileUtils.GetCleanExtension(file.WorkingFileName);
+                if (newExtension.Equals(currentExtension, System.StringComparison.OrdinalIgnoreCase))
                 {
                     // Extension did not change. Typical behaviour for a html -> html filter.
-                    string pe = FileUtils.GetPenultimateExtension(file.WorkingFilename);
+                    string pe = FileUtils.GetPenultimateExtension(file.WorkingFileName);
                     if (file.DefaultConfiguration.ExtensionMappings.ContainsKey(pe))
                     {
                         // Just strip this current extension, the next extension will then be used
                         // the next time around the loop. Example: "Foo.md.html" becomes "Foo.md".
-                        file.WorkingFilename = Path.GetFileNameWithoutExtension(file.WorkingFilename);
+                        file.WorkingFileName = Path.GetFileNameWithoutExtension(file.WorkingFileName);
                     }
                     else
                     {
@@ -333,7 +333,7 @@ namespace Lithogen.Engine.Implementations
             }
 
             // Replace the special marker PATHTOROOT(~) with a relative path.
-            file.Contents = Rebaser.ReplaceRootsInFile(file.Filename, file.Contents);
+            file.Contents = Rebaser.ReplaceRootsInFile(file.FileName, file.Contents);
         }
 
         void LogException(Payload payload, string leader)

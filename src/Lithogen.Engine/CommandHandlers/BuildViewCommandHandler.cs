@@ -17,10 +17,10 @@ namespace Lithogen.Engine.CommandHandlers
         public void Handle(BuildViewCommand command)
         {
             command.ThrowIfNull("command");
-            if (!File.Exists(command.Filename))
+            if (!File.Exists(command.FileName))
                 return;
 
-            ViewPipeline.ProcessFile(command.Filename);
+            ViewPipeline.ProcessFile(command.FileName);
         }
     }
 }

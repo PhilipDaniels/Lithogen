@@ -73,24 +73,24 @@ namespace Lithogen.Engine.Implementations
         }
 
         /// <summary>
-        /// Retrieves a file. Will throw if the <paramref name="filename"/> is not in the cache.
+        /// Retrieves a file. Will throw if the <paramref name="fileName"/> is not in the cache.
         /// The file must be under the cacheDirectory.
         /// </summary>
-        /// <param name="filename">File to retrieve.</param>
+        /// <param name="fileName">File to retrieve.</param>
         /// <returns>Text file object.</returns>
-        public ITextFile GetFile(string filename)
+        public ITextFile GetFile(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
-            if (BadFiles.Contains(filename))
-                throw new ArgumentException("The file " + filename + " is not a text file.");
-            if (!filename.StartsWith(Directory, StringComparison.InvariantCultureIgnoreCase))
-                throw new ArgumentException("The file " + filename + " is not within the cache directory of " + Directory);
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
+            if (BadFiles.Contains(fileName))
+                throw new ArgumentException("The file " + fileName + " is not a text file.");
+            if (!fileName.StartsWith(Directory, StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("The file " + fileName + " is not within the cache directory of " + Directory);
 
             ITextFile file;
-            if (Cache.TryGetValue(filename, out file))
+            if (Cache.TryGetValue(fileName, out file))
                 return file;
             else
-                throw new ArgumentException("The file " + filename + " is not in the cache.");
+                throw new ArgumentException("The file " + fileName + " is not in the cache.");
         }
 
 

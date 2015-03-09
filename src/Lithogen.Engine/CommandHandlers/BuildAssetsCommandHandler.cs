@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Lithogen.Core;
 using Lithogen.Core.Commands;
 using Lithogen.Core.Interfaces;
@@ -25,6 +26,7 @@ namespace Lithogen.Engine.CommandHandlers
 
             string args = String.Format
                 (
+                CultureInfo.InvariantCulture,
                 @"bundler.js #outputFolder:{0} #baseFolder:{1}",
                 command.WebsiteTargetDirectory, command.ProjectDirectory
                 );

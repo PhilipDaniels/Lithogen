@@ -1,7 +1,7 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using System;
+﻿using System;
 using System.IO;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations
 {
@@ -25,40 +25,40 @@ namespace Lithogen.Engine.Implementations
         /// <summary>
         /// Writes a text file to the output directory, rebasing it first.
         /// </summary>
-        /// <param name="destinationFilename">Name of the file (within the Views folder after processing) to write.</param>
+        /// <param name="destinationFileName">Name of the file (within the Views folder after processing) to write.</param>
         /// <param name="contents">Contents of the file.</param>
-        public virtual void WriteFile(string destinationFilename, string contents)
+        public virtual void WriteFile(string destinationFileName, string contents)
         {
-            destinationFilename.ThrowIfNullOrWhiteSpace("filename");
+            destinationFileName.ThrowIfNullOrWhiteSpace("destinationFileName");
             contents.ThrowIfNull("contents");
 
-            destinationFilename = Rebaser.RebaseFileNameIntoOutputDirectory(destinationFilename);
-            CheckDestinationFilename(destinationFilename);
-            FileUtils.EnsureParentDirectory(destinationFilename);
-            FileUtils.WriteFileWithUtf8Preamble(destinationFilename, contents);
-            TheLogger.LogVerbose(LOG_PREFIX + "Wrote {0} characters to {1}", contents.Length, destinationFilename);
+            destinationFileName = Rebaser.RebaseFileNameIntoOutputDirectory(destinationFileName);
+            CheckDestinationFilename(destinationFileName);
+            FileUtils.EnsureParentDirectory(destinationFileName);
+            FileUtils.WriteFileWithUtf8Preamble(destinationFileName, contents);
+            TheLogger.LogVerbose(LOG_PREFIX + "Wrote {0} characters to {1}", contents.Length, destinationFileName);
         }
 
         /// <summary>
         /// Copies a file from the source to the output directory, rebasing it in the process.
         /// </summary>
-        /// <param name="sourceFilename">Source filename.</param>
-        public virtual void CopyFile(string sourceFilename)
+        /// <param name="sourceFileName">Source filename.</param>
+        public virtual void CopyFile(string sourceFileName)
         {
-            sourceFilename.ThrowIfFileDoesNotExist("sourceFilename");
+            sourceFileName.ThrowIfFileDoesNotExist("sourceFileName");
 
-            string destinationFilename = Rebaser.RebaseFileNameIntoOutputDirectory(sourceFilename);
-            CheckDestinationFilename(destinationFilename);
-            FileUtils.EnsureParentDirectory(destinationFilename);
-            File.Copy(sourceFilename, destinationFilename, true);
-            TheLogger.LogVerbose(LOG_PREFIX + "Copied {0} to {1}", sourceFilename, destinationFilename);
+            string destinationFileName = Rebaser.RebaseFileNameIntoOutputDirectory(sourceFileName);
+            CheckDestinationFilename(destinationFileName);
+            FileUtils.EnsureParentDirectory(destinationFileName);
+            File.Copy(sourceFileName, destinationFileName, true);
+            TheLogger.LogVerbose(LOG_PREFIX + "Copied {0} to {1}", sourceFileName, destinationFileName);
         }
 
-        void CheckDestinationFilename(string destinationFilename)
+        void CheckDestinationFilename(string destinationFileName)
         {
             // Sanity check: we must always be writing into the output directory.
-            if (!destinationFilename.StartsWith(TheSettings.LithogenWebsiteDirectory, System.StringComparison.InvariantCultureIgnoreCase))
-                throw new InvalidOperationException("Attempt to write to a file that is not in the output directory: " + destinationFilename);
+            if (!destinationFileName.StartsWith(TheSettings.LithogenWebsiteDirectory, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Attempt to write to a file that is not in the output directory: " + destinationFileName);
         }
     }
 }

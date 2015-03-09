@@ -2,11 +2,11 @@
 
 namespace Lithogen.Core.Commands
 {
-    [DebuggerDisplay("BuildImage: {Filename}")]
+    [DebuggerDisplay("BuildImage: {FileName}")]
     public class BuildImageCommand : FileCommand
     {
-        public BuildImageCommand(string filename)
-            : base(filename)
+        public BuildImageCommand(string fileName)
+            : base(fileName)
         {
         }
     }

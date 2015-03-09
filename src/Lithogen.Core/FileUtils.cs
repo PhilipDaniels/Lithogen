@@ -52,13 +52,13 @@ namespace Lithogen.Core
         /// Creates the parent directory of a file if it does not exist (and returns true).
         /// If the directory already exists, returns false.
         /// </summary>
-        /// <param name="filename">The filename whose parent directory is to be created.</param>
+        /// <param name="fileName">The filename whose parent directory is to be created.</param>
         /// <returns>True if the directory was created, false if it already existed.</returns>
-        public static bool EnsureParentDirectory(string filename)
+        public static bool EnsureParentDirectory(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("filename");
 
-            string parentDir = Path.GetDirectoryName(filename);
+            string parentDir = Path.GetDirectoryName(fileName);
             return FileUtils.EnsureDirectory(parentDir);
         }
 
@@ -66,12 +66,12 @@ namespace Lithogen.Core
         /// Returns the penultimate extension of a file. For example, Foo.md.html returns md,
         /// and Foo.html returns Foo.
         /// </summary>
-        /// <param name="filename">The filename.</param>
+        /// <param name="fileName">The filename.</param>
         /// <returns>The penultimate extension.</returns>
-        public static string GetPenultimateExtension(string filename)
+        public static string GetPenultimateExtension(string fileName)
         {
-            filename = Path.GetFileNameWithoutExtension(filename);
-            return Path.GetExtension(filename);
+            fileName = Path.GetFileNameWithoutExtension(fileName);
+            return Path.GetExtension(fileName);
         }
 
         /// <summary>
@@ -101,13 +101,13 @@ namespace Lithogen.Core
         /// Writes text to a file, ensuring that the file is UTF-8 and includes
         /// the preamble. The file will be overwritten if it already exists.
         /// </summary>
-        /// <param name="filename">The filename to write to.</param>
+        /// <param name="fileName">The filename to write to.</param>
         /// <param name="text">The text to write.</param>
-        public static void WriteFileWithUtf8Preamble(string filename, string text)
+        public static void WriteFileWithUtf8Preamble(string fileName, string text)
         {
             var enc = new UTF8Encoding(true);
 
-            using (var fs = new FileStream(filename, FileMode.Create))
+            using (var fs = new FileStream(fileName, FileMode.Create))
             using (var sw = new StreamWriter(fs, enc))
             {
                 sw.Write(text);
@@ -118,12 +118,12 @@ namespace Lithogen.Core
         /// Extracts a "clean" extension from a filename. By default, Path.GetExtension
         /// returns extensions with leading "." characters. This method removes them.
         /// </summary>
-        /// <param name="filename">Filename to get extension of.</param>
+        /// <param name="fileName">Filename to get extension of.</param>
         /// <returns>Cleaned extension.</returns>
-        public static string GetCleanExtension(string filename)
+        public static string GetCleanExtension(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
-            string extension = CleanExtension(Path.GetExtension(filename));
+            fileName.ThrowIfNullOrWhiteSpace("filename");
+            string extension = CleanExtension(Path.GetExtension(fileName));
             return extension;
         }
 

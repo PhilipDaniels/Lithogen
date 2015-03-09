@@ -1,5 +1,4 @@
-﻿using Lithogen.Core;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Lithogen.Core.Commands
 {
@@ -8,7 +7,7 @@ namespace Lithogen.Core.Commands
     {
         public string Directory { get; private set; }
 
-        public DirectoryCommand(string directory)
+        protected DirectoryCommand(string directory)
         {
             Directory = directory.ThrowIfNullOrWhiteSpace("directory");
         }

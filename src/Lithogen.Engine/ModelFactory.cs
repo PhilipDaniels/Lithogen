@@ -1,8 +1,7 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lithogen.Core;
 
 namespace Lithogen.Engine
 {
@@ -14,11 +13,8 @@ namespace Lithogen.Engine
     /// </summary>
     public class ModelFactory : IModelFactory
     {
-        readonly ILogger TheLogger;
-
-        public ModelFactory(ILogger logger)
+        public ModelFactory()
         {
-            TheLogger = logger.ThrowIfNull("logger");
             LocatedModelTypes = new Dictionary<string, Type>();
         }
 

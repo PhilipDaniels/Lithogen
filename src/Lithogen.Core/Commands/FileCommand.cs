@@ -1,16 +1,15 @@
-﻿using Lithogen.Core;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Lithogen.Core.Commands
 {
-    [DebuggerDisplay("{Filename}")]
+    [DebuggerDisplay("{FileName}")]
     public abstract class FileCommand : ICommand
     {
-        public string Filename { get; private set; }
+        public string FileName { get; private set; }
 
-        public FileCommand(string filename)
+        protected FileCommand(string fileName)
         {
-            Filename = filename.ThrowIfNullOrWhiteSpace("filename");
+            FileName = fileName.ThrowIfNullOrWhiteSpace("fileName");
         }
     }
 }

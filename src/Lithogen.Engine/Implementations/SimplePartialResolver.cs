@@ -25,13 +25,13 @@ namespace Lithogen.Engine.Implementations
 
             // Try for an exact match.
             foreach (var file in fromFiles)
-                if (file.Filename.Equals(partialName, StringComparison.InvariantCultureIgnoreCase))
+                if (file.FileName.Equals(partialName, StringComparison.OrdinalIgnoreCase))
                     return file;
 
             // Try for a partial match.
             foreach (var file in fromFiles)
             {
-                if (file.Filename.EndsWith(partialName, StringComparison.InvariantCultureIgnoreCase))
+                if (file.FileName.EndsWith(partialName, StringComparison.OrdinalIgnoreCase))
                     return file;
             }
 

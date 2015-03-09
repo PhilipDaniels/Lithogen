@@ -29,7 +29,7 @@ namespace Lithogen.Engine.Implementations
 
         void InjectSideBySide(IPipelineFile file)
         {
-            foreach (var jsonFile in SideBySide.GetSideBySideFiles(file.Filename, "json"))
+            foreach (var jsonFile in SideBySide.GetSideBySideFiles(file.FileName, "json"))
             {
                 string fileContents = File.ReadAllText(jsonFile);
                 MergeJson(file, fileContents);
@@ -37,7 +37,7 @@ namespace Lithogen.Engine.Implementations
             }
         }
 
-        void InjectFrontMatter(IPipelineFile file)
+        static void InjectFrontMatter(IPipelineFile file)
         {
             string frontMatter = ModelInjectorUtilities.StripFrontMatter(file, "###");
             if (String.IsNullOrWhiteSpace(frontMatter))
@@ -46,7 +46,7 @@ namespace Lithogen.Engine.Implementations
             MergeJson(file, frontMatter);
         }
 
-        void MergeJson(IPipelineFile file, string jsonString)
+        static void MergeJson(IPipelineFile file, string jsonString)
         {
             var jsonExpando = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(jsonString);
             file.Data.Merge(jsonExpando);

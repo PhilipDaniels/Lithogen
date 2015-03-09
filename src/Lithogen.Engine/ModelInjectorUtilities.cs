@@ -1,4 +1,5 @@
-﻿using Lithogen.Core;
+﻿using System;
+using Lithogen.Core;
 
 namespace Lithogen.Engine
 {
@@ -14,12 +15,15 @@ namespace Lithogen.Engine
         /// <param name="file">The file to strip the front matter from.</param>
         /// <param name="marker">The marker used to delimit the front matter, for example "---" for Yaml.</param>
         /// <returns>The front matter string, or null if there is none.</returns>
-        public static string StripFrontMatter(IPipelineFile file, string marker)
+        public static string StripFrontMatter(ITextFile file, string marker)
         {
+            file.ThrowIfNull("file");
+            marker.ThrowIfNullOrEmpty("marker");
+
             string mm = GetMatchingMarker(file.Contents, marker);
             if (mm == null)
                 return null;
-            int indexOfClosingMarker = file.Contents.IndexOf(mm, mm.Length);
+            int indexOfClosingMarker = file.Contents.IndexOf(mm, mm.Length, StringComparison.OrdinalIgnoreCase);
             if (indexOfClosingMarker == 0)
                 return null;
 
@@ -35,11 +39,11 @@ namespace Lithogen.Engine
         /// </summary>
         static string GetMatchingMarker(string contents, string marker)
         {
-            if (contents.StartsWith(marker + "\r\n"))
+            if (contents.StartsWith(marker + "\r\n", StringComparison.OrdinalIgnoreCase))
                 return marker + "\r\n";
-            else if (contents.StartsWith(marker + "\r"))
+            else if (contents.StartsWith(marker + "\r", StringComparison.OrdinalIgnoreCase))
                 return marker + "\r";
-            else if (contents.StartsWith(marker + "\n"))
+            else if (contents.StartsWith(marker + "\n", StringComparison.OrdinalIgnoreCase))
                 return marker + "\n";
             else
                 return null;

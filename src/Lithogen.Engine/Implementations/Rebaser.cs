@@ -8,7 +8,7 @@ namespace Lithogen.Engine.Implementations
 {
     public class Rebaser : IRebaser
     {
-        public static string PATHTOROOT = "PATHTOROOT(~)";
+        public const string PATHTOROOT = "PATHTOROOT(~)";
 
         readonly ISettings TheSettings;
 
@@ -22,24 +22,24 @@ namespace Lithogen.Engine.Implementations
         /// in the source directory, determine what the corresponding file in the output directory
         /// (LithogenWebsiteDirectory) will be.
         /// </summary>
-        /// <param name="filename">The filename to rebase.</param>
+        /// <param name="fileName">The filename to rebase.</param>
         /// <returns>A corresponding filename under the LithogenWebsiteDirectory.</returns>
-        public string RebaseFileNameIntoOutputDirectory(string filename)
+        public string RebaseFileNameIntoOutputDirectory(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
 
-            if (filename.StartsWith(TheSettings.LithogenWebsiteDirectory, StringComparison.InvariantCultureIgnoreCase))
-                return filename;
+            if (fileName.StartsWith(TheSettings.LithogenWebsiteDirectory, StringComparison.OrdinalIgnoreCase))
+                return fileName;
 
             string subPath;
-            if (filename.StartsWith(TheSettings.ViewsDirectory, StringComparison.InvariantCultureIgnoreCase))
+            if (fileName.StartsWith(TheSettings.ViewsDirectory, StringComparison.OrdinalIgnoreCase))
             {
                 // Files in the view folder get moved up a level.
-                subPath = filename.Replace(TheSettings.ViewsDirectory, "", StringComparison.InvariantCultureIgnoreCase);
+                subPath = fileName.Replace(TheSettings.ViewsDirectory, "", StringComparison.OrdinalIgnoreCase);
             }
             else
             {
-                subPath = filename.Replace(TheSettings.ProjectDirectory, "", StringComparison.InvariantCultureIgnoreCase);
+                subPath = fileName.Replace(TheSettings.ProjectDirectory, "", StringComparison.OrdinalIgnoreCase);
             }
 
             subPath = subPath.TrimStart(new char[] { '\\', '/' });
@@ -49,21 +49,21 @@ namespace Lithogen.Engine.Implementations
         }
 
         /// <summary>
-        /// For a particular <paramref name="filename"/>, which must be under the project directory
+        /// For a particular <paramref name="fileName"/>, which must be under the project directory
         /// in a known directory, determine the path to the root of the website. This will either
         /// be blank or a set of "../" sequences sufficient to get up to the root.
         /// </summary>
-        /// <param name="filename">The filename.</param>
+        /// <param name="fileName">The filename.</param>
         /// <returns>Path to the root of the website.</returns>
-        public string GetPathToRoot(string filename)
+        public string GetPathToRoot(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
 
-            if (!FileIsInKnownDirectory(filename))
-                throw new ArgumentException("The file is not in a known directory: " + filename, "containingFilename");
+            if (!FileIsInKnownDirectory(fileName))
+                throw new ArgumentException("The file is not in a known directory: " + fileName, "fileName");
 
             int numDirs = 0;
-            string f = Path.GetDirectoryName(filename);
+            string f = Path.GetDirectoryName(fileName);
             while (!f.Equals(TheSettings.ProjectDirectory, StringComparison.OrdinalIgnoreCase))
             {
                 numDirs++;
@@ -71,7 +71,7 @@ namespace Lithogen.Engine.Implementations
             }
 
             // Files in the view folder get moved up a level.
-            if (filename.StartsWith(TheSettings.ViewsDirectory, StringComparison.OrdinalIgnoreCase))
+            if (fileName.StartsWith(TheSettings.ViewsDirectory, StringComparison.OrdinalIgnoreCase))
                 numDirs--;
 
             if (numDirs < 0)
@@ -91,18 +91,18 @@ namespace Lithogen.Engine.Implementations
         }
 
         /// <summary>
-        /// Search for the PATHTOROOT(~) symbol in a the <paramref name="contents"/> of a <paramref name="filename"/>
+        /// Search for the PATHTOROOT(~) symbol in a the <paramref name="contents"/> of a <paramref name="fileName"/>
         /// and replace it with the appropriate path from <code>GetPathToRoot().</code>
         /// </summary>
-        /// <param name="filename">The filename that holds the contents.</param>
+        /// <param name="fileName">The filename that holds the contents.</param>
         /// <param name="contents">The contents.</param>
         /// <returns>The contents with the PATHTOROOT(~) markers replaced.</returns>
-        public string ReplaceRootsInFile(string filename, string contents)
+        public string ReplaceRootsInFile(string fileName, string contents)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("filename");
             contents.ThrowIfNull("contents");
 
-            string rootPath = GetPathToRoot(filename);
+            string rootPath = GetPathToRoot(fileName);
             contents = contents.Replace(PATHTOROOT, rootPath);
             return contents;
         }

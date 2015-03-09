@@ -20,21 +20,21 @@ namespace Lithogen.Engine.CommandLine
         /// Given a filename, work out where in the project structure it lives
         /// and determine its <code>FileClass</code>.
         /// </summary>
-        /// <param name="filename">Filename.</param>
+        /// <param name="fileName">Filename.</param>
         /// <returns>The FileClass of the filename.</returns>
-        public FileClass Classify(string filename)
+        public FileClass Classify(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
 
-            if (filename.StartsWith(TheSettings.ContentDirectory, StringComparison.InvariantCultureIgnoreCase))
+            if (fileName.StartsWith(TheSettings.ContentDirectory, StringComparison.OrdinalIgnoreCase))
                 return FileClass.Content;
-            else if (filename.StartsWith(TheSettings.ImagesDirectory, StringComparison.InvariantCultureIgnoreCase))
+            else if (fileName.StartsWith(TheSettings.ImagesDirectory, StringComparison.OrdinalIgnoreCase))
                 return FileClass.Image;
-            else if (filename.StartsWith(TheSettings.ScriptsDirectory, StringComparison.InvariantCultureIgnoreCase))
+            else if (fileName.StartsWith(TheSettings.ScriptsDirectory, StringComparison.OrdinalIgnoreCase))
                 return FileClass.Script;
-            else if (filename.StartsWith(TheSettings.PartialsDirectory, StringComparison.InvariantCultureIgnoreCase))
+            else if (fileName.StartsWith(TheSettings.PartialsDirectory, StringComparison.OrdinalIgnoreCase))
                 return FileClass.Partial;
-            else if (filename.StartsWith(TheSettings.ViewsDirectory, StringComparison.InvariantCultureIgnoreCase))
+            else if (fileName.StartsWith(TheSettings.ViewsDirectory, StringComparison.OrdinalIgnoreCase))
                 return FileClass.View;
             else
                 return FileClass.Unknown;

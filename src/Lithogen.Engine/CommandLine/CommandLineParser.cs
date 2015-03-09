@@ -46,7 +46,9 @@ namespace Lithogen.Engine.CommandLine
                     return String.Join(" ", OriginalArgs);
             }
         }
-        
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes",
+            Justification="Method must be bullet proof")]
         public ICommandLineArgs Parse(bool inServerMode, LoggingLevel currentLoggingLevel)
         {
             Cla = new CommandLineArgs();

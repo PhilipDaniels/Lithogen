@@ -30,7 +30,7 @@ namespace Lithogen.Engine.Implementations
 
         void InjectSideBySide(IPipelineFile file)
         {
-            foreach (var hjsonFile in SideBySide.GetSideBySideFiles(file.Filename, "hjson"))
+            foreach (var hjsonFile in SideBySide.GetSideBySideFiles(file.FileName, "hjson"))
             {
                 string fileContents = File.ReadAllText(hjsonFile);
                 MergeHJson(file, fileContents);
@@ -38,7 +38,7 @@ namespace Lithogen.Engine.Implementations
             }
         }
 
-        void InjectFrontMatter(IPipelineFile file)
+        static void InjectFrontMatter(IPipelineFile file)
         {
             string frontMatter = ModelInjectorUtilities.StripFrontMatter(file, "===");
             if (String.IsNullOrWhiteSpace(frontMatter))
@@ -47,7 +47,7 @@ namespace Lithogen.Engine.Implementations
             MergeHJson(file, frontMatter);
         }
 
-        void MergeHJson(IPipelineFile file, string hjsonString)
+        static void MergeHJson(IPipelineFile file, string hjsonString)
         {
             // First convert HJson to JSON.
             string jsonString = null;

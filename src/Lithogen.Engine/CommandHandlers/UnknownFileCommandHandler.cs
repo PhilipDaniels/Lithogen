@@ -18,7 +18,7 @@ namespace Lithogen.Engine.CommandHandlers
         {
             command.ThrowIfNull("command");
 
-            TheLogger.LogMessage(LOG_PREFIX + "The file {0} is unknown to Lithogen, ignoring.", command.Filename);
+            TheLogger.LogMessage(LOG_PREFIX + "The file {0} is unknown to Lithogen, ignoring.", command.FileName);
         }
     }
 }

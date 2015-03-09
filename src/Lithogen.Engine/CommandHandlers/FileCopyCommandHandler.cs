@@ -21,13 +21,13 @@ namespace Lithogen.Engine.CommandHandlers
         public void Handle(T command)
         {
             command.ThrowIfNull("command");
-            if (!File.Exists(command.Filename))
+            if (!File.Exists(command.FileName))
                 return;
 
-            string destFileName = Rebaser.RebaseFileNameIntoOutputDirectory(command.Filename);
+            string destFileName = Rebaser.RebaseFileNameIntoOutputDirectory(command.FileName);
             FileUtils.EnsureParentDirectory(destFileName);
-            File.Copy(command.Filename, destFileName, true);
-            TheLogger.LogMessage(LOG_PREFIX + "Copied {0} to {1}", command.Filename, destFileName);
+            File.Copy(command.FileName, destFileName, true);
+            TheLogger.LogMessage(LOG_PREFIX + "Copied {0} to {1}", command.FileName, destFileName);
         }
     }
 }

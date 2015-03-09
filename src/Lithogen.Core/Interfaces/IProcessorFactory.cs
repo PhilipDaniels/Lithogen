@@ -1,8 +1,8 @@
-﻿using Lithogen.Core.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Lithogen.Core.Interfaces;
 
-namespace Lithogen.Engine
+namespace Lithogen.Core
 {
     /// <summary>
     /// An instance of this class is required by the default ViewDirectoryProcessor

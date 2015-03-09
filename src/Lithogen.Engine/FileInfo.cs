@@ -26,9 +26,9 @@ namespace Lithogen.Engine
         public DateTime LastWriteTime { get; private set; }
         public DateTime LastWriteTimeUtc { get; private set; }
 
-        public FileInfo(string filename)
+        public FileInfo(string fileName)
         {
-            var fi = new System.IO.FileInfo(filename);
+            var fi = new System.IO.FileInfo(fileName);
 
             FullName = fi.FullName;
             DirectoryName = fi.DirectoryName;

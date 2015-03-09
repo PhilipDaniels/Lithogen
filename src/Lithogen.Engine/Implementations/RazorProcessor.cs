@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Lithogen.Engine.Implementations
 {
@@ -46,60 +47,62 @@ namespace Lithogen.Engine.Implementations
                 file.ThrowIfNull("file");
                 file.Contents.ThrowIfNull("file.Contents");
 
-                TheLogger.LogVerbose(LOG_PREFIX + "Compiling {0}", file.Filename);
+                TheLogger.LogVerbose(LOG_PREFIX + "Compiling {0}", file.FileName);
 
                 // Create a new instance of the RazorEngine.
                 var config = new TemplateServiceConfiguration();
-                config.Language = GetLanguage(file.Filename);
+                config.Language = GetLanguage(file.FileName);
                 config.TemplateManager = new RazorTemplateManager(PartialCache, file);
-                var razorEngineService = RazorEngineService.Create(config);
-
-                // Tell it about all the partials.
-                foreach (var p in PartialCache.Files.Where(p => IsRazorFile(p.Filename)))
-                    razorEngineService.AddTemplate(p.Filename, p.Contents);
-
-                dynamic vb = MakeViewBag(file);
-
-                // Inject the default layout if there is not one in the file.
-                string layoutName = GetLayoutNameFromFile(file.Contents);
-                if (layoutName == null && file.Layout != null)
-                    file.Contents = String.Format("@{{ Layout = @\"{0}\"; }}{1}{2}", file.Layout, Environment.NewLine, file.Contents);
-
-                // Inject the default model if there is not one in the file.
-                string modelTypeName = GetModelTypeNameFromFile(file.Contents);
-                if (modelTypeName == null && file.ModelName != null)
+                using (var razorEngineService = RazorEngineService.Create(config))
                 {
-                    file.Contents = String.Format("@model = {0}{1}{2}", file.ModelName, Environment.NewLine, file.Contents);
-                    modelTypeName = file.ModelName;
-                }
-                
-                if (modelTypeName == null)
-                {
-                    // There's no model - simple compile.
-                    file.Contents = razorEngineService.RunCompile(file.Contents, file.Filename, null, null, (DynamicViewBag)vb);
-                }
-                else
-                {
-                    Type modelType = ModelFactory.GetModelType(modelTypeName);
-                    if (modelType != null)
+
+                    // Tell it about all the partials.
+                    foreach (var p in PartialCache.Files.Where(p => IsRazorFile(p.FileName)))
+                        razorEngineService.AddTemplate(p.FileName, p.Contents);
+
+                    dynamic vb = MakeViewBag(file);
+
+                    // Inject the default layout if there is not one in the file.
+                    string layoutName = GetLayoutNameFromFile(file.Contents);
+                    if (layoutName == null && file.Layout != null)
+                        file.Contents = String.Format(CultureInfo.InvariantCulture, "@{{ Layout = @\"{0}\"; }}{1}{2}", file.Layout, Environment.NewLine, file.Contents);
+
+                    // Inject the default model if there is not one in the file.
+                    string modelTypeName = GetModelTypeNameFromFile(file.Contents);
+                    if (modelTypeName == null && file.ModelName != null)
                     {
-                        object model = ModelFactory.CreateModelInstance(modelType);
-                        //TheLogger.LogVerbose(LOG_PREFIX + "Retrieved instance of model {0}", modelTypeName);
-                        file.Contents = razorEngineService.RunCompile(file.Contents, file.Filename, modelType, model, (DynamicViewBag)vb);
+                        file.Contents = String.Format(CultureInfo.InvariantCulture, "@model = {0}{1}{2}", file.ModelName, Environment.NewLine, file.Contents);
+                        modelTypeName = file.ModelName;
+                    }
+
+                    if (modelTypeName == null)
+                    {
+                        // There's no model - simple compile.
+                        file.Contents = razorEngineService.RunCompile(file.Contents, file.FileName, null, null, (DynamicViewBag)vb);
                     }
                     else
                     {
-                        TheLogger.LogError(LOG_PREFIX + "The model {0} could not be found in the model search directories.", modelTypeName);
-                        return;
+                        Type modelType = ModelFactory.GetModelType(modelTypeName);
+                        if (modelType != null)
+                        {
+                            object model = ModelFactory.CreateModelInstance(modelType);
+                            //TheLogger.LogVerbose(LOG_PREFIX + "Retrieved instance of model {0}", modelTypeName);
+                            file.Contents = razorEngineService.RunCompile(file.Contents, file.FileName, modelType, model, (DynamicViewBag)vb);
+                        }
+                        else
+                        {
+                            TheLogger.LogError(LOG_PREFIX + "The model {0} could not be found in the model search directories.", modelTypeName);
+                            return;
+                        }
                     }
-                }
 
-                string newExtension = file.ExtOut ?? "html";
-                file.WorkingFilename = Path.ChangeExtension(file.WorkingFilename, newExtension);
+                    string newExtension = file.ExtOut ?? "html";
+                    file.WorkingFileName = Path.ChangeExtension(file.WorkingFileName, newExtension);
+                }
             }
             catch
             {
-                TheLogger.LogError(LOG_PREFIX + "Could not compile {0}", file.Filename);
+                TheLogger.LogError(LOG_PREFIX + "Could not compile {0}", file.FileName);
                 throw;
             }
         }
@@ -109,7 +112,7 @@ namespace Lithogen.Engine.Implementations
         /// </summary>
         /// <param name="contents">The contents to look in.</param>
         /// <returns>The typename, e.g. My.Namespace.Type.</returns>
-        string GetModelTypeNameFromFile(string contents)
+        static string GetModelTypeNameFromFile(string contents)
         {
             string pattern = @"^\s*\@model\s+(?<typename>[^\s]*)\s*?$";
             var match = Regex.Match(contents, pattern, RegexOptions.Multiline | RegexOptions.IgnoreCase);
@@ -124,7 +127,7 @@ namespace Lithogen.Engine.Implementations
         /// </summary>
         /// <param name="contents">The contents to look in.</param>
         /// <returns>The layout name, e.g. _Layout.cshtml</returns>
-        string GetLayoutNameFromFile(string contents)
+        static string GetLayoutNameFromFile(string contents)
         {
             string pattern = @".*\@{.*\s*Layout\s*=\s*\@?""(?<layoutname>.*?)"";";
 
@@ -135,21 +138,21 @@ namespace Lithogen.Engine.Implementations
                 return null;
         }
 
-        RazorEngine.Language GetLanguage(string filename)
+        static RazorEngine.Language GetLanguage(string fileName)
         {
-            string ext = FileUtils.GetCleanExtension(filename).ToLowerInvariant();
-            if (ext == "cshtml")
+            string ext = FileUtils.GetCleanExtension(fileName).ToUpperInvariant();
+            if (ext == "CSHTML")
                 return RazorEngine.Language.CSharp;
-            else if (ext == "vbhtml")
+            else if (ext == "VBHTML")
                 return RazorEngine.Language.VisualBasic;
             else
                 throw new ArgumentException("Unknown Razor template language.");
         }
 
-        bool IsRazorFile(string filename)
+        static bool IsRazorFile(string fileName)
         {
-            string ext = FileUtils.GetCleanExtension(filename).ToLowerInvariant();
-            return ext == "cshtml" || ext == "vbhtml";
+            string ext = FileUtils.GetCleanExtension(fileName).ToUpperInvariant();
+            return ext == "CSHTML" || ext == "VBHTML";
         }
 
         dynamic MakeViewBag(IPipelineFile file)
@@ -197,12 +200,12 @@ namespace Lithogen.Engine.Implementations
                 // This gets called only to get the body of the view file.
                 if (key.TemplateType == ResolveType.Global)
                 {
-                    return new LoadedTemplateSource(File.Contents, File.Filename);
+                    return new LoadedTemplateSource(File.Contents, File.FileName);
                 }
                 else if (key.TemplateType == ResolveType.Layout || key.TemplateType == ResolveType.Include)
                 {
                     var partial = PartialCache.ResolvePartial(key.Name, null);
-                    return new LoadedTemplateSource(partial.Contents, partial.Filename);
+                    return new LoadedTemplateSource(partial.Contents, partial.FileName);
                 }
                 else
                 {

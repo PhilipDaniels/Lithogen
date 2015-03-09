@@ -11,8 +11,8 @@ namespace Lithogen.Core.Interfaces
         /// Given a filename, work out where in the project structure it lives
         /// and determine its <code>FileClass</code>.
         /// </summary>
-        /// <param name="filename">Filename.</param>
+        /// <param name="fileName">Filename.</param>
         /// <returns>The FileClass of the filename.</returns>
-        FileClass Classify(string filename);
+        FileClass Classify(string fileName);
     }
 }

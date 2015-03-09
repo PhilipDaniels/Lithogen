@@ -3,15 +3,15 @@ using System.Diagnostics;
 
 namespace Lithogen.Core
 {
-    [DebuggerDisplay("{NotificationType}, {Filename}")]
+    [DebuggerDisplay("{NotificationType}, {FileName}")]
     public class FileNotification : IEquatable<FileNotification>
     {
         public FileNotificationType NotificationType { get; private set; }
-        public string Filename { get; private set; }
+        public string FileName { get; private set; }
 
-        public FileNotification(FileNotificationType notificationType, string filename)
+        public FileNotification(FileNotificationType notificationType, string fileName)
         {
-            Filename = filename;
+            FileName = fileName;
             NotificationType = notificationType;
         }
 
@@ -19,7 +19,7 @@ namespace Lithogen.Core
         {
             return other != null && 
                    NotificationType == other.NotificationType &&
-                   Filename.Equals(other.Filename, StringComparison.InvariantCultureIgnoreCase);
+                   FileName.Equals(other.FileName, StringComparison.OrdinalIgnoreCase);
         }
 
         public override int GetHashCode()
@@ -28,7 +28,7 @@ namespace Lithogen.Core
             {
                 int hash = 17;
                 hash = hash * 23 + NotificationType.GetHashCode();
-                hash = hash * 23 + (Filename ?? "").ToLowerInvariant().GetHashCode();
+                hash = hash * 23 + (FileName ?? "").ToUpperInvariant().GetHashCode();
                 return hash;
             }
         }

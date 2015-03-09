@@ -9,7 +9,7 @@
         /// <summary>
         /// The filename.
         /// </summary>
-        string Filename { get; }
+        string FileName { get; }
 
         /// <summary>
         /// The contents of the file.

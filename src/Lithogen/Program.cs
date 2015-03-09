@@ -186,7 +186,7 @@ namespace Lithogen
             lock (WatcherPadlock)
             {
                 var filtered = from n in notifications
-                               where File.Exists(n.Filename)
+                               where File.Exists(n.FileName)
                                select n;
 
                 if (filtered.Any())

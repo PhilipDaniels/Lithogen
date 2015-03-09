@@ -31,7 +31,7 @@ namespace Lithogen.Engine
             Directory = directory.ThrowIfDirectoryDoesNotExist("directory");
             Watcher = new FileSystemWatcher();
             NotifiedEvents = new ConcurrentQueue<FileNotification>();
-            FilesToIgnore = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+            FilesToIgnore = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             DirectoriesToIgnore = new List<string>();
             Timer = new Timer(OnTimeout, null, TimerPeriodMillisecs, TimerPeriodMillisecs);
         }
@@ -71,7 +71,7 @@ namespace Lithogen.Engine
         bool ShouldIgnore(string filename)
         {
             return FilesToIgnore.Contains(filename) ||
-                   DirectoriesToIgnore.Any(d => filename.StartsWith(d, StringComparison.InvariantCultureIgnoreCase));
+                   DirectoriesToIgnore.Any(d => filename.StartsWith(d, StringComparison.OrdinalIgnoreCase));
         }
 
         void Watcher_Created(object sender, FileSystemEventArgs e)
@@ -124,7 +124,7 @@ namespace Lithogen.Engine
                 evt(this, notifications.Distinct());
         }
 
-        FileNotificationType ConvertWatcherType(WatcherChangeTypes type)
+        static FileNotificationType ConvertWatcherType(WatcherChangeTypes type)
         {
             switch (type)
             {

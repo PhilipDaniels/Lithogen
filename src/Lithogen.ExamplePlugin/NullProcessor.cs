@@ -20,7 +20,7 @@ namespace Lithogen.ExamplePlugin
         {
             file.ThrowIfNull("file");
 
-            TheLogger.LogMessage(LOG_PREFIX + "Doing absolutely nothing with {0}.", file.WorkingFilename);
+            TheLogger.LogMessage(LOG_PREFIX + "Doing absolutely nothing with {0}.", file.WorkingFileName);
         }
     }
 }

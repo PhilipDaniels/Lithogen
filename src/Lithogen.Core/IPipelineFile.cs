@@ -12,7 +12,7 @@ namespace Lithogen.Core
         /// The current working filename. Each step in the pipeline
         /// can transform this, for example Foo.cshtml -> Foo.html.
         /// </summary>
-        string WorkingFilename { get; set; }
+        string WorkingFileName { get; set; }
 
         /// <summary>
         /// Data automatically loaded by Lithogen using ModelInjectors.

@@ -2,11 +2,11 @@
 
 namespace Lithogen.Core.Commands
 {
-    [DebuggerDisplay("FileDelete: {Filename}")]
+    [DebuggerDisplay("FileDelete: {FileName}")]
     public class FileDeleteCommand : FileCommand
     {
-        public FileDeleteCommand(string filename)
-            : base(filename)
+        public FileDeleteCommand(string fileName)
+            : base(fileName)
         {
         }
     }

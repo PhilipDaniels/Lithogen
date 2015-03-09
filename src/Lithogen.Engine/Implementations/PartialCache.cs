@@ -8,7 +8,6 @@ namespace Lithogen.Engine.Implementations
 {
     public class PartialCache : IPartialCache
     {
-        readonly ILogger TheLogger;
         readonly ISettings TheSettings;
         readonly IPartialResolver Resolver;
         readonly ITextFileCache TextFileCache;
@@ -16,13 +15,11 @@ namespace Lithogen.Engine.Implementations
 
         public PartialCache
             (
-            ILogger logger,
             ISettings settings,
             IPartialResolver resolver,
             ITextFileCache textFileCache
             )
         {
-            TheLogger = logger.ThrowIfNull("logger");
             TheSettings = settings.ThrowIfNull("settings");
             Resolver = resolver.ThrowIfNull("resolver");
             TextFileCache = textFileCache.ThrowIfNull("textFileCache");

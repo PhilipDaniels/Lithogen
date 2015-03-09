@@ -2,7 +2,7 @@
 {
     public interface IViewPipeline
     {
-        void ProcessFile(string filename);
+        void ProcessFile(string fileName);
         void ProcessDirectory(string viewsDirectory);
     }
 }

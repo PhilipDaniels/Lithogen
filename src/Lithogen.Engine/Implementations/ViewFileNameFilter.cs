@@ -29,24 +29,24 @@ namespace Lithogen.Engine.Implementations
         /// Typically used to filter out junk like .gitignore or partials, which are dealt with separately
         /// by convention.
         /// </summary>
-        /// <param name="filename">The file to check.</param>
+        /// <param name="fileName">The file to check.</param>
         /// <returns>True if the file should be ignored, false otherwise.</returns>
-        public virtual bool ShouldIgnore(string filename)
+        public virtual bool ShouldIgnore(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
 
             // Ignore stuff in the ASP.Net MVC Shared directory. This is partials and layouts
             // which we deal with by loading them separately (so that layout resolution can occur).
-            if (filename.StartsWith(TheSettings.PartialsDirectory, StringComparison.InvariantCultureIgnoreCase))
+            if (fileName.StartsWith(TheSettings.PartialsDirectory, StringComparison.OrdinalIgnoreCase))
                 return true;
 
             // Ignore files starting with an underscore, includes things such as _ViewStart.cshtml.
-            string basename = Path.GetFileName(filename);
-            if (basename.StartsWith("_"))
+            string basename = Path.GetFileName(fileName);
+            if (basename.StartsWith("_", StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (basename.Equals(".gitignore", StringComparison.InvariantCultureIgnoreCase) ||
-                basename.Equals(".gitattributes", StringComparison.InvariantCultureIgnoreCase)
+            if (basename.Equals(".gitignore", StringComparison.OrdinalIgnoreCase) ||
+                basename.Equals(".gitattributes", StringComparison.OrdinalIgnoreCase)
                 )
                 return true;
 

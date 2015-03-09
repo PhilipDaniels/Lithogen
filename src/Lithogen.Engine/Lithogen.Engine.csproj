@@ -28,6 +28,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Handlebars, Version=1.0.5518.18931, Culture=neutral, processorArchitecture=MSIL">
@@ -89,7 +91,7 @@
     <Compile Include="CommandHandlers\FlushPartialCacheCommandHandler.cs" />
     <Compile Include="CommandHandlers\MessageCommandHandler.cs" />
     <Compile Include="CommandHandlers\NodeCommandHandler.cs" />
-    <Compile Include="CommandHandlers\NonExistentFileCommandHandler.cs" />
+    <Compile Include="CommandHandlers\NonexistentFileCommandHandler.cs" />
     <Compile Include="CommandHandlers\NpmCommandHandler.cs" />
     <Compile Include="CommandHandlers\UnknownFileCommandHandler.cs" />
     <Compile Include="IModelFactory.cs" />
@@ -136,7 +138,11 @@
   <ItemGroup>
     <EmbeddedResource Include="CommandLine\Lithogen.usage.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\Lithogen.Core\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

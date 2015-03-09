@@ -47,6 +47,8 @@ namespace Lithogen.Engine.Implementations
         /// <returns>New (or previously cached) object.</returns>
         public object CreateModelInstance(Type modelType)
         {
+            modelType.ThrowIfNull("modelType");
+
             object instance;
             if (CachedModelInstances.TryGetValue(modelType, out instance))
                 return instance;

@@ -1,36 +1,35 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using System;
+﻿using System;
+using System.Globalization;
 using System.IO;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations
 {
     public class Npm : INpm
     {
-        readonly ILogger Logger;
         readonly IProcessRunner ProcessRunner;
 
-        public Npm(ILogger logger, IProcessRunner processRunner)
+        public Npm(IProcessRunner processRunner)
         {
-            Logger = logger.ThrowIfNull("logger");
             ProcessRunner = processRunner.ThrowIfNull("processRunner");
         }
 
-        public bool InstallIsRequired(string packageJsonFilename)
+        public bool InstallIsRequired(string packageJsonFileName)
         {
-            packageJsonFilename.ThrowIfFileDoesNotExist("packageJsonFilename");
-            string lastRunFilename = LastRunFilename(packageJsonFilename);
+            packageJsonFileName.ThrowIfFileDoesNotExist("packageJsonFileName");
+            string lastRunFilename = LastRunFileName(packageJsonFileName);
             if (!File.Exists(lastRunFilename))
                 return true;
 
-            var dateJson = File.GetLastWriteTimeUtc(packageJsonFilename);
+            var dateJson = File.GetLastWriteTimeUtc(packageJsonFileName);
             var dateLastRun = File.GetLastWriteTimeUtc(lastRunFilename);
             return dateJson > dateLastRun;
         }
 
-        public void PerformInstall(string nodeExePath, string packageJsonFilename)
+        public void PerformInstall(string nodeExePath, string packageJsonFileName)
         {
-            packageJsonFilename.ThrowIfFileDoesNotExist("packageJsonFilename");
+            packageJsonFileName.ThrowIfFileDoesNotExist("packageJsonFileName");
             nodeExePath.ThrowIfFileDoesNotExist("nodeExePath");
 
             using (var p = ProcessRunner.MakeProcess(nodeExePath, @"node_modules\npm\bin\npm-cli.js install"))
@@ -38,14 +37,14 @@ namespace Lithogen.Engine.Implementations
                 ProcessRunner.Execute(p);
             }
 
-            string lastRunFilename = LastRunFilename(packageJsonFilename);
-            string msg = String.Format("Lithogen last run 'npm install' at the LastModifiedTime of this file.");
+            string lastRunFilename = LastRunFileName(packageJsonFileName);
+            string msg = String.Format(CultureInfo.InvariantCulture, "Lithogen last run 'npm install' at the LastModifiedTime of this file.");
             File.WriteAllText(lastRunFilename, msg);
         }
 
-        public string LastRunFilename(string packageJsonFilename)
+        public string LastRunFileName(string packageJsonFileName)
         {
-            return Path.ChangeExtension(packageJsonFilename, "lastrun");
+            return Path.ChangeExtension(packageJsonFileName, "lastrun");
         }
     }
 }

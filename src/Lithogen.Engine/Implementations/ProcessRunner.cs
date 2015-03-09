@@ -3,6 +3,7 @@ using Lithogen.Core.Interfaces;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Globalization;
 
 namespace Lithogen.Engine.Implementations
 {
@@ -43,7 +44,7 @@ namespace Lithogen.Engine.Implementations
             }
 
             string pathDir = Path.GetDirectoryName(exePath);
-            if (!workingDirectory.Equals(pathDir, StringComparison.InvariantCultureIgnoreCase))
+            if (!workingDirectory.Equals(pathDir, StringComparison.OrdinalIgnoreCase))
                 pathDir += ";" + workingDirectory;
 
             var p = new Process();
@@ -66,12 +67,14 @@ namespace Lithogen.Engine.Implementations
         /// <param name="process">Process to execute.</param>
         public void Execute(Process process)
         {
+            process.ThrowIfNull("process");
+
             process.OutputDataReceived += LogMultilineMessage;
             process.ErrorDataReceived += LogMultilineError;
             process.EnableRaisingEvents = true;
 
             TheLogger.LogMessage(LOG_PREFIX + "Working directory = " + process.StartInfo.WorkingDirectory);
-            string msg = String.Format("  Attempting to start {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments).Trim();
+            string msg = String.Format(CultureInfo.InvariantCulture, "  Attempting to start {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments).Trim();
             TheLogger.LogMessage(LOG_PREFIX + msg);
 
             process.Start();

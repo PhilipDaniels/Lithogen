@@ -17,7 +17,7 @@ namespace Lithogen.Engine
         /// The current working filename. Each step in the pipeline
         /// can transform this, for example Foo.cshtml -> Foo.html.
         /// </summary>
-        public string WorkingFilename { get; set; }
+        public string WorkingFileName { get; set; }
 
         /// <summary>
         /// Data automatically loaded by Lithogen using ModelInjectors.
@@ -51,11 +51,11 @@ namespace Lithogen.Engine
         /// Construct a new object. Reads the file from disk and sets
         /// <code>WorkingFilename</code> to be equal to <code>Filename</code>.
         /// </summary>
-        /// <param name="filename">The file to load.</param>
-        public PipelineFile(string filename)
-            : base(filename)
+        /// <param name="fileName">The file to load.</param>
+        public PipelineFile(string fileName)
+            : base(fileName)
         {
-            WorkingFilename = filename;
+            WorkingFileName = fileName;
             Data = new ExpandoObject();
             UserData = new ExpandoObject();
         }
@@ -111,7 +111,7 @@ namespace Lithogen.Engine
         {
             // Try from data.
             object value = (from kvp in (Data as IDictionary<string, object>)
-                            where kvp.Key.Equals(name, StringComparison.InvariantCultureIgnoreCase)
+                            where kvp.Key.Equals(name, StringComparison.OrdinalIgnoreCase)
                             select kvp.Value).SingleOrDefault();
 
             if (value != null)

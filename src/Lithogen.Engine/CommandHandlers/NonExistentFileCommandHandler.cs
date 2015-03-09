@@ -4,21 +4,21 @@ using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.CommandHandlers
 {
-    public class NonExistentFileCommandHandler : ICommandHandler<NonExistentFileCommand>
+    public class NonexistentFileCommandHandler : ICommandHandler<NonexistentFileCommand>
     {
-        const string LOG_PREFIX = "NonExistentFileCommandHandler: ";
+        const string LOG_PREFIX = "NonexistentFileCommandHandler: ";
         readonly ILogger TheLogger;
 
-        public NonExistentFileCommandHandler(ILogger logger)
+        public NonexistentFileCommandHandler(ILogger logger)
         {
             TheLogger = logger.ThrowIfNull("logger");
         }
 
-        public void Handle(NonExistentFileCommand command)
+        public void Handle(NonexistentFileCommand command)
         {
             command.ThrowIfNull("command");
 
-            TheLogger.LogMessage(LOG_PREFIX + "The file {0} does not exist, ignoring.", command.Filename);
+            TheLogger.LogMessage(LOG_PREFIX + "The file {0} does not exist, ignoring.", command.FileName);
         }
     }
 }

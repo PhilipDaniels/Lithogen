@@ -182,12 +182,12 @@ namespace Lithogen.Core
         /// Construct settings from XML that has been serialized into a file (typically Lithogen.xml,
         /// which is written by the task shim).
         /// </summary>
-        /// <param name="filename">The file to load.</param>
-        public static Settings LoadFromFile(string filename)
+        /// <param name="fileName">The file to load.</param>
+        public static Settings LoadFromFile(string fileName)
         {
-            filename.ThrowIfFileDoesNotExist("filename");
+            fileName.ThrowIfFileDoesNotExist("fileName");
 
-            using (var fs = new FileStream(filename, FileMode.Open))
+            using (var fs = new FileStream(fileName, FileMode.Open))
             {
                 var bf = new XmlSerializer(typeof(Settings));
                 var settings = (Settings)bf.Deserialize(fs);
@@ -227,16 +227,16 @@ namespace Lithogen.Core
         }
 
         /// <summary>
-        /// Writes this settings object in XML format to <paramref name="filename"/>.
+        /// Writes this settings object in XML format to <paramref name="fileName"/>.
         /// </summary>
-        /// <param name="filename">The file to write to.</param>
-        public void WriteXmlSettingsFile(string filename)
+        /// <param name="fileName">The file to write to.</param>
+        public void WriteXmlSettingsFile(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
 
-            FileUtils.EnsureDirectory(Path.GetDirectoryName(filename));
+            FileUtils.EnsureDirectory(Path.GetDirectoryName(fileName));
 
-            using (var fs = new FileStream(filename, FileMode.Create))
+            using (var fs = new FileStream(fileName, FileMode.Create))
             {
                 var serializer = new XmlSerializer(typeof(Settings));
                 serializer.Serialize(fs, this);
@@ -244,16 +244,16 @@ namespace Lithogen.Core
         }
 
         /// <summary>
-        /// Writes this settings object in JSON format to <paramref name="filename"/>.
+        /// Writes this settings object in JSON format to <paramref name="fileName"/>.
         /// </summary>
-        /// <param name="filename">The file to write to.</param>
-        public void WriteJsonSettingsFile(string filename)
+        /// <param name="fileName">The file to write to.</param>
+        public void WriteJsonSettingsFile(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
 
-            FileUtils.EnsureDirectory(Path.GetDirectoryName(filename));
+            FileUtils.EnsureDirectory(Path.GetDirectoryName(fileName));
             string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-            File.WriteAllText(filename, json, Encoding.UTF8);
+            File.WriteAllText(fileName, json, Encoding.UTF8);
         }
     }
 }

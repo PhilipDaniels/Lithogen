@@ -34,8 +34,8 @@ namespace Lithogen.Core.Interfaces
         /// Retrieves a file. May cause a cache load if the cache is empty.
         /// The file must be under the cacheDirectory.
         /// </summary>
-        /// <param name="filename">File to retrieve.</param>
+        /// <param name="fileName">File to retrieve.</param>
         /// <returns>Text file object.</returns>
-        ITextFile GetFile(string filename);
+        ITextFile GetFile(string fileName);
     }
 }

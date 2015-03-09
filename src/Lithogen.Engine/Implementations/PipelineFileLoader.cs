@@ -12,12 +12,12 @@ namespace Lithogen.Engine.Implementations
             ConfigurationResolver = configurationResolver.ThrowIfNull("configurationResolver");
         }
 
-        public IPipelineFile Load(string filename)
+        public IPipelineFile Load(string fileName)
         {
-            filename.ThrowIfNullOrWhiteSpace("filename");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
 
-            var pipelineFile = new PipelineFile(filename);
-            pipelineFile.DefaultConfiguration = ConfigurationResolver.GetConfiguration(filename);
+            var pipelineFile = new PipelineFile(fileName);
+            pipelineFile.DefaultConfiguration = ConfigurationResolver.GetConfiguration(fileName);
             return pipelineFile;
         }
     }

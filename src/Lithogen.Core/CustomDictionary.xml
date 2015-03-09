@@ -1,0 +1,29 @@
+﻿<Dictionary>
+  <Words>
+    <Unrecognized>
+      <Word></Word>
+    </Unrecognized>
+    <Recognized>
+      <Word>lithogen</Word>
+      <Word>enumerand</Word>
+      <Word>npm</Word>
+      <Word>rebaser</Word>
+      <Word>yaml</Word>
+      <Word>utils</Word>
+    </Recognized>
+    <Deprecated>
+      <Term PreferredAlternate=""></Term>
+    </Deprecated>
+    <Compound>
+      <Term CompoundAlternate="PreBuild">prebuild</Term>
+    </Compound>
+    <DiscreteExceptions>
+      <Term></Term>
+    </DiscreteExceptions>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <Acronym>DOP</Acronym>
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>

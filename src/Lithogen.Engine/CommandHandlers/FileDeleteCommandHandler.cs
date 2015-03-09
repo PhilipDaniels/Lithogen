@@ -20,9 +20,9 @@ namespace Lithogen.Engine.CommandHandlers
         public void Handle(FileDeleteCommand command)
         {
             command.ThrowIfNull("command");
-            command.Filename.ThrowIfNullOrWhiteSpace("command.Filename");
+            command.FileName.ThrowIfNullOrWhiteSpace("command.Filename");
 
-            string destFileName = Rebaser.RebaseFileNameIntoOutputDirectory(command.Filename);
+            string destFileName = Rebaser.RebaseFileNameIntoOutputDirectory(command.FileName);
             File.Delete(destFileName);
             TheLogger.LogMessage(LOG_PREFIX + "Deleted {0}", destFileName);
         }

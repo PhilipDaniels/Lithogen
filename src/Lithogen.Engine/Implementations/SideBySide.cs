@@ -1,8 +1,9 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations
 {
@@ -17,7 +18,7 @@ namespace Lithogen.Engine.Implementations
         /// Returns the default set of side-by-side extensions.
         /// These are used if you don't pass any in.
         /// </summary>
-        public IEnumerable<string> DefaultSbsExtensions
+        public IEnumerable<string> DefaultSideBySideExtensions
         {
             get
             {
@@ -29,16 +30,16 @@ namespace Lithogen.Engine.Implementations
         /// Retrieves a list of the side-by-side files that exist for a given file.
         /// List may be empty.
         /// </summary>
-        /// <param name="file">The file.</param>
-        /// <param name="extension">Expected extension, e.g. "yaml" or "json".</param>
+        /// <param name="fileName">The file.</param>
+        /// <param name="sideBySideExtension">Expected extension, e.g. "yaml" or "json".</param>
         /// <returns>List of existing files.</returns>
-        public IEnumerable<string> GetSideBySideFiles(string filename, string sbsExtension)
+        public IEnumerable<string> GetSideBySideFiles(string fileName, string sideBySideExtension)
         {
-            filename.ThrowIfNullOrWhiteSpace("file");
-            sbsExtension.ThrowIfNullOrWhiteSpace("sbsExtension");
+            fileName.ThrowIfNullOrWhiteSpace("fileName");
+            sideBySideExtension.ThrowIfNullOrWhiteSpace("sideBySideExtension");
 
             // Convention: foo.cshtml can have foo.yaml and _foo.yaml in that order.
-            string sbsFile = Path.ChangeExtension(filename, sbsExtension);
+            string sbsFile = Path.ChangeExtension(fileName, sideBySideExtension);
             if (File.Exists(sbsFile))
                 yield return sbsFile;
 
@@ -54,52 +55,52 @@ namespace Lithogen.Engine.Implementations
         /// against a list of possible extensions. No checking is done that a corresponding main file
         /// exists, so this is a fast method.
         /// </summary>
-        /// <param name="possibleSideBySideFilename">The filename you want to check.</param>
-        /// <param name="sbsExtensions">Set of extensions to check against. Normally you
+        /// <param name="possibleSideBySideFileName">The filename you want to check.</param>
+        /// <param name="sideBySideExtensions">Set of extensions to check against. Normally you
         /// would leave this blank to use the defaults.</param>
         /// <returns>True if this is a side-by-side file, false otherwise.</returns>
-        public bool IsSideBySideFile(string possibleSideBySideFilename, params string[] sbsExtensions)
+        public bool IsSideBySideFile(string possibleSideBySideFileName, params string[] sideBySideExtensions)
         {
-            possibleSideBySideFilename.ThrowIfNullOrWhiteSpace("possibleSideBySideFilename"); 
+            possibleSideBySideFileName.ThrowIfNullOrWhiteSpace("possibleSideBySideFileName"); 
             
-            if (sbsExtensions == null || sbsExtensions.Count() == 0)
-                sbsExtensions = DefaultSbsExtensions.ToArray();
+            if (sideBySideExtensions == null || sideBySideExtensions.Count() == 0)
+                sideBySideExtensions = DefaultSideBySideExtensions.ToArray();
 
-            string fileExt = FileUtils.GetCleanExtension(possibleSideBySideFilename).ToLowerInvariant();
-            return sbsExtensions.Contains(fileExt);
+            string fileExt = FileUtils.GetCleanExtension(possibleSideBySideFileName).ToLowerInvariant();
+            return sideBySideExtensions.Contains(fileExt);
         }
 
         /// <summary>
-        /// Gets the corresponding main file for a side-by-side file. Will return null if <paramref name="sbsFilename"/>
+        /// Gets the corresponding main file for a side-by-side file. Will return null if <paramref name="possibleSideBySideFileName"/>
         /// is not actually a side-by-side file or if there is no corresponding main file.
         /// If a file is returned, it is guaranteed to exist on disk (so the method can be slow because it
         /// has to do a file search).
         /// </summary>
-        /// <param name="sbsFilename">The filename you want to check.</param>
-        /// <param name="sbsExtensions">Set of extensions to check against. Normally you
+        /// <param name="possibleSideBySideFileName">The filename you want to check.</param>
+        /// <param name="sideBySideExtensions">Set of extensions to check against. Normally you
         /// would leave this blank to use the defaults.</param>
         /// <returns>The name of the main file if it exists, false otherwise.</returns>
-        public string GetMainFile(string sbsFilename, params string[] sbsExtensions)
+        public string GetMainFile(string possibleSideBySideFileName, params string[] sideBySideExtensions)
         {
-            sbsFilename.ThrowIfNullOrWhiteSpace("sbsFilename");
-            if (sbsExtensions == null || sbsExtensions.Count() == 0)
-                sbsExtensions = DefaultSbsExtensions.ToArray();
+            possibleSideBySideFileName.ThrowIfNullOrWhiteSpace("possibleSideBySideFileName");
+            if (sideBySideExtensions == null || sideBySideExtensions.Count() == 0)
+                sideBySideExtensions = DefaultSideBySideExtensions.ToArray();
 
-            if (IsSideBySideFile(sbsFilename, sbsExtensions))
+            if (IsSideBySideFile(possibleSideBySideFileName, sideBySideExtensions))
             {
-                string dir = Path.GetDirectoryName(sbsFilename);
-                string pattern = Path.ChangeExtension(Path.GetFileName(sbsFilename), "*");
-                string mainFile = GetMainFileImpl(dir, pattern, sbsFilename, sbsExtensions);
+                string dir = Path.GetDirectoryName(possibleSideBySideFileName);
+                string pattern = Path.ChangeExtension(Path.GetFileName(possibleSideBySideFileName), "*");
+                string mainFile = GetMainFileImpl(dir, pattern, possibleSideBySideFileName, sideBySideExtensions);
                 if (mainFile != null)
                 {
                     return mainFile;
                 }
                 else
                 {
-                    if (pattern.StartsWith("_"))
+                    if (pattern.StartsWith("_", StringComparison.OrdinalIgnoreCase))
                     {
                         pattern = pattern.Substring(1);
-                        return GetMainFileImpl(dir, pattern, sbsFilename, sbsExtensions);
+                        return GetMainFileImpl(dir, pattern, possibleSideBySideFileName, sideBySideExtensions);
                     }
                     else
                     {
@@ -113,14 +114,14 @@ namespace Lithogen.Engine.Implementations
             }
         }
 
-        string GetMainFileImpl(string dir, string pattern, string possibleSideBySideFilename, params string[] sbsExtensions)
+        string GetMainFileImpl(string dir, string pattern, string possibleSideBySideFileName, params string[] sideBySideExtensions)
         {
             var filesOnDisk = Directory.GetFiles(dir, pattern, SearchOption.TopDirectoryOnly);
             foreach (var fileOnDisk in filesOnDisk)
             {
-                if (IsSideBySideFile(fileOnDisk, sbsExtensions))
+                if (IsSideBySideFile(fileOnDisk, sideBySideExtensions))
                     continue;
-                if (fileOnDisk.Equals(possibleSideBySideFilename, System.StringComparison.InvariantCultureIgnoreCase))
+                if (fileOnDisk.Equals(possibleSideBySideFileName, StringComparison.OrdinalIgnoreCase))
                     continue;
                 return fileOnDisk;
             }

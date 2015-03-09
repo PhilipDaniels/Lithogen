@@ -2,6 +2,7 @@
 using System;
 using System.Text;
 using System.Threading;
+using System.Globalization;
 
 namespace Lithogen.Core
 {
@@ -22,7 +23,7 @@ namespace Lithogen.Core
         readonly DateTime StartTime;
         DateTime LastTime;
 
-        public LoggerBase()
+        protected LoggerBase()
         {
             StartTime = DateTime.Now;
             LastTime = StartTime;
@@ -110,7 +111,7 @@ namespace Lithogen.Core
         protected virtual string FormatMessage(string message, params object[] args)
         {
             if (args != null && args.Length > 0)
-                message = String.Format(message, args);
+                message = String.Format(CultureInfo.InvariantCulture, message, args);
 
             var sb = new StringBuilder();
             DateTime now = DateTime.Now;
@@ -130,14 +131,14 @@ namespace Lithogen.Core
             return sb.ToString();
         }
 
-        string SecondsToString(double seconds)
+        static string SecondsToString(double seconds)
         {
             if (seconds < 0.05)
                 return "      ";
             else if (seconds > 999.99)
-                return String.Format("{0,6:######}", seconds);
+                return String.Format(CultureInfo.InvariantCulture, "{0,6:######}", seconds);
             else
-                return String.Format("{0,6:##0.00}", seconds);
+                return String.Format(CultureInfo.InvariantCulture, "{0,6:##0.00}", seconds);
         }
 
         void LogMessageImpl(LoggingLevel requestedLevel, bool includePrefix, string message, params object[] args)
@@ -156,7 +157,7 @@ namespace Lithogen.Core
             else
             {
                 if (args != null && args.Length > 0)
-                    message = String.Format(message, args);
+                    message = String.Format(CultureInfo.InvariantCulture, message, args);
             }
 
             LastTime = DateTime.Now;
@@ -172,14 +173,14 @@ namespace Lithogen.Core
             else
             {
                 if (args != null && args.Length > 0)
-                    message = String.Format(message, args);
+                    message = String.Format(CultureInfo.InvariantCulture, message, args);
             }
 
             LastTime = DateTime.Now;
             WriteError(message);
         }
 
-        string[] SplitMultilineString(string msg)
+        static string[] SplitMultilineString(string msg)
         {
             if (String.IsNullOrWhiteSpace(msg))
                 return new string[] { };

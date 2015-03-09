@@ -21,7 +21,7 @@ namespace Lithogen.ExamplePlugin
         {
             file.ThrowIfNull("file");
 
-            TheLogger.LogMessage(LOG_PREFIX + "Timestamping {0}.", file.WorkingFilename);
+            TheLogger.LogMessage(LOG_PREFIX + "Timestamping {0}.", file.WorkingFileName);
             file.Contents += String.Format("{0}<!-- SecondHtmlProcessor {1} -->{2}", Environment.NewLine, DateTime.Now, Environment.NewLine);
         }
     }

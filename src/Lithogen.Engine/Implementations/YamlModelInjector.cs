@@ -28,7 +28,7 @@ namespace Lithogen.Engine.Implementations
 
         void InjectSideBySide(IPipelineFile file)
         {
-            foreach (var yamlFile in SideBySide.GetSideBySideFiles(file.Filename, "yaml"))
+            foreach (var yamlFile in SideBySide.GetSideBySideFiles(file.FileName, "yaml"))
             {
                 string yamlString = File.ReadAllText(yamlFile);
                 var yamlExpando = YamlUtils.ToExpando(yamlString);

@@ -14,7 +14,7 @@ namespace Lithogen.Engine
         /// <summary>
         /// The filename.
         /// </summary>
-        public string Filename { get; private set; }
+        public string FileName { get; private set; }
 
         /// <summary>
         /// The contents of the file.
@@ -29,12 +29,12 @@ namespace Lithogen.Engine
         /// <summary>
         /// Construct a new instance. Reads the file from disk.
         /// </summary>
-        /// <param name="filename">The file to load.</param>
-        public TextFile(string filename)
+        /// <param name="fileName">The file to load.</param>
+        public TextFile(string fileName)
         {
-            Filename = filename.ThrowIfFileDoesNotExist("filename");
-            Contents = File.ReadAllText(Filename);
-            FileInfo = new Lithogen.Engine.FileInfo(Filename);
+            FileName = fileName.ThrowIfFileDoesNotExist("fileName");
+            Contents = File.ReadAllText(FileName);
+            FileInfo = new Lithogen.Engine.FileInfo(FileName);
         }
     }
 }

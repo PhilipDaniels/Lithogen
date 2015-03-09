@@ -1,13 +1,12 @@
-﻿using Lithogen.Core;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Lithogen.Core.Commands
 {
-    [DebuggerDisplay("NonExistentFile: {Filename}")]
-    public class NonExistentFileCommand : FileCommand
+    [DebuggerDisplay("NonexistentFile: {FileName}")]
+    public class NonexistentFileCommand : FileCommand
     {
-        public NonExistentFileCommand(string filename)
-            : base(filename)
+        public NonexistentFileCommand(string fileName)
+            : base(fileName)
         {
         }
     }

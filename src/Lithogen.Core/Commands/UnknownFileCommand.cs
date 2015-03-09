@@ -2,11 +2,11 @@
 
 namespace Lithogen.Core.Commands
 {
-    [DebuggerDisplay("UnknownFile: {Filename}")]
+    [DebuggerDisplay("UnknownFile: {FileName}")]
     public class UnknownFileCommand : FileCommand
     {
-        public UnknownFileCommand(string filename)
-            : base(filename)
+        public UnknownFileCommand(string fileName)
+            : base(fileName)
         {
         }
     }

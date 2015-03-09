@@ -46,13 +46,13 @@ namespace Lithogen.Engine.Implementations
                 file.ThrowIfNull("file");
                 file.Contents.ThrowIfNull("file.Contents");
 
-                TheLogger.LogVerbose(LOG_PREFIX + "Compiling {0}.", file.Filename);
+                TheLogger.LogVerbose(LOG_PREFIX + "Compiling {0}.", file.FileName);
 
                 ProcessImpl(file);
             }
             catch
             {
-                TheLogger.LogError(LOG_PREFIX + "Could not compile {0}", file.Filename);
+                TheLogger.LogError(LOG_PREFIX + "Could not compile {0}", file.FileName);
                 throw;
             }
         }
@@ -74,7 +74,7 @@ namespace Lithogen.Engine.Implementations
                 var layout = PartialCache.ResolvePartial(file.Layout, null);
                 if (layout == null)
                 {
-                    TheLogger.LogError(LOG_PREFIX + "Could not locate layout {0} for file {1}", file.Layout, file.Filename);
+                    TheLogger.LogError(LOG_PREFIX + "Could not locate layout {0} for file {1}", file.Layout, file.FileName);
                 }
                 else
                 {
@@ -93,7 +93,7 @@ namespace Lithogen.Engine.Implementations
             file.Contents = template(vb);
 
             string newExtension = file.ExtOut ?? "html";
-            file.WorkingFilename = Path.ChangeExtension(file.WorkingFilename, newExtension);
+            file.WorkingFileName = Path.ChangeExtension(file.WorkingFileName, newExtension);
 
             
             /*
@@ -122,7 +122,7 @@ namespace Lithogen.Engine.Implementations
             // Try and find the partial and register it.
             foreach (string partialName in partialNames)
             {
-                string dir = Path.GetDirectoryName(file.Filename);
+                string dir = Path.GetDirectoryName(file.FileName);
                 string filename = partialName;
 
                 if (!String.IsNullOrEmpty(Path.GetExtension(filename)))
@@ -153,7 +153,7 @@ namespace Lithogen.Engine.Implementations
         void RegisterPartial(ITextFile file, string name)
         {
             if (name == null)
-                name = Path.GetFileNameWithoutExtension(file.Filename);
+                name = Path.GetFileNameWithoutExtension(file.FileName);
 
             using (var sr = new StringReader(file.Contents))
             {
@@ -167,7 +167,7 @@ namespace Lithogen.Engine.Implementations
         /// "Body" is special, and is used to indicate the file that is
         /// being included in a layout, and hence is excluded from this list.
         /// </summary>
-        IEnumerable<string> GetPartialNames(string contents)
+        static IEnumerable<string> GetPartialNames(string contents)
         {
             var names = new List<string>();
 
@@ -177,7 +177,7 @@ namespace Lithogen.Engine.Implementations
             while (match.Success)
             {
                 string name = match.Groups["pname"].Value;
-                if (!name.Equals("body", StringComparison.InvariantCultureIgnoreCase))
+                if (!name.Equals("body", StringComparison.OrdinalIgnoreCase))
                     names.Add(name);
                 match = match.NextMatch();
             }
