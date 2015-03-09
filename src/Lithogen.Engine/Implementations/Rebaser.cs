@@ -1,12 +1,15 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using System;
+﻿using System;
 using System.IO;
+using System.Text;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations
 {
     public class Rebaser : IRebaser
     {
+        public static string PATHTOROOT = "PATHTOROOT(~)";
+
         readonly ISettings TheSettings;
 
         public Rebaser(ISettings settings)
@@ -14,7 +17,14 @@ namespace Lithogen.Engine.Implementations
             TheSettings = settings.ThrowIfNull("settings");
         }
 
-        public virtual string RebaseFileNameIntoOutputDirectory(string filename)
+        /// <summary>
+        /// Rebase a filename into the output directory, that is, taking account of where the file is
+        /// in the source directory, determine what the corresponding file in the output directory
+        /// (LithogenWebsiteDirectory) will be.
+        /// </summary>
+        /// <param name="filename">The filename to rebase.</param>
+        /// <returns>A corresponding filename under the LithogenWebsiteDirectory.</returns>
+        public string RebaseFileNameIntoOutputDirectory(string filename)
         {
             filename.ThrowIfNullOrWhiteSpace("filename");
 
@@ -38,33 +48,72 @@ namespace Lithogen.Engine.Implementations
             return rebasedName;
         }
 
-        public virtual string GetPathToRoot(string containingFilename)
+        /// <summary>
+        /// For a particular <paramref name="filename"/>, which must be under the project directory
+        /// in a known directory, determine the path to the root of the website. This will either
+        /// be blank or a set of "../" sequences sufficient to get up to the root.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <returns>Path to the root of the website.</returns>
+        public string GetPathToRoot(string filename)
         {
-            return "";
+            filename.ThrowIfNullOrWhiteSpace("filename");
 
+            if (!FileIsInKnownDirectory(filename))
+                throw new ArgumentException("The file is not in a known directory: " + filename, "containingFilename");
 
-            // ResolveRoot("C:\temp\Lithogen\Views\foo")                -> "./"
-            // ResolveRoot("C:\temp\Lithogen\Views\sub\foo")            -> "../"
-            // ResolveRoot("C:\temp\Lithogen\content\something.css")    -> "../"
+            int numDirs = 0;
+            string f = Path.GetDirectoryName(filename);
+            while (!f.Equals(TheSettings.ProjectDirectory, StringComparison.OrdinalIgnoreCase))
+            {
+                numDirs++;
+                f = Path.GetDirectoryName(f);
+            }
 
-            /*
-             * Given the path ~ in a file, we want to determine the number of .. we
-             * need to reach the root directory. This will be slightly different for
-             * views (which are moved up one level) vs content and JS.
-             * 
-             * The filename must be within one of the special project directories.
-             * Determine how many times you have to call Path.GetDirectory() until your reach the project directory.
-             * Subtract 1 from that number if a view file.
-             * 
-             * Return the appropriate number of ..
-             * 
-             * THEROOT(~)
-             */
+            // Files in the view folder get moved up a level.
+            if (filename.StartsWith(TheSettings.ViewsDirectory, StringComparison.OrdinalIgnoreCase))
+                numDirs--;
+
+            if (numDirs < 0)
+                throw new InvalidOperationException("numDirs should never be negative, that indicates you have gone outside the project directory");
+
+            if (numDirs == 0)
+            {
+                // TODO: or "./"?
+                return "";
+            }
+            else
+            {
+                var sb = new StringBuilder();
+                for (int i = 0; i < numDirs; i++)
+                    sb.Append("../");
+                return sb.ToString();
+            }
         }
 
-        public virtual string ReplaceRootsInFile(string containingFilename, string contents)
+        /// <summary>
+        /// Search for the PATHTOROOT(~) symbol in a the <paramref name="contents"/> of a <paramref name="filename"/>
+        /// and replace it with the appropriate path from <code>GetPathToRoot().</code>
+        /// </summary>
+        /// <param name="filename">The filename that holds the contents.</param>
+        /// <param name="contents">The contents.</param>
+        /// <returns>The contents with the PATHTOROOT(~) markers replaced.</returns>
+        public string ReplaceRootsInFile(string filename, string contents)
         {
-            return "";
+            filename.ThrowIfNullOrWhiteSpace("filename");
+            contents.ThrowIfNull("contents");
+
+            string rootPath = GetPathToRoot(filename);
+            contents = contents.Replace(PATHTOROOT, rootPath);
+            return contents;
+        }
+
+        bool FileIsInKnownDirectory(string filename)
+        {
+            return filename.StartsWith(TheSettings.ViewsDirectory, StringComparison.OrdinalIgnoreCase) ||
+                   filename.StartsWith(TheSettings.ContentDirectory, StringComparison.OrdinalIgnoreCase) ||
+                   filename.StartsWith(TheSettings.ScriptsDirectory, StringComparison.OrdinalIgnoreCase) ||
+                   filename.StartsWith(TheSettings.ImagesDirectory, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
