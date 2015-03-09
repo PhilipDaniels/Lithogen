@@ -100,6 +100,7 @@ namespace Lithogen.Engine.Implementations
             catch
             {
                 TheLogger.LogError(LOG_PREFIX + "Could not compile {0}", file.Filename);
+                throw;
             }
         }
 

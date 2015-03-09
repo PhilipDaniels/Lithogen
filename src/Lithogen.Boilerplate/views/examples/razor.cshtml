@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "_layout.cshtml";
+    Layout = "_Layout.cshtml";
     ViewBag.Title = "The Razor Example Page";
 }
 
@@ -13,6 +13,6 @@
 <ul>
     @foreach (var item in @ViewBag.items)
     {
-        <li>@item["part_no"] - @item["descrip"]</li>
+        <li>@item.part_no - @item.descrip</li>
     }
 </ul>
