@@ -1,6 +1,6 @@
-﻿using Lithogen.Core;
+﻿using System.IO;
+using Lithogen.Core;
 using Lithogen.Core.Interfaces;
-using System.IO;
 
 namespace Lithogen.Engine.Implementations
 {
@@ -11,16 +11,13 @@ namespace Lithogen.Engine.Implementations
     {
         const string LOG_PREFIX = "MarkdownProcessor: ";
         readonly ILogger TheLogger;
-        readonly IModelFactory ModelFactory;
 
         public MarkdownProcessor
             (
-            ILogger logger,
-            IModelFactory modelFactory
+            ILogger logger
             )
         {
             TheLogger = logger.ThrowIfNull("logger");
-            ModelFactory = modelFactory.ThrowIfNull("modelFactory");
         }
 
         public void Process(IPipelineFile file)

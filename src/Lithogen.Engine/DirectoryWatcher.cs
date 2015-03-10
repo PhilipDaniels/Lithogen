@@ -12,9 +12,9 @@ namespace Lithogen.Engine
     /// Wrapper around <code>FileSystemWatcher</code> that tries to uniquefy events,
     /// because <code>FileSystemWatcher</code> raises lots of duplicates.
     /// </summary>
-    public class DirectoryWatcher : IDisposable
+    public sealed class DirectoryWatcher : IDisposable
     {
-        const int TimerPeriodMillisecs = 200;
+        const int TimerPeriodMillisecs = 100;
         readonly string Directory;
         readonly FileSystemWatcher Watcher;
         readonly ConcurrentQueue<FileNotification> NotifiedEvents;
@@ -137,7 +137,7 @@ namespace Lithogen.Engine
                 case WatcherChangeTypes.Renamed:
                     return FileNotificationType.Build;
                 default:
-                    throw new Exception("Unexpected type.");
+                    throw new ArgumentException("Unexpected watcher type " + type.ToString());
             }
         }
 

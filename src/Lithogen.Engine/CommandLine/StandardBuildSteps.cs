@@ -62,10 +62,10 @@ namespace Lithogen.Engine.CommandLine
             return Match(possible, ViewsStepName);
         }
         
-        bool Match(string possible, string step)
+        static bool Match(string possible, string step)
         {
-            possible = possible.ToLowerInvariant();
-            return possible == step || possible == step[0].ToString();
+            return possible.Equals(step, StringComparison.OrdinalIgnoreCase) ||
+                   possible.Equals(step[0].ToString(), StringComparison.OrdinalIgnoreCase);
         }
     }
 }

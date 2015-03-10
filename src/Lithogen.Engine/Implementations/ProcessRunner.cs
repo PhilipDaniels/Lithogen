@@ -1,9 +1,9 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using System;
+﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Globalization;
+using System.IO;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations
 {
@@ -23,12 +23,26 @@ namespace Lithogen.Engine.Implementations
 
         /// <summary>
         /// Construct a new process in a form that will allow us to capture its output.
+        /// The working directory defaults to the directory the exe is in.
+        /// </summary>
+        /// <param name="exePath">Path to the exe to run.</param>
+        /// <param name="arguments">Arguments to the exe.</param>
+        /// <returns>Process object. Not yet started.</returns>
+        public Process MakeProcess(string exePath, string arguments)
+        {
+            return MakeProcess(exePath, arguments, null);
+        }
+
+        /// <summary>
+        /// Construct a new process in a form that will allow us to capture its output.
         /// </summary>
         /// <param name="exePath">Path to the exe to run.</param>
         /// <param name="arguments">Arguments to the exe.</param>
         /// <param name="workingDirectory">Working directory, pass null to default to the directory the exe is in.</param>
         /// <returns>Process object. Not yet started.</returns>
-        public Process MakeProcess(string exePath, string arguments, string workingDirectory = null)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+            Justification="Caller responsibility.")]
+        public Process MakeProcess(string exePath, string arguments, string workingDirectory)
         {
             exePath = exePath.ThrowIfFileDoesNotExist("exePath");
             

@@ -14,6 +14,7 @@ namespace Lithogen.Engine.CommandLine
     {
         IStandardBuildSteps StandardBuildSteps;
         CommandLineArgs Cla;
+        string[] OriginalArgs;
 
         public CommandLineParser(string commandLine)
         {
@@ -27,11 +28,6 @@ namespace Lithogen.Engine.CommandLine
             OriginalArgs = args;
             StandardBuildSteps = new StandardBuildSteps();
         }
-
-        /// <summary>
-        /// The original set of arguments.
-        /// </summary>
-        public string[] OriginalArgs { get; private set; }
 
         /// <summary>
         /// The original set of arguments rendered as a single string.
@@ -118,7 +114,7 @@ namespace Lithogen.Engine.CommandLine
         {
             get
             {
-                string t = FullHelpText.Before("Command Line Examples").Trim();
+                string t = FullHelpText.Before("Command Line Examples", StringComparison.OrdinalIgnoreCase).Trim();
                 return t;
             }
         }
@@ -126,12 +122,16 @@ namespace Lithogen.Engine.CommandLine
         #region Option Parsers
         void CheckForHelp()
         {
-            Cla.Help = (from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                        where arg == "-h" || arg == "--help" || arg == "h" || arg == "help"
+            Cla.Help = (from arg in NonFileArgs
+                        where arg.Equals("-h", StringComparison.OrdinalIgnoreCase) ||
+                              arg.Equals("--help", StringComparison.OrdinalIgnoreCase) ||
+                              arg.Equals("h", StringComparison.OrdinalIgnoreCase) ||
+                              arg.Equals("help", StringComparison.OrdinalIgnoreCase)
                         select arg).Any();
 
-            Cla.FullHelp = (from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                            where arg == "--fullhelp" || arg == "fullhelp"
+            Cla.FullHelp = (from arg in NonFileArgs
+                            where arg.Equals("--fullhelp", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("fullhelp", StringComparison.OrdinalIgnoreCase)
                             select arg).Any();
 
             if (Cla.FullHelp)
@@ -140,8 +140,9 @@ namespace Lithogen.Engine.CommandLine
 
         void ParseLogLevel(bool inServerMode, LoggingLevel currentLoggingLevel)
         {
-            var logArgs = from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                           where arg.StartsWith("--log") || arg.StartsWith("log")
+            var logArgs = from arg in NonFileArgs
+                           where arg.StartsWith("--log", StringComparison.OrdinalIgnoreCase) ||
+                                 arg.StartsWith("log", StringComparison.OrdinalIgnoreCase)
                            select arg;
 
             if (logArgs.Count() == 0)
@@ -153,12 +154,12 @@ namespace Lithogen.Engine.CommandLine
             }
             else if (logArgs.Count() == 1)
             {
-                string val = (logArgs.ElementAt(0).After("=") ?? "").Trim();
-                if (val == "quiet")
+                string val = (logArgs.ElementAt(0).After("=", StringComparison.OrdinalIgnoreCase) ?? "").Trim();
+                if (val.Equals("quiet", StringComparison.OrdinalIgnoreCase))
                     Cla.LoggingLevel = LoggingLevel.Off;
-                else if (val == "normal")
+                else if (val.Equals("normal", StringComparison.OrdinalIgnoreCase))
                     Cla.LoggingLevel = LoggingLevel.Normal;
-                else if (val == "verbose")
+                else if (val.Equals("verbose", StringComparison.OrdinalIgnoreCase))
                     Cla.LoggingLevel = LoggingLevel.Verbose;
                 else
                 {
@@ -176,7 +177,7 @@ namespace Lithogen.Engine.CommandLine
         void ParseGen()
         {
             var genArgs = from arg in NonFileArgs
-                          where arg.StartsWith("--gen", StringComparison.InvariantCultureIgnoreCase)
+                          where arg.StartsWith("--gen", StringComparison.OrdinalIgnoreCase)
                           select arg;
 
             if (genArgs.Count() == 0)
@@ -185,7 +186,7 @@ namespace Lithogen.Engine.CommandLine
             }
             else if (genArgs.Count() == 1)
             {
-                Cla.GenProjectFile = genArgs.ElementAt(0).After("=");
+                Cla.GenProjectFile = genArgs.ElementAt(0).After("=", StringComparison.OrdinalIgnoreCase);
             }
             else
             {
@@ -197,7 +198,7 @@ namespace Lithogen.Engine.CommandLine
         void ParseSettings()
         {
             var settingsArgs = from arg in NonFileArgs
-                               where arg.StartsWith("--settings", StringComparison.InvariantCultureIgnoreCase)
+                               where arg.StartsWith("--settings", StringComparison.OrdinalIgnoreCase)
                                select arg;
 
             if (settingsArgs.Count() == 0)
@@ -208,7 +209,7 @@ namespace Lithogen.Engine.CommandLine
             }
             else if (settingsArgs.Count() == 1)
             {
-                Cla.SettingsFile = settingsArgs.ElementAt(0).After("=");
+                Cla.SettingsFile = settingsArgs.ElementAt(0).After("=", StringComparison.OrdinalIgnoreCase);
             }
             else
             {
@@ -219,9 +220,12 @@ namespace Lithogen.Engine.CommandLine
 
         void ParseClean()
         {
-            var cleanArgs = from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                          where arg == "-c" || arg == "--clean" || arg == "c" || arg == "clean"
-                          select arg;
+            var cleanArgs = from arg in NonFileArgs
+                            where arg.Equals("-c", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("--clean", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("c", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("clean", StringComparison.OrdinalIgnoreCase)
+                            select arg;
 
             if (cleanArgs.Count() == 0)
             {
@@ -241,9 +245,15 @@ namespace Lithogen.Engine.CommandLine
         void ParseBuild(bool inServerMode)
         {
             // Check for build with no arguments.
-            var buildArgs = from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                            where arg == "-b" || arg == "--build" || arg == "b" || arg == "build" ||
-                                  arg.StartsWith("-b=") || arg.StartsWith("--build=") || arg.StartsWith("b=") || arg.StartsWith("build=")
+            var buildArgs = from arg in NonFileArgs
+                            where arg.Equals("-b", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("--build", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("b", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("build", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.StartsWith("-b=", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.StartsWith("--build=", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.StartsWith("b=", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.StartsWith("build=", StringComparison.OrdinalIgnoreCase)
                             select arg;
 
             if (buildArgs.Count() == 0)
@@ -254,7 +264,7 @@ namespace Lithogen.Engine.CommandLine
             }
             else if (buildArgs.Count() == 1)
             {
-                string steps = buildArgs.ElementAt(0).After("=");
+                string steps = buildArgs.ElementAt(0).After("=", StringComparison.OrdinalIgnoreCase);
                 ParseBuild(steps);
             }
             else if (buildArgs.Count() > 1)
@@ -304,8 +314,11 @@ namespace Lithogen.Engine.CommandLine
 
         void ParseRebuild()
         {
-            var rebuildArgs = from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                            where arg == "-r" || arg == "--rebuild" || arg == "r" || arg == "rebuild"
+            var rebuildArgs = from arg in NonFileArgs
+                            where arg.Equals("-r", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("--rebuild", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("r", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("rebuild", StringComparison.OrdinalIgnoreCase)
                             select arg;
 
             if (rebuildArgs.Count() == 0)
@@ -326,8 +339,9 @@ namespace Lithogen.Engine.CommandLine
 
         void ParseServe()
         {
-            var serveArgs = from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                            where arg == "--serve" || arg == "serve"
+            var serveArgs = from arg in NonFileArgs
+                            where arg.Equals("--serve", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("serve", StringComparison.OrdinalIgnoreCase)
                             select arg;
 
             if (serveArgs.Count() == 0)
@@ -347,8 +361,9 @@ namespace Lithogen.Engine.CommandLine
 
         void ParseWatch()
         {
-            var watchArgs = from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                            where arg == "--watch" || arg == "watch"
+            var watchArgs = from arg in NonFileArgs
+                            where arg.Equals("--watch", StringComparison.OrdinalIgnoreCase) ||
+                                  arg.Equals("watch", StringComparison.OrdinalIgnoreCase)
                             select arg;
 
             if (watchArgs.Count() == 0)
@@ -368,8 +383,8 @@ namespace Lithogen.Engine.CommandLine
 
         void ParsePort()
         {
-            var portArgs = from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                           where arg.StartsWith("--port")
+            var portArgs = from arg in NonFileArgs
+                           where arg.StartsWith("--port", StringComparison.OrdinalIgnoreCase)
                            select arg;
 
             if (portArgs.Count() == 0)
@@ -378,7 +393,7 @@ namespace Lithogen.Engine.CommandLine
             }
             else if (portArgs.Count() == 1)
             {
-                string p = portArgs.ElementAt(0).After("=");
+                string p = portArgs.ElementAt(0).After("=", StringComparison.OrdinalIgnoreCase);
                 if (String.IsNullOrWhiteSpace(p))
                 {
                     Cla.Help = true;
@@ -407,8 +422,9 @@ namespace Lithogen.Engine.CommandLine
 
         void ParseViewDOP()
         {
-            var dopArgs = from arg in NonFileArgs.Select(a => a.ToLowerInvariant())
-                          where arg.StartsWith("--viewdop") || arg.StartsWith("viewdop")
+            var dopArgs = from arg in NonFileArgs
+                          where arg.StartsWith("--viewdop", StringComparison.OrdinalIgnoreCase) ||
+                                arg.StartsWith("viewdop", StringComparison.OrdinalIgnoreCase)
                           select arg;
 
             if (dopArgs.Count() == 0)
@@ -417,7 +433,7 @@ namespace Lithogen.Engine.CommandLine
             }
             else if (dopArgs.Count() == 1)
             {
-                string dop = dopArgs.ElementAt(0).After("=");
+                string dop = dopArgs.ElementAt(0).After("=", StringComparison.OrdinalIgnoreCase);
                 if (String.IsNullOrWhiteSpace(dop))
                 {
                     Cla.Help = true;

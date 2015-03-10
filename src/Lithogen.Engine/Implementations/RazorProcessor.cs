@@ -1,13 +1,13 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using RazorEngine.Configuration;
-using RazorEngine.Templating;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Globalization;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
+using RazorEngine.Configuration;
+using RazorEngine.Templating;
 
 namespace Lithogen.Engine.Implementations
 {
@@ -140,10 +140,10 @@ namespace Lithogen.Engine.Implementations
 
         static RazorEngine.Language GetLanguage(string fileName)
         {
-            string ext = FileUtils.GetCleanExtension(fileName).ToUpperInvariant();
-            if (ext == "CSHTML")
+            string ext = FileUtils.GetCleanExtension(fileName);
+            if (ext.Equals("cshtml", StringComparison.OrdinalIgnoreCase))
                 return RazorEngine.Language.CSharp;
-            else if (ext == "VBHTML")
+            else if (ext.Equals("vbhtml", StringComparison.OrdinalIgnoreCase))
                 return RazorEngine.Language.VisualBasic;
             else
                 throw new ArgumentException("Unknown Razor template language.");
@@ -151,8 +151,9 @@ namespace Lithogen.Engine.Implementations
 
         static bool IsRazorFile(string fileName)
         {
-            string ext = FileUtils.GetCleanExtension(fileName).ToUpperInvariant();
-            return ext == "CSHTML" || ext == "VBHTML";
+            string ext = FileUtils.GetCleanExtension(fileName);
+            return ext.Equals("cshtml", StringComparison.OrdinalIgnoreCase) ||
+                   ext.Equals("vbhtml", StringComparison.OrdinalIgnoreCase);
         }
 
         dynamic MakeViewBag(IPipelineFile file)

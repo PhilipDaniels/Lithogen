@@ -121,7 +121,7 @@ namespace Lithogen.Core
             }
             set
             {
-                // Exists for serialization only.
+                //throw new InvalidOperationException("Don't call set, it only exists to get Xml serialization to work.");
             }
         }
 

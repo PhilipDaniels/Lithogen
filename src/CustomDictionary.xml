@@ -10,6 +10,7 @@
       <Word>rebaser</Word>
       <Word>yaml</Word>
       <Word>utils</Word>
+      <Word>str</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>

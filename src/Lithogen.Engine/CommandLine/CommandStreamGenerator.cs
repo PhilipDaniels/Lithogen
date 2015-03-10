@@ -301,7 +301,7 @@ namespace Lithogen.Engine.CommandLine
             return triple;
         }
 
-        ICommand MakeBuildImageCommand(string filename)
+        static ICommand MakeBuildImageCommand(string filename)
         {
             var cmd = new BuildImageCommand(filename);
 
@@ -325,7 +325,7 @@ namespace Lithogen.Engine.CommandLine
             return triple;
         }
 
-        ICommand MakeBuildViewCommand(string mainFile)
+        static ICommand MakeBuildViewCommand(string mainFile)
         {
             var cmd = new BuildViewCommand(mainFile);
 
@@ -349,7 +349,7 @@ namespace Lithogen.Engine.CommandLine
             return triple;
         }
 
-        ICommand MakeFileDeleteCommand(string filename)
+        static ICommand MakeFileDeleteCommand(string filename)
         {
             var cmd = new FileDeleteCommand(filename);
 
@@ -361,7 +361,7 @@ namespace Lithogen.Engine.CommandLine
             return triple;
         }
 
-        ICommand MakeUnknownFileCommand(string filename)
+        static ICommand MakeUnknownFileCommand(string filename)
         {
             var cmd = new UnknownFileCommand(filename);
 

@@ -63,8 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="boiler.bat" />
-    <None Include="gcs.bat" />
     <None Include="Lithogen.nuspec" />
     <None Include="node\bundler.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -84,8 +82,6 @@
     <None Include="node\readme.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="testsite2.bat" />
-    <None Include="testsite1.bat" />
     <Content Include="Lithogen.user.targets">
       <SubType>Designer</SubType>
     </Content>

@@ -185,12 +185,7 @@ namespace Lithogen.DI
             {
                 return from t in AllTypesInCore.Value
                        where t.IsInterface &&
-                             t.Namespace.Equals("Lithogen.Core.Interfaces", StringComparison.InvariantCultureIgnoreCase)
-                             //t != typeof(ITextFile) &&      // Cannot support, is newed() up with a filename in the constructor.
-                             //t != typeof(IPipelineFile) &&  // Cannot support, is newed() up with a filename in the constructor.
-                             //t != typeof(IModelFactory) &&  // Cannot support, is a decorator.
-                             //t != typeof(IFreeze) &&        // Just a marker, not a service.
-                             //t != typeof(ISettings)         // Special, we register an instance.
+                             t.Namespace.Equals("Lithogen.Core.Interfaces", StringComparison.OrdinalIgnoreCase)
                        orderby t.FullName
                        select t;
             }

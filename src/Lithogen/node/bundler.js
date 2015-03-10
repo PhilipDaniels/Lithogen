@@ -290,7 +290,7 @@ function processJsBundle(options, jsBundle, bundleDir, jsFiles, bundleName, cb) 
                 };
                 if (options.skipmin) {
                     withMin('');
-                } else if (/(\.min\.|\.pack\.)/.test(file) && options.skipremin) {
+                } else if (/([.-]min\.|\[.-]pack\.)/.test(file) && options.skipremin) {
                     readTextFile(jsPath, withMin);
                 }  else {
                     getOrCreateMinJs(options, js, jsPath, minJsPath, withMin);
@@ -389,7 +389,7 @@ function processCssBundle(options, cssBundle, bundleDir, cssFiles, bundleName, c
 
                 if (options.skipmin) {
                     withMin('');
-                } else if (/(\.min\.|\.pack\.)/.test(file) && options.skipremin) {
+                } else if (/([.-]min\.|[.-]pack\.)/.test(file) && options.skipremin) {
                     readTextFile(cssPath, withMin);
                 } else {
                     getOrCreateMinCss(options, css, cssPath, minCssPath, withMin);

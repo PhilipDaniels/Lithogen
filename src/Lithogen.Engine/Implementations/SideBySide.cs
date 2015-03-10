@@ -66,8 +66,8 @@ namespace Lithogen.Engine.Implementations
             if (sideBySideExtensions == null || sideBySideExtensions.Count() == 0)
                 sideBySideExtensions = DefaultSideBySideExtensions.ToArray();
 
-            string fileExt = FileUtils.GetCleanExtension(possibleSideBySideFileName).ToLowerInvariant();
-            return sideBySideExtensions.Contains(fileExt);
+            string fileExt = FileUtils.GetCleanExtension(possibleSideBySideFileName);
+            return sideBySideExtensions.Contains(fileExt, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

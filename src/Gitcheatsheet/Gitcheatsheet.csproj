@@ -43,6 +43,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="scripts\gitcheatsheet.js.bundle" />
+    <Content Include="TODO.md" />
     <None Include="views\.htaccess" />
     <Content Include="views\_readme.txt" />
     <None Include="views\index.hbs" />

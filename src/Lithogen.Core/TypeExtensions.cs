@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Lithogen.Core
 {
     public static class TypeExtensions
     {
-        public static IEnumerable<T> GetAttributes<T>(this Type type)
+        public static IEnumerable<T> GetAttributes<T>(this MemberInfo member)
         {
-            var attributes = type.GetCustomAttributes(typeof(T), true);
+            member.ThrowIfNull("member");
+
+            var attributes = member.GetCustomAttributes(typeof(T), true);
             return attributes.Cast<T>();
         }
     }

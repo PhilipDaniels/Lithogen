@@ -8,7 +8,7 @@ namespace Lithogen.Engine.Implementations
 {
     public class Rebaser : IRebaser
     {
-        public const string PATHTOROOT = "PATHTOROOT(~)";
+        public const string PathToRoot = "PATHTOROOT(~)";
 
         readonly ISettings TheSettings;
 
@@ -103,7 +103,7 @@ namespace Lithogen.Engine.Implementations
             contents.ThrowIfNull("contents");
 
             string rootPath = GetPathToRoot(fileName);
-            contents = contents.Replace(PATHTOROOT, rootPath);
+            contents = contents.Replace(PathToRoot, rootPath);
             return contents;
         }
 

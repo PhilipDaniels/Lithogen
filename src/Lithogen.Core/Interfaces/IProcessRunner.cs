@@ -10,12 +10,21 @@ namespace Lithogen.Core.Interfaces
     {
         /// <summary>
         /// Construct a new process in a form that will allow us to capture its output.
+        /// The working directory defaults to the directory the exe is in.
+        /// </summary>
+        /// <param name="exePath">Path to the exe to run.</param>
+        /// <param name="arguments">Arguments to the exe.</param>
+        /// <returns>Process object. Not yet started.</returns>
+        Process MakeProcess(string exePath, string arguments);
+
+        /// <summary>
+        /// Construct a new process in a form that will allow us to capture its output.
         /// </summary>
         /// <param name="exePath">Path to the exe to run.</param>
         /// <param name="arguments">Arguments to the exe.</param>
         /// <param name="workingDirectory">Working directory, pass null to default to the directory the exe is in.</param>
         /// <returns>Process object. Not yet started.</returns>
-        Process MakeProcess(string exePath, string arguments, string workingDirectory = null);
+        Process MakeProcess(string exePath, string arguments, string workingDirectory);
 
         /// <summary>
         /// Executes the specified process and captures its stdout and stderr and

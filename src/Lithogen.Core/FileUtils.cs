@@ -123,6 +123,7 @@ namespace Lithogen.Core
         public static string GetCleanExtension(string fileName)
         {
             fileName.ThrowIfNullOrWhiteSpace("filename");
+
             string extension = CleanExtension(Path.GetExtension(fileName));
             return extension;
         }

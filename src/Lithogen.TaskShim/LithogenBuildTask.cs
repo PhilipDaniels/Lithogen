@@ -1,11 +1,9 @@
-﻿using Lithogen.Core;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using System.Xml.Serialization;
+using Lithogen.Core;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 
 namespace Lithogen.TaskShim
 {

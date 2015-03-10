@@ -208,11 +208,5 @@ namespace Lithogen.Engine.Implementations
             vb.SetProperty("Settings", TheSettings);
             return vb;
         }
-
-        bool IsHandlebarsFile(string filename)
-        {
-            string ext = FileUtils.GetCleanExtension(filename);
-            return HandleBarsExtensions.Contains(ext);
-        }
     }
 }

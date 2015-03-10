@@ -396,11 +396,24 @@ namespace Lithogen.Core
         /// Safely apply the Trim() operation to a string.
         /// If <paramref name="str"/> is null then null is
         /// returned, else <code>toTrim.Trim() is returned.</code>
+        /// Whitespace strings are converted to null.
+        /// </summary>
+        /// <param name="str">The string to trim. Can be null.</param>
+        /// <returns>Trimmed string, or null.</returns>
+        public static string SafeTrim(this string str)
+        {
+            return SafeTrim(str, true);
+        }
+
+        /// <summary>
+        /// Safely apply the Trim() operation to a string.
+        /// If <paramref name="str"/> is null then null is
+        /// returned, else <code>toTrim.Trim() is returned.</code>
         /// </summary>
         /// <param name="str">The string to trim. Can be null.</param>
         /// <param name="convertWhiteSpaceToNull">Whether to convert whitespace strings to null.</param>
         /// <returns>Trimmed string, or null.</returns>
-        public static string SafeTrim(this string str, bool convertWhiteSpaceToNull = true)
+        public static string SafeTrim(this string str, bool convertWhiteSpaceToNull)
         {
             if (str == null)
                 return null;
@@ -522,7 +535,9 @@ namespace Lithogen.Core
         /// <param name="delimiter">The delimiter.</param>
         /// <param name="allowDuplicates">Whether to allow duplicates in the result.</param>
         /// <returns>List of things.</returns>
-        public static List<T> ToList<T>(this string str, string delimiter = ",", bool allowDuplicates = true)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists",
+            Justification = "It's a static method, will not be inherited.")]
+        public static List<T> ToList<T>(this string str, string delimiter, bool allowDuplicates)
             where T : IConvertible
         {
             var result = str.ToList((string s) => (T)Convert.ChangeType(s, typeof(T), CultureInfo.InvariantCulture), delimiter, allowDuplicates);
@@ -539,12 +554,14 @@ namespace Lithogen.Core
         /// <param name="delimiter">The delimiter.</param>
         /// <param name="allowDuplicates">Whether to allow duplicates in the result.</param>
         /// <returns>List of things.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists",
+            Justification = "It's a static method, will not be inherited.")]
         public static List<T> ToList<T>
             (
             this string str,
             Func<string, T> converter,
-            string delimiter = ",",
-            bool allowDuplicates = true
+            string delimiter,
+            bool allowDuplicates
             )
         where T : IConvertible
         {

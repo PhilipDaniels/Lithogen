@@ -69,7 +69,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TODO.md" />
     <None Include="views\.htaccess" />
     <None Include="views\apple-touch-icon.png" />
     <None Include="views\browserconfig.xml" />
