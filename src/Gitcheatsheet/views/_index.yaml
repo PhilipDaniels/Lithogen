@@ -145,6 +145,11 @@ Sections:
       Affected: ",NG"
       Url: http://nvie.com/posts/a-successful-git-branching-model/
       Hint: The blog post by Vincent Driessen. Contains a link to his PDF.
+    - Text: Git Best Practices
+      Affected: ",NG"
+      Url: https://sethrobertson.github.io/GitBestPractices/
+      Hint: Seth Robertson on Git best practices. Includes links to several discussions about different
+        Git workflows.
 - Title: Daily Work
   SubSections:
   - Title: Staging
