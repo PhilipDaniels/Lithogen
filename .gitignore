@@ -22,8 +22,6 @@ src/Lithogen.TaskShim/bin
 src/Lithogen.TaskShim/obj
 src/Lithogen.TestSite*/bin
 src/Lithogen.TestSite*/obj
-src/Unosquare.*/bin
-src/Unosquare.*/obj
 
 # Under node_modules, we install everything using npm, EXCEPT npm itself,
 # which we must take care to keep, so we can do the bootstrap.

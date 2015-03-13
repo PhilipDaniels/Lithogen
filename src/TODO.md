@@ -1,5 +1,7 @@
 TODO - Next
 ===========
+[ ] How to serve the LiveReload and static sites during development.
+    https://github.com/livereload/livereload-js
 
 Bugs
 ====
@@ -20,8 +22,6 @@ TODO
     like I am doing in the main Lithogen solution.
 [ ] Rename Lithogen.Interfaces to Lithogen.Services?
 [ ] Create black and white theme for GCS.
-[ ] How to serve the LiveReload and static sites during development.
-    https://github.com/livereload/livereload-js
 [ ] Create Powershell Cheatsheet.
 [ ] YAML editor: https://visualstudiogallery.msdn.microsoft.com/34423c06-f756-4721-8394-bc3d23b91ca7
     Recommend in docs.

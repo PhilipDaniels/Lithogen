@@ -19,7 +19,7 @@ namespace Lithogen
         static object CommandHandlerPadlock;
         static DirectoryWatcher Watcher;
         static object WatcherPadlock;
-        static Unosquare.Labs.EmbedIO.WebServer MainSiteWebServer;
+        static Unosquare.Labs.EmbedIO.WebServer EmbeddedWebServer;
 
         static int Main(string[] args)
         {
@@ -140,19 +140,19 @@ namespace Lithogen
         static void CreateMainSiteWebServer(short port)
         {
             //string prefix = String.Format("http://localhost:{0}/", port);
-            MainSiteWebServer = new Unosquare.Labs.EmbedIO.WebServer(TheSettings.ServeUrl);
-            MainSiteWebServer.RegisterModule(new Unosquare.Labs.EmbedIO.Modules.StaticFilesModule(TheSettings.LithogenWebsiteDirectory));
-            MainSiteWebServer.Module<Unosquare.Labs.EmbedIO.Modules.StaticFilesModule>().UseRamCache = false;
-            MainSiteWebServer.Module<Unosquare.Labs.EmbedIO.Modules.StaticFilesModule>().DefaultExtension = ".html";
-            MainSiteWebServer.RunAsync();
+            EmbeddedWebServer = new Unosquare.Labs.EmbedIO.WebServer(TheSettings.ServeUrl);
+            EmbeddedWebServer.RegisterModule(new Unosquare.Labs.EmbedIO.Modules.StaticFilesModule(TheSettings.LithogenWebsiteDirectory));
+            EmbeddedWebServer.Module<Unosquare.Labs.EmbedIO.Modules.StaticFilesModule>().UseRamCache = false;
+            EmbeddedWebServer.Module<Unosquare.Labs.EmbedIO.Modules.StaticFilesModule>().DefaultExtension = ".html";
+            EmbeddedWebServer.RunAsync();
         }
 
         static void TerminateMainSiteWebServer()
         {
             try
             {
-                if (MainSiteWebServer != null)
-                    MainSiteWebServer.Dispose();
+                if (EmbeddedWebServer != null)
+                    EmbeddedWebServer.Dispose();
             }
             catch { }
         }
