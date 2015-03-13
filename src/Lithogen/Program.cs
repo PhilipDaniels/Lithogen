@@ -194,7 +194,9 @@ namespace Lithogen
                 {
                     var generator = Container.GetInstance<ICommandStreamGenerator>();
                     var commands = generator.GetFileCommands(filtered);
+                    Console.WriteLine();
                     ProcessCommands(commands);
+                    Console.Write("> ");
                 }
             }
         }

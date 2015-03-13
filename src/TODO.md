@@ -7,7 +7,6 @@ Bugs
 ====
 [ ] You cannot recompile a C# model when Lithogen is working in server mode. Shadow copy?
 [ ] Printing GCS omits Misc 1 set.
-[ ] Server mode does not redisplay the > prompt after building a file.
 [ ] Old versions of the GCS are cached by Chrome.
 
 TODO
