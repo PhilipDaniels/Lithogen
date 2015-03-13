@@ -98,10 +98,11 @@ namespace Lithogen
                 if (parsedArgs.Watch)
                     InitiateFileWatching();
 
-                CreateMainSiteWebServer(parsedArgs.Port);
+                StartEmbeddedWebServer(parsedArgs.Port);
 
                 Console.WriteLine();
-                Console.WriteLine("Entering server mode. 'stop' or Ctrl-C to stop.");
+                Console.WriteLine("Entering server mode. Your website is on {0}", TheSettings.ServeUrl);
+                Console.WriteLine("Type 'stop' or Ctrl-C to stop.");
 
                 while (true)
                 {
@@ -132,12 +133,12 @@ namespace Lithogen
             }
 
             TerminateFileWatching();
-            TerminateMainSiteWebServer();
+            TerminateEmbeddedWebServer();
 
             ProcessCommands(new List<ICommand>() { new BuildCompleteCommand(TheSettings.LithogenWebsiteDirectory) });
         }
 
-        static void CreateMainSiteWebServer(short port)
+        static void StartEmbeddedWebServer(short port)
         {
             //string prefix = String.Format("http://localhost:{0}/", port);
             EmbeddedWebServer = new Unosquare.Labs.EmbedIO.WebServer(TheSettings.ServeUrl);
@@ -147,7 +148,7 @@ namespace Lithogen
             EmbeddedWebServer.RunAsync();
         }
 
-        static void TerminateMainSiteWebServer()
+        static void TerminateEmbeddedWebServer()
         {
             try
             {
