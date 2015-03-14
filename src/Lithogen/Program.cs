@@ -139,7 +139,7 @@ namespace Lithogen
             TerminateFileWatching();
             TerminateWebServers();
 
-            ProcessCommands(new List<ICommand>() { new BuildCompleteCommand(TheSettings.LithogenWebsiteDirectory) });
+            ProcessCommand(new BuildCompleteCommand(TheSettings.LithogenWebsiteDirectory));
         }
 
         static void StartWebServers(short port)
@@ -174,15 +174,48 @@ namespace Lithogen
 
         static void InitiateFileWatching()
         {
-            Watcher = new DirectoryWatcher(TheSettings.ProjectDirectory);
+            var filesToIgnore = new string[] { TheSettings.LogFile };
 
-            Watcher.FilesToIgnore.Add(TheSettings.LogFile);
-            Watcher.DirectoriesToIgnore.Add(TheSettings.LithogenWebsiteDirectory);
-            Watcher.DirectoriesToIgnore.Add(Path.Combine(TheSettings.ProjectDirectory, "bin"));
-            Watcher.DirectoriesToIgnore.Add(Path.Combine(TheSettings.ProjectDirectory, "obj"));
+            var directoriesToIgnore = new string[]
+            {
+                TheSettings.LithogenWebsiteDirectory,
+                Path.Combine(TheSettings.ProjectDirectory, "bin"),
+                Path.Combine(TheSettings.ProjectDirectory, "obj")
+            };
+
+            Watcher = new DirectoryWatcher
+                (
+                TheSettings.ProjectDirectory,
+                DirectoryWatcher.DefaultTimerPeriodMilliseconds,
+                filesToIgnore,
+                directoriesToIgnore
+                );
 
             Watcher.ChangedFiles += Watcher_ChangedFiles;
             Watcher.Start();
+        }
+
+        static void Watcher_ChangedFiles(object sender, DirectoryWatcherEventArgs e)
+        {
+            lock (WatcherPadlock)
+            {
+                // Alas, we get events for directories (which we don't care about). Although the DirectoryWatcher
+                // de-duplicates events, we may still get duplicates from our perspective, because whatever happens
+                // to a file we are just going to build it or clean it. So we have a further de-dupe step here.
+                var filtered = (from n in e.FileSystemEvents
+                                where File.Exists(n.FullPath)
+                                select new FileNotification(ConvertWatcherType(n.ChangeType), n.FullPath)
+                                ).Distinct();
+
+                if (filtered.Any())
+                {
+                    var generator = Container.GetInstance<ICommandStreamGenerator>();
+                    var commands = generator.GetFileCommands(filtered);
+                    Console.WriteLine();
+                    ProcessCommands(commands);
+                    Console.Write("> ");
+                }
+            }
         }
 
         static void TerminateFileWatching()
@@ -195,23 +228,20 @@ namespace Lithogen
             }
         }
 
-        static void Watcher_ChangedFiles(object sender, IEnumerable<FileNotification> notifications)
+        static FileNotificationType ConvertWatcherType(WatcherChangeTypes type)
         {
-            // Alas, we get events for directories (which we don't care about).
-            lock (WatcherPadlock)
+            switch (type)
             {
-                var filtered = from n in notifications
-                               where File.Exists(n.FileName)
-                               select n;
-
-                if (filtered.Any())
-                {
-                    var generator = Container.GetInstance<ICommandStreamGenerator>();
-                    var commands = generator.GetFileCommands(filtered);
-                    Console.WriteLine();
-                    ProcessCommands(commands);
-                    Console.Write("> ");
-                }
+                case WatcherChangeTypes.Created:
+                    return FileNotificationType.Build;
+                case WatcherChangeTypes.Deleted:
+                    return FileNotificationType.Clean;
+                case WatcherChangeTypes.Changed:
+                    return FileNotificationType.Build;
+                case WatcherChangeTypes.Renamed:
+                    return FileNotificationType.Build;
+                default:
+                    throw new ArgumentException("Unexpected watcher type " + type.ToString());
             }
         }
 
@@ -294,8 +324,8 @@ namespace Lithogen
             settings.LogFile = Path.Combine(settings.TargetDirectory, @"Lithogen.log");
             settings.AssemblyLoadDirectoriesSurrogate.Add(settings.TargetDirectory);
             settings.ViewDOP = Environment.ProcessorCount * 2;
-            settings.ServeUrl = "http://localhost:8080/";
-            settings.ReloadUrl = "http://localhost:35729/";
+            settings.ServeUrl = @"http://localhost:8080/";
+            settings.ReloadUrl = @"http://localhost:35729/";
 
             settings.WriteXmlSettingsFile(settings.XmlConfigFile);
             settings.WriteJsonSettingsFile(settings.JsonConfigFile);

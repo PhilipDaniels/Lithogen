@@ -9,31 +9,133 @@ using Lithogen.Core;
 namespace Lithogen.Engine
 {
     /// <summary>
-    /// Wrapper around <code>FileSystemWatcher</code> that tries to uniquefy events,
+    /// The EventArgs type used by the <code>DirectoryWatcher</code> class.
+    /// </summary>
+    public sealed class DirectoryWatcherEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The list of file system events raised by the <code>DirectoryWatcher.</code>
+        /// </summary>
+        public IEnumerable<FileSystemEventArgs> FileSystemEvents { get; private set; }
+
+        /// <summary>
+        /// Construct a new DirectoryWatcherEventArgs object.
+        /// </summary>
+        /// <param name="fileSystemEvents">List of file system event args. Cannot be null.</param>
+        public DirectoryWatcherEventArgs(IEnumerable<FileSystemEventArgs> fileSystemEvents)
+        {
+            FileSystemEvents = fileSystemEvents.ThrowIfNull("fileSystemEvents");
+        }
+    }
+
+    /// <summary>
+    /// Wrapper around <code>FileSystemWatcher</code> that tries to uniqueify events,
     /// because <code>FileSystemWatcher</code> raises lots of duplicates.
     /// </summary>
     public sealed class DirectoryWatcher : IDisposable
     {
-        const int TimerPeriodMillisecs = 100;
-        readonly string Directory;
+        /// <summary>
+        /// The directory being watched.
+        /// </summary>
+        public string Directory { get; private set; }
+
+        /// <summary>
+        /// The period in milliseconds at which the <code>DirectoryWatcher</code>
+        /// raises the <code>ChangedFiles</code> event.
+        /// </summary>
+        public int TimerPeriodMilliseconds { get; private set; }
+
+        /// <summary>
+        /// The <code>ChangedFiles event is raised periodically whenever there</code>
+        /// are file system events.
+        /// </summary>
+        public event EventHandler<DirectoryWatcherEventArgs> ChangedFiles;
+
+        /// <summary>
+        /// The list of files to ignore that the <code>DirectoryWatcher</code>
+        /// was configured with. Can be null.
+        /// </summary>
+        public IEnumerable<string> FilesToIgnore
+        {
+            get { return _FilesToIgnore; }
+        }
+
+        /// <summary>
+        /// The list of directories to ignore that the <code>DirectoryWatcher</code>
+        /// was configured with. Can be null.
+        /// </summary>
+        public IEnumerable<string> DirectoriesToIgnore
+        {
+            get { return _DirectoriesToIgnore; }
+        }
+
+
+        public const int DefaultTimerPeriodMilliseconds = 100;
+        HashSet<string> _FilesToIgnore;
+        List<string> _DirectoriesToIgnore;
         readonly FileSystemWatcher Watcher;
-        readonly ConcurrentQueue<FileNotification> NotifiedEvents;
+        readonly ConcurrentQueue<FileSystemEventArgs> NotifiedEvents;
         readonly Timer Timer;
         bool Disposed;
 
-        public ICollection<string> FilesToIgnore { get; private set; }
-        public ICollection<string> DirectoriesToIgnore { get; private set; }
-
-        public event EventHandler<IEnumerable<FileNotification>> ChangedFiles;
-        
+        /// <summary>
+        /// Create a new <code>DirectoryWatcher</code> on <paramref name="directory"/>
+        /// using the default timeout. Does not ignore any files or directories.
+        /// </summary>
+        /// <param name="directory">The directory to watch.</param>
         public DirectoryWatcher(string directory)
+            : this(directory, DefaultTimerPeriodMilliseconds, null, null)
+        {
+        }
+
+        /// <summary>
+        /// Create a new <code>DirectoryWatcher</code> on <paramref name="directory"/>
+        /// using the timeout of <paramref name="timerPeriodMilliseconds"/>. Does not ignore any files or directories.
+        /// </summary>
+        /// <param name="directory">The directory to watch.</param>
+        /// <param name="timerPeriodMilliseconds">The timeout. Must be a postive number.</param>
+        public DirectoryWatcher(string directory, int timerPeriodMilliseconds)
+            : this(directory, timerPeriodMilliseconds, null, null)
+        {
+        }
+
+        /// <summary>
+        /// Create a new <code>DirectoryWatcher</code> on <paramref name="directory"/>
+        /// using the timeout of <paramref name="timerPeriodMilliseconds"/>. Optionally
+        /// ignore specified files or directories.
+        /// </summary>
+        /// <param name="directory">The directory to watch.</param>
+        /// <param name="timerPeriodMilliseconds">The timeout. Must be a postive number.</param>
+        /// <param name="filesToIgnore">List of files to ignore. Can be null or empty.</param>
+        /// <param name="directoriesToIgnore">List of directories to ignore. Can be null or empty.</param>
+        public DirectoryWatcher
+            (
+            string directory,
+            int timerPeriodMilliseconds,
+            IEnumerable<string> filesToIgnore,
+            IEnumerable<string> directoriesToIgnore
+            )
         {
             Directory = directory.ThrowIfDirectoryDoesNotExist("directory");
+            TimerPeriodMilliseconds = timerPeriodMilliseconds.ThrowIfLessThan(1, "timerPeriodMilliseconds");
+
             Watcher = new FileSystemWatcher();
-            NotifiedEvents = new ConcurrentQueue<FileNotification>();
-            FilesToIgnore = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            DirectoriesToIgnore = new List<string>();
-            Timer = new Timer(OnTimeout, null, TimerPeriodMillisecs, TimerPeriodMillisecs);
+            NotifiedEvents = new ConcurrentQueue<FileSystemEventArgs>();
+            Timer = new Timer(OnTimeout, null, TimerPeriodMilliseconds, TimerPeriodMilliseconds);
+
+
+            if (filesToIgnore != null && filesToIgnore.Any())
+            {
+                _FilesToIgnore = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var file in filesToIgnore)
+                    _FilesToIgnore.Add(file);
+            }
+
+            if (directoriesToIgnore != null && directoriesToIgnore.Any())
+            {
+                _DirectoriesToIgnore = new List<string>();
+                _DirectoriesToIgnore.AddRange(directoriesToIgnore);
+            }
         }
 
         public void Start()
@@ -42,10 +144,10 @@ namespace Lithogen.Engine
 
             Watcher.Path = Directory;
             Watcher.IncludeSubdirectories = true;
-            Watcher.Created += Watcher_Created;
-            Watcher.Changed += Watcher_Created;
-            Watcher.Deleted += Watcher_Deleted;
-            Watcher.Renamed += Watcher_Renamed;
+            Watcher.Created += Watcher_Fired;
+            Watcher.Changed += Watcher_Fired;
+            Watcher.Deleted += Watcher_Fired;
+            Watcher.Renamed += Watcher_Fired;
 
             Watcher.EnableRaisingEvents = true;
         }
@@ -70,35 +172,14 @@ namespace Lithogen.Engine
 
         bool ShouldIgnore(string filename)
         {
-            return FilesToIgnore.Contains(filename) ||
-                   DirectoriesToIgnore.Any(d => filename.StartsWith(d, StringComparison.OrdinalIgnoreCase));
+            return (_FilesToIgnore != null && _FilesToIgnore.Contains(filename)) ||
+                   (_DirectoriesToIgnore != null && _DirectoriesToIgnore.Any(d => filename.StartsWith(d, StringComparison.OrdinalIgnoreCase)));
         }
 
-        void Watcher_Created(object sender, FileSystemEventArgs e)
+        void Watcher_Fired(object sender, FileSystemEventArgs e)
         {
-            if (ShouldIgnore(e.FullPath))
-                return;
-
-            var n = new FileNotification(ConvertWatcherType(e.ChangeType), e.FullPath);
-            NotifiedEvents.Enqueue(n);
-        }
-
-        void Watcher_Deleted(object sender, FileSystemEventArgs e)
-        {
-            if (ShouldIgnore(e.FullPath))
-                return;
-
-            var n = new FileNotification(ConvertWatcherType(e.ChangeType), e.FullPath);
-            NotifiedEvents.Enqueue(n);
-        }
-
-        void Watcher_Renamed(object sender, RenamedEventArgs e)
-        {
-            if (ShouldIgnore(e.FullPath))
-                return;
-
-            var n = new FileNotification(ConvertWatcherType(e.ChangeType), e.FullPath);
-            NotifiedEvents.Enqueue(n);
+            if (!ShouldIgnore(e.FullPath))
+                NotifiedEvents.Enqueue(e);
         }
 
         void OnTimeout(object state)
@@ -111,8 +192,10 @@ namespace Lithogen.Engine
             // When the timer fires, get all pending notifications from the queue,
             // simplify/uniqueify them, and yield them as events. This eliminates
             // duplicate events that the FileSystemWatcher raises.
-            var notifications = new List<FileNotification>();
-            FileNotification n;
+            // Do this even if there is nobody to receive the events, because it
+            // prevents the queue from growing forever.
+            var notifications = new List<FileSystemEventArgs>();
+            FileSystemEventArgs n;
             while (NotifiedEvents.TryDequeue(out n))
                 notifications.Add(n);
 
@@ -121,23 +204,9 @@ namespace Lithogen.Engine
 
             var evt = ChangedFiles;
             if (evt != null)
-                evt(this, notifications.Distinct());
-        }
-
-        static FileNotificationType ConvertWatcherType(WatcherChangeTypes type)
-        {
-            switch (type)
             {
-                case WatcherChangeTypes.Created:
-                    return FileNotificationType.Build;
-                case WatcherChangeTypes.Deleted:
-                    return FileNotificationType.Clean;
-                case WatcherChangeTypes.Changed:
-                    return FileNotificationType.Build;
-                case WatcherChangeTypes.Renamed:
-                    return FileNotificationType.Build;
-                default:
-                    throw new ArgumentException("Unexpected watcher type " + type.ToString());
+                var args = new DirectoryWatcherEventArgs(notifications.Distinct());
+                evt(this, args);
             }
         }
 
