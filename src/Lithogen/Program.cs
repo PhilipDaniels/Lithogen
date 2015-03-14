@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Lithogen.Core;
 using Lithogen.Core.Commands;
 using Lithogen.Core.Interfaces;
 using Lithogen.Engine;
 using Lithogen.Engine.CommandLine;
+using Unosquare.Labs.EmbedIO;
+using Unosquare.Labs.EmbedIO.Modules;
 
 namespace Lithogen
 {
@@ -19,7 +22,8 @@ namespace Lithogen
         static object CommandHandlerPadlock;
         static DirectoryWatcher Watcher;
         static object WatcherPadlock;
-        static Unosquare.Labs.EmbedIO.WebServer EmbeddedWebServer;
+        static WebServer MainWebServer;
+        static WebServer LiveReloadWebServer;
 
         static int Main(string[] args)
         {
@@ -98,7 +102,7 @@ namespace Lithogen
                 if (parsedArgs.Watch)
                     InitiateFileWatching();
 
-                StartEmbeddedWebServer(parsedArgs.Port);
+                StartWebServers(parsedArgs.Port);
 
                 Console.WriteLine();
                 Console.WriteLine("Entering server mode. Your website is on {0}", TheSettings.ServeUrl);
@@ -133,27 +137,37 @@ namespace Lithogen
             }
 
             TerminateFileWatching();
-            TerminateEmbeddedWebServer();
+            TerminateWebServers();
 
             ProcessCommands(new List<ICommand>() { new BuildCompleteCommand(TheSettings.LithogenWebsiteDirectory) });
         }
 
-        static void StartEmbeddedWebServer(short port)
+        static void StartWebServers(short port)
         {
-            //string prefix = String.Format("http://localhost:{0}/", port);
-            EmbeddedWebServer = new Unosquare.Labs.EmbedIO.WebServer(TheSettings.ServeUrl);
-            EmbeddedWebServer.RegisterModule(new Unosquare.Labs.EmbedIO.Modules.StaticFilesModule(TheSettings.LithogenWebsiteDirectory));
-            EmbeddedWebServer.Module<Unosquare.Labs.EmbedIO.Modules.StaticFilesModule>().UseRamCache = false;
-            EmbeddedWebServer.Module<Unosquare.Labs.EmbedIO.Modules.StaticFilesModule>().DefaultExtension = ".html";
-            EmbeddedWebServer.RunAsync();
+            MainWebServer = new WebServer(TheSettings.ServeUrl);
+            MainWebServer.RegisterModule(new StaticFilesModule(TheSettings.LithogenWebsiteDirectory));
+            MainWebServer.Module<StaticFilesModule>().UseRamCache = false;
+            MainWebServer.Module<StaticFilesModule>().DefaultExtension = ".html";
+            MainWebServer.RunAsync();
+
+            if (!String.IsNullOrWhiteSpace(TheSettings.ReloadUrl))
+            { 
+                var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                LiveReloadWebServer = new WebServer(TheSettings.ReloadUrl);
+                LiveReloadWebServer.RegisterModule(new StaticFilesModule(dir));
+                LiveReloadWebServer.Module<StaticFilesModule>().UseRamCache = true;
+                LiveReloadWebServer.RunAsync();
+            }
         }
 
-        static void TerminateEmbeddedWebServer()
+        static void TerminateWebServers()
         {
             try
             {
-                if (EmbeddedWebServer != null)
-                    EmbeddedWebServer.Dispose();
+                if (LiveReloadWebServer != null)
+                    LiveReloadWebServer.Dispose();
+                if (MainWebServer != null)
+                    MainWebServer.Dispose();
             }
             catch { }
         }

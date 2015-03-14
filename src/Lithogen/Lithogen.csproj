@@ -74,6 +74,9 @@
     <Compile Include="RedirectingLogger.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="livereload.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App.config" />
     <None Include="Lithogen.nuspec" />
     <None Include="node\bundler.cmd">
