@@ -165,7 +165,7 @@ CS.handleClick = function(e) {
     }
     CS.hideArrow();
 
-    console.log("what = " + what);
+    //console.log("what = " + what);
     if (!what) {
         return;
     }

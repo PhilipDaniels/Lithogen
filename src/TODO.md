@@ -2,6 +2,7 @@ TODO - Next
 ===========
 [ ] How to serve the LiveReload and static sites during development.
     https://github.com/livereload/livereload-js
+[ ] Port the handlebars helpers from Assemble.IO.
 
 Bugs
 ====
@@ -58,7 +59,9 @@ Deferred, Possibly Forever
 ==========================
 [ ] Allow pipeline processors to create multiple output files from one input
     file. This might be useful for code generators. IPipelineFile and its use
-	if the ViewPipeline would have to change.
+	if the ViewPipeline would have to change. It can be worked around by
+    handling the PreBuild command to produce multiple files that will get fed
+    into the pipeline.
 [ ] Create a "buffering logger" for speed/parallelism?
 [ ] Use Edge instead of node? Node has the advantage of allowing our users to
     create extendable pipelines.

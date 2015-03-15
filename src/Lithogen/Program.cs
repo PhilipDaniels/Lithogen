@@ -18,7 +18,7 @@ namespace Lithogen
         const string LOG_PREFIX = "Lithogen.exe: ";
         public static SimpleInjector.Container Container;
         static ILogger TheLogger;
-        static ISettings TheSettings;
+        public static ISettings TheSettings;
         static object CommandHandlerPadlock;
         static DirectoryWatcher Watcher;
         static object WatcherPadlock;
@@ -151,11 +151,17 @@ namespace Lithogen
             MainWebServer.RunAsync();
 
             if (!String.IsNullOrWhiteSpace(TheSettings.ReloadUrl))
-            { 
-                var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                LiveReloadWebServer = new WebServer(TheSettings.ReloadUrl);
+            {
+                var urls = new[] { TheSettings.ReloadUrl, TheSettings.ReloadUrl.Replace("/livereload.js", "") };
+                LiveReloadWebServer = new WebServer(urls);
+
+                var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location); 
                 LiveReloadWebServer.RegisterModule(new StaticFilesModule(dir));
                 LiveReloadWebServer.Module<StaticFilesModule>().UseRamCache = true;
+
+                LiveReloadWebServer.RegisterModule(new WebSocketsModule());
+                LiveReloadWebServer.Module<WebSocketsModule>().RegisterWebSocketsServer<LiveReloadServer>("/livereload");
+
                 LiveReloadWebServer.RunAsync();
             }
         }

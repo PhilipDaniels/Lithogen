@@ -68,6 +68,7 @@
     <Compile Include="DI\LithogenImplementers.cs" />
     <Compile Include="DI\SettingsConvention.cs" />
     <Compile Include="DI\SimpleInjectorExtensions.cs" />
+    <Compile Include="LiveReloadServer.cs" />
     <Compile Include="SimpleInjectorProcessorFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
