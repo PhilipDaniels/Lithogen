@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Handlebars;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
+using Lithogen.Engine.HandlebarsHelpers;
 
 namespace Lithogen.Engine.Implementations
 {
@@ -48,6 +49,8 @@ namespace Lithogen.Engine.Implementations
 
                 TheLogger.LogVerbose(LOG_PREFIX + "Compiling {0}.", file.FileName);
 
+                RegisterHelpers();
+
                 ProcessImpl(file);
             }
             catch
@@ -55,6 +58,16 @@ namespace Lithogen.Engine.Implementations
                 TheLogger.LogError(LOG_PREFIX + "Could not compile {0}", file.FileName);
                 throw;
             }
+        }
+
+        void RegisterHelpers()
+        {
+            var c = new ComparisonHelpers();
+
+            foreach (var h in c.BlockHelpers)
+                Hbars.RegisterHelper(h.Key, h.Value);
+            foreach (var h in c.Helpers)
+                Hbars.RegisterHelper(h.Key, h.Value);
         }
 
         void ProcessImpl(IPipelineFile file)

@@ -21,6 +21,12 @@ layout: _layout.hbs
     </div>
 </div>
 
+{{#and "3" "3"}}
+<p>3 and 3 are both truthy</p>
+{{else}}
+<p>2 and 3 are NOT both truthy</p>
+{{/and}}
+
 <div class="cheatsheet">
 {{#each Sections}}
     <div class="section cs{{@index}}">
