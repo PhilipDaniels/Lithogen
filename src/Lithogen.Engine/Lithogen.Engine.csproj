@@ -94,6 +94,7 @@
     <Compile Include="CommandHandlers\NonexistentFileCommandHandler.cs" />
     <Compile Include="CommandHandlers\NpmCommandHandler.cs" />
     <Compile Include="CommandHandlers\UnknownFileCommandHandler.cs" />
+    <Compile Include="HandlebarsHelpers.cs" />
     <Compile Include="IModelFactory.cs" />
     <Compile Include="Implementations\CachingModelFactory.cs" />
     <Compile Include="Implementations\CompositeModelInjector.cs" />
