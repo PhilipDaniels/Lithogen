@@ -152,7 +152,34 @@ namespace Lithogen.Core
         /// <summary>
         /// The URL used to implement "live reload" functionality.
         /// </summary>
-        public string ReloadUrl { get; set; }
+        public string ReloadUrl
+        {
+            get
+            {
+                if (Configuration.Equals("Debug", StringComparison.OrdinalIgnoreCase) &&
+                    !String.IsNullOrWhiteSpace(ServeUrl))
+                {
+                    // See https://github.com/livereload/livereload-js
+                    // and http://feedback.livereload.com/
+                    // and http://feedback.livereload.com/knowledgebase/articles/86174-livereload-protocol
+                    var uri = new Uri(ServeUrl);
+                    var builder = new UriBuilder();
+                    builder.Port = 35729;
+                    builder.Scheme = uri.Scheme;
+                    builder.Host = uri.Host;
+                    builder.Path = "livereload.js";
+                    return builder.ToString();
+                }
+                else
+                { 
+                    return null;
+                }
+            }
+            set
+            {
+                // Ignore, needed for serialization.
+            }
+        }
 
 
         /// <summary>

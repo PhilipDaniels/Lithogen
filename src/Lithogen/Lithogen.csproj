@@ -32,6 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="SimpleInjector">
       <HintPath>..\packages\SimpleInjector.2.7.0\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
@@ -45,6 +53,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Unosquare.Labs.EmbedIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EmbedIO.1.0.0\lib\Unosquare.Labs.EmbedIO.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DI\AssemblyLoader.cs" />
@@ -56,12 +68,16 @@
     <Compile Include="DI\LithogenImplementers.cs" />
     <Compile Include="DI\SettingsConvention.cs" />
     <Compile Include="DI\SimpleInjectorExtensions.cs" />
+    <Compile Include="LiveReloadServer.cs" />
     <Compile Include="SimpleInjectorProcessorFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedirectingLogger.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="livereload.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App.config" />
     <None Include="Lithogen.nuspec" />
     <None Include="node\bundler.cmd">
@@ -102,10 +118,6 @@
     <ProjectReference Include="..\Lithogen.Engine\Lithogen.Engine.csproj">
       <Project>{3ebb1727-dcbd-4811-bce3-6f0ecd73e2f3}</Project>
       <Name>Lithogen.Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.csproj">
-      <Project>{7d7c29b4-9493-4ebd-8f20-6fac1e7161ee}</Project>
-      <Name>Unosquare.Labs.EmbedIO</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

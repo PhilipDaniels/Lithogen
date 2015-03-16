@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Lithogen.Core;
 using Lithogen.Core.Commands;
 using Lithogen.Core.Interfaces;
 using Lithogen.Engine;
 using Lithogen.Engine.CommandLine;
+using Unosquare.Labs.EmbedIO;
+using Unosquare.Labs.EmbedIO.Modules;
 
 namespace Lithogen
 {
@@ -15,11 +18,12 @@ namespace Lithogen
         const string LOG_PREFIX = "Lithogen.exe: ";
         public static SimpleInjector.Container Container;
         static ILogger TheLogger;
-        static ISettings TheSettings;
+        public static ISettings TheSettings;
         static object CommandHandlerPadlock;
         static DirectoryWatcher Watcher;
         static object WatcherPadlock;
-        static Unosquare.Labs.EmbedIO.WebServer MainSiteWebServer;
+        static WebServer MainWebServer;
+        static WebServer LiveReloadWebServer;
 
         static int Main(string[] args)
         {
@@ -98,10 +102,11 @@ namespace Lithogen
                 if (parsedArgs.Watch)
                     InitiateFileWatching();
 
-                CreateMainSiteWebServer(parsedArgs.Port);
+                StartWebServers(parsedArgs.Port);
 
                 Console.WriteLine();
-                Console.WriteLine("Entering server mode. 'stop' or Ctrl-C to stop.");
+                Console.WriteLine("Entering server mode. Your website is on {0}", TheSettings.ServeUrl);
+                Console.WriteLine("Type 'stop' or Ctrl-C to stop.");
 
                 while (true)
                 {
@@ -132,42 +137,91 @@ namespace Lithogen
             }
 
             TerminateFileWatching();
-            TerminateMainSiteWebServer();
+            TerminateWebServers();
 
-            ProcessCommands(new List<ICommand>() { new BuildCompleteCommand(TheSettings.LithogenWebsiteDirectory) });
+            ProcessCommand(new BuildCompleteCommand(TheSettings.LithogenWebsiteDirectory));
         }
 
-        static void CreateMainSiteWebServer(short port)
+        static void StartWebServers(short port)
         {
-            //string prefix = String.Format("http://localhost:{0}/", port);
-            MainSiteWebServer = new Unosquare.Labs.EmbedIO.WebServer(TheSettings.ServeUrl);
-            MainSiteWebServer.RegisterModule(new Unosquare.Labs.EmbedIO.Modules.StaticFilesModule(TheSettings.LithogenWebsiteDirectory));
-            MainSiteWebServer.Module<Unosquare.Labs.EmbedIO.Modules.StaticFilesModule>().UseRamCache = false;
-            MainSiteWebServer.Module<Unosquare.Labs.EmbedIO.Modules.StaticFilesModule>().DefaultExtension = ".html";
-            MainSiteWebServer.RunAsync();
+            MainWebServer = new WebServer(TheSettings.ServeUrl);
+            MainWebServer.RegisterModule(new StaticFilesModule(TheSettings.LithogenWebsiteDirectory));
+            MainWebServer.Module<StaticFilesModule>().UseRamCache = false;
+            MainWebServer.Module<StaticFilesModule>().DefaultExtension = ".html";
+            MainWebServer.RunAsync();
+
+            if (!String.IsNullOrWhiteSpace(TheSettings.ReloadUrl))
+            {
+                var urls = new[] { TheSettings.ReloadUrl, TheSettings.ReloadUrl.Replace("/livereload.js", "") };
+                LiveReloadWebServer = new WebServer(urls);
+
+                var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location); 
+                LiveReloadWebServer.RegisterModule(new StaticFilesModule(dir));
+                LiveReloadWebServer.Module<StaticFilesModule>().UseRamCache = true;
+
+                LiveReloadWebServer.RegisterModule(new WebSocketsModule());
+                LiveReloadWebServer.Module<WebSocketsModule>().RegisterWebSocketsServer<LiveReloadServer>("/livereload");
+
+                LiveReloadWebServer.RunAsync();
+            }
         }
 
-        static void TerminateMainSiteWebServer()
+        static void TerminateWebServers()
         {
             try
             {
-                if (MainSiteWebServer != null)
-                    MainSiteWebServer.Dispose();
+                if (LiveReloadWebServer != null)
+                    LiveReloadWebServer.Dispose();
+                if (MainWebServer != null)
+                    MainWebServer.Dispose();
             }
             catch { }
         }
 
         static void InitiateFileWatching()
         {
-            Watcher = new DirectoryWatcher(TheSettings.ProjectDirectory);
+            var filesToIgnore = new string[] { TheSettings.LogFile };
 
-            Watcher.FilesToIgnore.Add(TheSettings.LogFile);
-            Watcher.DirectoriesToIgnore.Add(TheSettings.LithogenWebsiteDirectory);
-            Watcher.DirectoriesToIgnore.Add(Path.Combine(TheSettings.ProjectDirectory, "bin"));
-            Watcher.DirectoriesToIgnore.Add(Path.Combine(TheSettings.ProjectDirectory, "obj"));
+            var directoriesToIgnore = new string[]
+            {
+                TheSettings.LithogenWebsiteDirectory,
+                Path.Combine(TheSettings.ProjectDirectory, "bin"),
+                Path.Combine(TheSettings.ProjectDirectory, "obj")
+            };
+
+            Watcher = new DirectoryWatcher
+                (
+                TheSettings.ProjectDirectory,
+                DirectoryWatcher.DefaultTimerPeriodMilliseconds,
+                filesToIgnore,
+                directoriesToIgnore
+                );
 
             Watcher.ChangedFiles += Watcher_ChangedFiles;
             Watcher.Start();
+        }
+
+        static void Watcher_ChangedFiles(object sender, DirectoryWatcherEventArgs e)
+        {
+            lock (WatcherPadlock)
+            {
+                // Alas, we get events for directories (which we don't care about). Although the DirectoryWatcher
+                // de-duplicates events, we may still get duplicates from our perspective, because whatever happens
+                // to a file we are just going to build it or clean it. So we have a further de-dupe step here.
+                var filtered = (from n in e.FileSystemEvents
+                                where File.Exists(n.FullPath)
+                                select new FileNotification(ConvertWatcherType(n.ChangeType), n.FullPath)
+                                ).Distinct();
+
+                if (filtered.Any())
+                {
+                    var generator = Container.GetInstance<ICommandStreamGenerator>();
+                    var commands = generator.GetFileCommands(filtered);
+                    Console.WriteLine();
+                    ProcessCommands(commands);
+                    Console.Write("> ");
+                }
+            }
         }
 
         static void TerminateFileWatching()
@@ -180,21 +234,20 @@ namespace Lithogen
             }
         }
 
-        static void Watcher_ChangedFiles(object sender, IEnumerable<FileNotification> notifications)
+        static FileNotificationType ConvertWatcherType(WatcherChangeTypes type)
         {
-            // Alas, we get events for directories (which we don't care about).
-            lock (WatcherPadlock)
+            switch (type)
             {
-                var filtered = from n in notifications
-                               where File.Exists(n.FileName)
-                               select n;
-
-                if (filtered.Any())
-                {
-                    var generator = Container.GetInstance<ICommandStreamGenerator>();
-                    var commands = generator.GetFileCommands(filtered);
-                    ProcessCommands(commands);
-                }
+                case WatcherChangeTypes.Created:
+                    return FileNotificationType.Build;
+                case WatcherChangeTypes.Deleted:
+                    return FileNotificationType.Clean;
+                case WatcherChangeTypes.Changed:
+                    return FileNotificationType.Build;
+                case WatcherChangeTypes.Renamed:
+                    return FileNotificationType.Build;
+                default:
+                    throw new ArgumentException("Unexpected watcher type " + type.ToString());
             }
         }
 
@@ -277,8 +330,8 @@ namespace Lithogen
             settings.LogFile = Path.Combine(settings.TargetDirectory, @"Lithogen.log");
             settings.AssemblyLoadDirectoriesSurrogate.Add(settings.TargetDirectory);
             settings.ViewDOP = Environment.ProcessorCount * 2;
-            settings.ServeUrl = "http://localhost:8080/";
-            settings.ReloadUrl = "http://localhost:35729/";
+            settings.ServeUrl = @"http://localhost:8080/";
+            settings.ReloadUrl = @"http://localhost:35729/";
 
             settings.WriteXmlSettingsFile(settings.XmlConfigFile);
             settings.WriteJsonSettingsFile(settings.JsonConfigFile);
