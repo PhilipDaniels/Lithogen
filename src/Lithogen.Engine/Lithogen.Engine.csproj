@@ -32,9 +32,9 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Handlebars, Version=1.0.5518.18931, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Handlebars, Version=1.0.5554.20810, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Handlebars.Net.1.2.3\lib\Handlebars.dll</HintPath>
+      <HintPath>..\packages\Handlebars.Net.1.2.10\lib\Handlebars.dll</HintPath>
     </Reference>
     <Reference Include="Hjson">
       <HintPath>..\packages\Hjson.1.11.1\lib\net40\Hjson.dll</HintPath>
