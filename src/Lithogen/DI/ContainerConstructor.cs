@@ -142,7 +142,7 @@ namespace Lithogen.DI
                 return;
             }
 
-            var plugins = FileUtilities.GetDlls(pluginsDirectory);
+            var plugins = Directory.GetFiles(pluginsDirectory, "*.dll", SearchOption.TopDirectoryOnly);
             if (plugins.Count() == 0)
             {
                 logger.LogMessage(LOG_PREFIX + "No Plugins found in {0} - the search looks for files named *.dll in the top directory only.", pluginsDirectory);

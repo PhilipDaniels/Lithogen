@@ -313,7 +313,7 @@ namespace Lithogen.Engine.Implementations
                 if (newExtension.Equals(currentExtension, System.StringComparison.OrdinalIgnoreCase))
                 {
                     // Extension did not change. Typical behaviour for a html -> html filter.
-                    string pe = FileUtilities.GetPenultimateExtension(file.WorkingFileName);
+                    string pe = GetPenultimateExtension(file.WorkingFileName);
                     if (file.DefaultConfiguration.ExtensionMappings.ContainsKey(pe))
                     {
                         // Just strip this current extension, the next extension will then be used
@@ -335,6 +335,18 @@ namespace Lithogen.Engine.Implementations
 
             // Replace the special marker PATHTOROOT(~) with a relative path.
             file.Contents = Rebaser.ReplaceRootsInFile(file.FileName, file.Contents);
+        }
+
+        /// <summary>
+        /// Returns the penultimate extension of a file. For example, Foo.md.html returns md,
+        /// and Foo.html returns Foo.
+        /// </summary>
+        /// <param name="fileName">The filename.</param>
+        /// <returns>The penultimate extension.</returns>
+        static string GetPenultimateExtension(string fileName)
+        {
+            fileName = Path.GetFileNameWithoutExtension(fileName);
+            return Path.GetExtension(fileName);
         }
 
         void LogException(Payload payload, string leader)

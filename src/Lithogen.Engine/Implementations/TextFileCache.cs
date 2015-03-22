@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
@@ -94,12 +95,9 @@ namespace Lithogen.Engine.Implementations
                 throw new ArgumentException("The file " + fileName + " is not in the cache.");
         }
 
-
-
-
         void LoadImpl()
         {
-            foreach (string filename in FileUtilities.GetAllFilesInDirectoryRecursive(Directory))
+            foreach (string filename in System.IO.Directory.EnumerateFiles(Directory, "*.*", SearchOption.AllDirectories))
             {
                 try
                 {

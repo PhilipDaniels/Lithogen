@@ -71,7 +71,7 @@ namespace Lithogen.DI
                         continue;
                     }
 
-                    var dlls = FileUtilities.GetDlls(dir);
+                    var dlls = Directory.GetFiles(dir, "*.dll", SearchOption.TopDirectoryOnly);
                     foreach (var dll in dlls)
                     {
                         try

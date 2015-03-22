@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
@@ -36,7 +37,7 @@ namespace Lithogen.Engine.Implementations
             destinationFileName = Rebaser.RebaseFileNameIntoOutputDirectory(destinationFileName);
             CheckDestinationFilename(destinationFileName);
             FileUtils.EnsureParentDirectory(destinationFileName);
-            FileUtilities.WriteFileWithUtf8Preamble(destinationFileName, contents);
+            WriteFileWithUtf8Preamble(destinationFileName, contents);
             TheLogger.LogVerbose(LOG_PREFIX + "Wrote {0} characters to {1}", contents.Length, destinationFileName);
         }
 
@@ -53,6 +54,24 @@ namespace Lithogen.Engine.Implementations
             FileUtils.EnsureParentDirectory(destinationFileName);
             File.Copy(sourceFileName, destinationFileName, true);
             TheLogger.LogVerbose(LOG_PREFIX + "Copied {0} to {1}", sourceFileName, destinationFileName);
+        }
+
+        /// <summary>
+        /// Writes text to a file, ensuring that the file is UTF-8 and includes
+        /// the preamble. The file will be overwritten if it already exists.
+        /// The directory must already exist.
+        /// </summary>
+        /// <param name="fileName">The filename to write to.</param>
+        /// <param name="text">The text to write.</param>
+        public static void WriteFileWithUtf8Preamble(string fileName, string text)
+        {
+            var enc = new UTF8Encoding(true);
+
+            using (var fs = new FileStream(fileName, FileMode.Create))
+            using (var sw = new StreamWriter(fs, enc))
+            {
+                sw.Write(text);
+            }
         }
 
         void CheckDestinationFilename(string destinationFileName)

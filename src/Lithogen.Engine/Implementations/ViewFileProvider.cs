@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BassUtils;
-using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations
@@ -19,7 +19,7 @@ namespace Lithogen.Engine.Implementations
         {
             directory.ThrowIfDirectoryDoesNotExist("directory");
 
-            return from filename in FileUtilities.GetAllFilesInDirectoryRecursive(directory)
+            return from filename in Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories)
                    where !ViewFileNameFilter.ShouldIgnore(filename)
                    select filename;
         }
