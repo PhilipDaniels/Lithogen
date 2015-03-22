@@ -1,5 +1,15 @@
 TODO - Next
 ===========
+[ ] Implement Edge.js.
+    [ ] Consider replacing the EmbedIO web server too.
+    [ ] And the live-reload server.
+    [ ] And running bundler
+    [ ] And the npm and node build steps...
+[ ] Implement handlebars helpers. We now have a way forward. Probably want to port some existing helpers
+    but do it from a .Net perspective, for example making a {{fmt}} helper to call String.Format(), in
+    other words, we want some of the node functions to call back to .Net.
+[ ] Factor the ViewPipeline into an object and a Runner?
+[ ] Consider removing verbose logging level.
 [ ] How to serve the LiveReload and static sites during development.
     https://github.com/livereload/livereload-js
 [ ] Port the handlebars helpers from Assemble.IO.
@@ -9,6 +19,8 @@ Bugs
 [ ] You cannot recompile a C# model when Lithogen is working in server mode. Shadow copy?
 [ ] Printing GCS omits Misc 1 set.
 [ ] Old versions of the GCS are cached by Chrome.
+[ ] If there are errors processing in the view pipeline the website still gets served.
+    We should report the error count.
 
 TODO
 ====
@@ -54,6 +66,14 @@ TODO
       JPEQ compression.    
 [ ] Publication to web server: FTP, rsync?
 
+Marketing
+=========
+[ ] Get Lithogen mentioned on https://www.npmjs.com/package/handlebars
+[ ] Get Lithogen mentioned on https://github.com/tjanczuk/edge?
+[ ] Get Lithogen mentioned on https://github.com/pinceladasdaweb/Static-Site-Generators and
+    https://staticsitegenerators.net/ and http://www.staticgen.com/
+
+[ ] Get GCS mentioned at 
 
 Deferred, Possibly Forever
 ==========================

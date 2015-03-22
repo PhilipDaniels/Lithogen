@@ -10,7 +10,7 @@ namespace Lithogen.Engine
     /// <summary>
     /// Represents a text file which is flowing through the view processor pipeline.
     /// </summary>
-    [DebuggerDisplay("{WorkingFilename} : {Contents == null ? \"\" : Contents.Substring(0, 40)}")]
+    [DebuggerDisplay("{WorkingFileName} : {Contents == null ? \"\" : Contents.Substring(0, 40)}")]
     public class PipelineFile : TextFile, IPipelineFile
     {
         /// <summary>

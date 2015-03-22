@@ -35,9 +35,8 @@
     <Reference Include="BassUtils">
       <HintPath>..\packages\BassUtils.1.1.0.0\lib\BassUtils.dll</HintPath>
     </Reference>
-    <Reference Include="Handlebars, Version=1.0.5554.20810, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Handlebars.Net.1.2.10\lib\Handlebars.dll</HintPath>
+    <Reference Include="EdgeJs">
+      <HintPath>..\packages\Edge.js.0.10.0\lib\EdgeJs.dll</HintPath>
     </Reference>
     <Reference Include="Hjson">
       <HintPath>..\packages\Hjson.1.11.1\lib\net40\Hjson.dll</HintPath>
@@ -96,8 +95,6 @@
     <Compile Include="CommandHandlers\NonexistentFileCommandHandler.cs" />
     <Compile Include="CommandHandlers\NpmCommandHandler.cs" />
     <Compile Include="CommandHandlers\UnknownFileCommandHandler.cs" />
-    <Compile Include="HandlebarsHelpers\ComparisonHelpers.cs" />
-    <Compile Include="HandlebarsHelpers\HelperBase.cs" />
     <Compile Include="IModelFactory.cs" />
     <Compile Include="Implementations\CachingModelFactory.cs" />
     <Compile Include="Implementations\CompositeModelInjector.cs" />
@@ -108,6 +105,7 @@
     <Compile Include="Implementations\JsonModelInjector.cs" />
     <Compile Include="Implementations\MarkdownProcessor.cs" />
     <Compile Include="Implementations\PipelineFileLoader.cs" />
+    <Compile Include="Implementations\ProcessorException.cs" />
     <Compile Include="ModelFactory.cs" />
     <Compile Include="Implementations\Npm.cs" />
     <Compile Include="Implementations\OutputFileWriter.cs" />
@@ -136,6 +134,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="edge\x64\edge.node">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="edge\x86\edge.node">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <EmbeddedResource Include="Configuration\_config.lit" />
   </ItemGroup>
@@ -146,6 +150,26 @@
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="edge\double_edge.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="edge\edge.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="edge\x64\node.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="edge\x86\node.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="handlebarshelpers.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="handlebars.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
