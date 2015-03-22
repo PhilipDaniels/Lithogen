@@ -114,7 +114,6 @@
     <Compile Include="Interfaces\IStandardBuildSteps.cs" />
     <Compile Include="IPreCommand.cs" />
     <Compile Include="ISettings.cs" />
-    <Compile Include="FileUtilities.cs" />
     <Compile Include="Interfaces\IPartialCache.cs" />
     <Compile Include="Interfaces\ITextFileCache.cs" />
     <Compile Include="Interfaces\IProcessRunner.cs" />

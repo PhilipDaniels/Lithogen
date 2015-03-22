@@ -37,7 +37,7 @@ Sections:
     - Text: config --list
       Affected: 
       Url: http://git-scm.com/docs/git-config
-      Hint: Display current settings
+      Hint: Display current settings.
   - Title: Help
     Cheats:
     - Text: verb --help

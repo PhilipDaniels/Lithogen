@@ -4,10 +4,28 @@ using System.Dynamic;
 using System.IO;
 using System.Text.RegularExpressions;
 using BassUtils;
+using EdgeJs;
 using Handlebars;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
-using Lithogen.Engine.HandlebarsHelpers;
+
+/*
+ * In _Layout.hbs:
+ *   {{>body}}
+ *   {{>otherPartials}}
+ * 
+ * 
+ * In Template.hbs:
+ * ---
+ * layout: _Layout.hbs
+ * ---
+ *   <h1>my test</h1>
+ *   {{>somethingelse}}
+ * 
+ * 
+ * In somethingelse.hbs:
+ * <div>Some text</div>
+ */
 
 namespace Lithogen.Engine.Implementations
 {
@@ -48,9 +66,6 @@ namespace Lithogen.Engine.Implementations
                 file.Contents.ThrowIfNull("file.Contents");
 
                 TheLogger.LogVerbose(LOG_PREFIX + "Compiling {0}.", file.FileName);
-
-                RegisterHelpers();
-
                 ProcessImpl(file);
             }
             catch
@@ -60,16 +75,6 @@ namespace Lithogen.Engine.Implementations
             }
         }
 
-        void RegisterHelpers()
-        {
-            var c = new ComparisonHelpers();
-
-            foreach (var h in c.BlockHelpers)
-                Hbars.RegisterHelper(h.Key, h.Value);
-            foreach (var h in c.Helpers)
-                Hbars.RegisterHelper(h.Key, h.Value);
-        }
-
         void ProcessImpl(IPipelineFile file)
         {
             // But what about context? What is "this" passed to each partial?
@@ -77,102 +82,95 @@ namespace Lithogen.Engine.Implementations
             // TODO: Allow layouts in layouts.
             // TODO: Allow us to run anything through handlebars without changing the file extension.
 
-            // Recursively register all partials from the file.
-            RegisterPartials(file);
-
-            ITextFile toCompile = null;
-            if (file.Layout != null)
+            try
             {
-                // We expect the layouts to be in the partial cache already.
-                var layout = PartialCache.ResolvePartial(file.Layout, null);
-                if (layout == null)
+                var func = Edge.Func(@"
+                    var hbars = require('./../handlebars');
+
+                    return function(payload, callback) {
+                        for (key in payload.partials) {
+                            hbars.registerPartial(key, payload.partials[key]);
+                        }
+
+                        var template = hbars.compile(payload.source);
+                        var templateResult = template(payload.context);
+                        callback(null, templateResult);
+                    }");
+
+
+                var partials = new Dictionary<string, string>();
+
+                ITextFile toCompile = null;
+                if (file.Layout != null)
                 {
-                    TheLogger.LogError(LOG_PREFIX + "Could not locate layout {0} for file {1}", file.Layout, file.FileName);
+                    // We expect the layouts to be in the partial cache already.
+                    var layout = PartialCache.ResolvePartial(file.Layout, null);
+                    if (layout == null)
+                    {
+                        TheLogger.LogError(LOG_PREFIX + "Could not locate layout {0} for file {1}", file.Layout, file.FileName);
+                    }
+                    else
+                    {
+                        AddPartials(partials, file);
+                        AddPartials(partials, layout);
+                        partials["body"] = file.Contents;
+                        toCompile = layout;
+                    }
                 }
                 else
                 {
-                    RegisterPartials(layout);
-                    RegisterPartial(file, "body");
-                    toCompile = layout;
+                    AddPartials(partials, file);
+                    toCompile = file;
                 }
+                
+                dynamic payload = new ExpandoObject();
+                payload.partials = partials;
+                payload.source = toCompile.Contents;
+                payload.context = MakeViewBag(file);
+
+                file.Contents = func(payload).Result.ToString();
             }
-            else
+            catch (Exception ex)
             {
-                toCompile = file;
             }
-
-            var template = Hbars.Compile(toCompile.Contents);
-            var vb = MakeViewBag(file);
-            file.Contents = template(vb);
-
-            string newExtension = file.ExtOut ?? "html";
-            file.WorkingFileName = Path.ChangeExtension(file.WorkingFileName, newExtension);
-
             
-            /*
-             * In _Layout.hbs:
-             *   {{>body}}
-             *   {{>otherlayout}}
-             * 
-             * 
-             * In Template.hbs:
-             * ---
-             * layout: _Layout.hbs
-             * ---
-             *   <h1>my test</h1>
-             *   {{>somethingelse}}
-             * 
-             * 
-             * In somethingelse.hbs:
-             * <div>Some text</div>
-             */
+            string newExtension = file.ExtOut ?? "html";
+            file.WorkingFileName = Path.ChangeExtension(file.WorkingFileName, newExtension);           
         }
 
-        void RegisterPartials(ITextFile file)
+        void AddPartials(Dictionary<string, string> partials, ITextFile file)
         {
             var partialNames = GetPartialNames(file.Contents);
 
             // Try and find the partial and register it.
+            string dir = Path.GetDirectoryName(file.FileName); 
             foreach (string partialName in partialNames)
             {
-                string dir = Path.GetDirectoryName(file.FileName);
-                string filename = partialName;
-
-                if (!String.IsNullOrEmpty(Path.GetExtension(filename)))
+                if (Path.HasExtension(partialName))
                 {
-                    LoadAndRegister(filename);
+                    string filename = Path.Combine(dir, partialName);
+                    AddPartials(partials, filename);
                 }
                 else
                 {
                     foreach (string ext in HandleBarsExtensions)
                     {
-                        string f = Path.Combine(dir, filename + "." + ext);
-                        LoadAndRegister(f);
+                        string filename = Path.Combine(dir, partialName + "." + ext);
+                        AddPartials(partials, filename);
                     }
                 }
             }
         }
 
-        void LoadAndRegister(string filename)
+        void AddPartials(Dictionary<string, string> partials, string filename)
         {
-            if (File.Exists(filename))
-            {
-                var f = new TextFile(filename);
-                RegisterPartials(f);
-                RegisterPartial(f, null);
-            }
-        }
+            if (!File.Exists(filename))
+                return;
 
-        void RegisterPartial(ITextFile file, string name)
-        {
-            if (name == null)
-                name = Path.GetFileNameWithoutExtension(file.FileName);
-
-            using (var sr = new StringReader(file.Contents))
-            {
-                var partialTemplate = Hbars.Compile(sr);
-                Hbars.RegisterTemplate(name, partialTemplate);
-            }
+            string partialName = Path.GetFileNameWithoutExtension(filename);
+            var f = new TextFile(filename);
+            partials[partialName] = f.Contents;
+            AddPartials(partials, f);
         }
 
         /// <summary>
@@ -221,5 +219,16 @@ namespace Lithogen.Engine.Implementations
             vb.SetProperty("Settings", TheSettings);
             return vb;
         }
+
+
+        //void RegisterHelpers()
+        //{
+        //    var c = new ComparisonHelpers();
+
+        //    foreach (var h in c.BlockHelpers)
+        //        Hbars.RegisterHelper(h.Key, h.Value);
+        //    foreach (var h in c.Helpers)
+        //        Hbars.RegisterHelper(h.Key, h.Value);
+        //}
     }
 }

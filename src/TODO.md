@@ -1,5 +1,13 @@
 TODO - Next
 ===========
+[ ] Implement Edge.js.
+    [ ] We want to replace the guts of the HandleBars processor.
+    [ ] Consider replacing the EmbedIO web server too.
+    [ ] And the live-reload server.
+    [ ] And running bundler
+    [ ] And the npm and node build steps...
+[ ] Factor the ViewPipeline into an object and a Runner?
+[ ] Consider removing verbose logging level.
 [ ] How to serve the LiveReload and static sites during development.
     https://github.com/livereload/livereload-js
 [ ] Port the handlebars helpers from Assemble.IO.

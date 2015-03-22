@@ -35,6 +35,9 @@
     <Reference Include="BassUtils">
       <HintPath>..\packages\BassUtils.1.1.0.0\lib\BassUtils.dll</HintPath>
     </Reference>
+    <Reference Include="EdgeJs">
+      <HintPath>..\packages\Edge.js.0.10.0\lib\EdgeJs.dll</HintPath>
+    </Reference>
     <Reference Include="Handlebars, Version=1.0.5554.20810, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Handlebars.Net.1.2.10\lib\Handlebars.dll</HintPath>
@@ -136,6 +139,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="edge\x64\edge.node">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="edge\x86\edge.node">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <EmbeddedResource Include="Configuration\_config.lit" />
   </ItemGroup>
@@ -146,6 +155,23 @@
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="edge\double_edge.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="edge\edge.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="edge\x64\node.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="edge\x86\node.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="handlebars.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
