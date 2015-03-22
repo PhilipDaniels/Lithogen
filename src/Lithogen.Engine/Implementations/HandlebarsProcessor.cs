@@ -5,7 +5,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using BassUtils;
 using EdgeJs;
-using Handlebars;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 
@@ -40,7 +39,6 @@ namespace Lithogen.Engine.Implementations
         readonly IModelFactory ModelFactory;
         readonly IPartialCache PartialCache;
         readonly string[] HandleBarsExtensions;
-        readonly IHandlebars Hbars;
 
         public HandlebarsProcessor
             (
@@ -55,7 +53,6 @@ namespace Lithogen.Engine.Implementations
             ModelFactory = modelFactory.ThrowIfNull("modelFactory");
             PartialCache = partialCache.ThrowIfNull("partialCache");
             HandleBarsExtensions = new string[] { "hbs", "hb", "handlebars" };
-            Hbars = Handlebars.Handlebars.Create();
         }
 
         public void Process(IPipelineFile file)
