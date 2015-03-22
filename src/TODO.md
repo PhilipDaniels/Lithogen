@@ -1,18 +1,27 @@
 TODO - Next
 ===========
+[ ] We now need to consider the whole Node/Edge/NuGet design before we start redoing things. Thoughts:
+    [ ] Move Node folder into Engine
+    [ ] Pull handlebars in via the npm restore rather than explicitly.
+    [ ] We need "our npm" and "user npm" to both work. So we will need to put the node folder
+        into their website via NuGet?
+
+
 [ ] Implement Edge.js.
     [ ] Consider replacing the EmbedIO web server too.
+        https://github.com/indexzero/http-server
+        https://github.com/cloudhead/node-static
+        http://stackoverflow.com/questions/6084360/using-node-js-as-a-simple-web-server?lq=1
     [ ] And the live-reload server.
     [ ] And running bundler
     [ ] And the npm and node build steps...
 [ ] Implement handlebars helpers. We now have a way forward. Probably want to port some existing helpers
     but do it from a .Net perspective, for example making a {{fmt}} helper to call String.Format(), in
     other words, we want some of the node functions to call back to .Net.
+    Port the handlebars helpers from Assemble.IO.
 [ ] Factor the ViewPipeline into an object and a Runner?
-[ ] Consider removing verbose logging level.
 [ ] How to serve the LiveReload and static sites during development.
     https://github.com/livereload/livereload-js
-[ ] Port the handlebars helpers from Assemble.IO.
 
 Bugs
 ====
