@@ -202,7 +202,7 @@ CS.handleClick = function(e) {
 CS.setTheme = function (themeId) {
     // Prevent problems with cookies from the old style of theme handling hanging around.
     if (!themeId || themeId.length <= 3)
-        themeId = "theme.solarized_dark.css";
+        themeId = "theme.solarized_light.css";
     var $cssLink = $("#themeSheet");
     $cssLink.attr("href", "content/" + themeId);
     $.cookie("gcstheme", themeId, { expires: 3 * 365 });
