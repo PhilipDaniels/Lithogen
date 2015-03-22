@@ -105,6 +105,7 @@
     <Compile Include="Implementations\JsonModelInjector.cs" />
     <Compile Include="Implementations\MarkdownProcessor.cs" />
     <Compile Include="Implementations\PipelineFileLoader.cs" />
+    <Compile Include="Implementations\ProcessorException.cs" />
     <Compile Include="ModelFactory.cs" />
     <Compile Include="Implementations\Npm.cs" />
     <Compile Include="Implementations\OutputFileWriter.cs" />
@@ -163,6 +164,9 @@
     <Content Include="edge\x86\node.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="handlebarshelpers.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="handlebars.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

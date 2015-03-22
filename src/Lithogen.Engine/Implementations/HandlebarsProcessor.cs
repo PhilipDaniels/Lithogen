@@ -82,14 +82,19 @@ namespace Lithogen.Engine.Implementations
             try
             {
                 var func = Edge.Func(@"
-                    var hbars = require('./../handlebars');
+                    var handlebars = require('./../handlebars');
+                    var helpers = require('./../handlebarshelpers');
+ 
+                    Object.keys(helpers).forEach(function (helperName) {
+                        handlebars.registerHelper(helperName, helpers[helperName]);
+                    });
 
                     return function(payload, callback) {
                         for (key in payload.partials) {
-                            hbars.registerPartial(key, payload.partials[key]);
+                            handlebars.registerPartial(key, payload.partials[key]);
                         }
 
-                        var template = hbars.compile(payload.source);
+                        var template = handlebars.compile(payload.source);
                         var templateResult = template(payload.context);
                         callback(null, templateResult);
                     }");
@@ -127,8 +132,27 @@ namespace Lithogen.Engine.Implementations
 
                 file.Contents = func(payload).Result.ToString();
             }
+            catch (AggregateException aex)
+            {
+                // Try and produce error messages that will be useful to the person whose template just crashed...
+                string msg = "";
+                foreach (var e in aex.InnerExceptions)
+                    msg += e.Message + Environment.NewLine;
+                throw new ProcessorException(msg, aex);
+            }
             catch (Exception ex)
             {
+                if (ex.Message.StartsWith("one or more", StringComparison.OrdinalIgnoreCase))
+                {
+                    string msg = ex.Message;
+                    if (ex.InnerException != null && !String.IsNullOrEmpty(ex.InnerException.Message))
+                        msg = ex.InnerException.Message;
+                    throw new ProcessorException(msg, ex);
+                }
+                else
+                {
+                    throw;
+                }
             }
             
             string newExtension = file.ExtOut ?? "html";
@@ -216,16 +240,5 @@ namespace Lithogen.Engine.Implementations
             vb.SetProperty("Settings", TheSettings);
             return vb;
         }
-
-
-        //void RegisterHelpers()
-        //{
-        //    var c = new ComparisonHelpers();
-
-        //    foreach (var h in c.BlockHelpers)
-        //        Hbars.RegisterHelper(h.Key, h.Value);
-        //    foreach (var h in c.Helpers)
-        //        Hbars.RegisterHelper(h.Key, h.Value);
-        //}
     }
 }
