@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 
@@ -35,7 +36,7 @@ namespace Lithogen.Engine.Implementations
             destinationFileName = Rebaser.RebaseFileNameIntoOutputDirectory(destinationFileName);
             CheckDestinationFilename(destinationFileName);
             FileUtils.EnsureParentDirectory(destinationFileName);
-            FileUtils.WriteFileWithUtf8Preamble(destinationFileName, contents);
+            FileUtilities.WriteFileWithUtf8Preamble(destinationFileName, contents);
             TheLogger.LogVerbose(LOG_PREFIX + "Wrote {0} characters to {1}", contents.Length, destinationFileName);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Dynamic;
 using System.IO;
+using BassUtils;
 using Hjson;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;

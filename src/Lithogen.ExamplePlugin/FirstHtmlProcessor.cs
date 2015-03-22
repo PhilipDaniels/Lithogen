@@ -1,6 +1,7 @@
-﻿using Lithogen.Core;
+﻿using System;
+using BassUtils;
+using Lithogen.Core;
 using Lithogen.Core.Interfaces;
-using System;
 
 namespace Lithogen.ExamplePlugin
 {

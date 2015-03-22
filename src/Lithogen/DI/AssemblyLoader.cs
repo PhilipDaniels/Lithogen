@@ -1,10 +1,11 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using BassUtils;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
 
 namespace Lithogen.DI
 {
@@ -70,7 +71,7 @@ namespace Lithogen.DI
                         continue;
                     }
 
-                    var dlls = FileUtils.GetDlls(dir);
+                    var dlls = FileUtilities.GetDlls(dir);
                     foreach (var dll in dlls)
                     {
                         try

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 using YamlDotNet.Serialization.NamingConventions;

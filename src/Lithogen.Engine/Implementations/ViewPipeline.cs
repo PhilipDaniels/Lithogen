@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 
@@ -312,7 +313,7 @@ namespace Lithogen.Engine.Implementations
                 if (newExtension.Equals(currentExtension, System.StringComparison.OrdinalIgnoreCase))
                 {
                     // Extension did not change. Typical behaviour for a html -> html filter.
-                    string pe = FileUtils.GetPenultimateExtension(file.WorkingFileName);
+                    string pe = FileUtilities.GetPenultimateExtension(file.WorkingFileName);
                     if (file.DefaultConfiguration.ExtensionMappings.ContainsKey(pe))
                     {
                         // Just strip this current extension, the next extension will then be used

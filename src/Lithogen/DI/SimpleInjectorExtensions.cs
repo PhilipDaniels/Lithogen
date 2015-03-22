@@ -2,6 +2,7 @@
 
 namespace Lithogen.DI
 {
+    /*
     static class SimpleInjectorExtensions
     {
         /// <summary>
@@ -18,4 +19,5 @@ namespace Lithogen.DI
                     options.ConstructorInjectionBehavior, convention);
         }
     }
+    */
 }

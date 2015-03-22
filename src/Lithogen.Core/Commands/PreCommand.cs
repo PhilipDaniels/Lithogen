@@ -1,4 +1,6 @@
-﻿namespace Lithogen.Core.Commands
+﻿using BassUtils;
+
+namespace Lithogen.Core.Commands
 {
     public abstract class PreCommand<T> : IPreCommand<T>
         where T : ICommand

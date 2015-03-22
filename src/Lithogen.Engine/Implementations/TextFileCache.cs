@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 
@@ -98,7 +99,7 @@ namespace Lithogen.Engine.Implementations
 
         void LoadImpl()
         {
-            foreach (string filename in FileUtils.GetAllFilesInDirectoryRecursive(Directory))
+            foreach (string filename in FileUtilities.GetAllFilesInDirectoryRecursive(Directory))
             {
                 try
                 {

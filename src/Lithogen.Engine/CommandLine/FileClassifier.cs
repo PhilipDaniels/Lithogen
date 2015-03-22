@@ -1,4 +1,5 @@
 ﻿using System;
+using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 

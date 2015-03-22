@@ -4,6 +4,7 @@ using System.Reflection;
 
 namespace Lithogen.DI
 {
+    /*
     class SettingsConvention : IParameterConvention
     {
         //const string ConnectionStringPostFix = "ConnectionString";
@@ -55,4 +56,5 @@ namespace Lithogen.DI
         //    return settings.ConnectionString;
         //}
     }
+    */ 
 }

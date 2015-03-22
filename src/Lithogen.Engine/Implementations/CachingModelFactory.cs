@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Lithogen.Core;
+using BassUtils;
 using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations

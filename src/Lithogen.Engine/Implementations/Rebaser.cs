@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 

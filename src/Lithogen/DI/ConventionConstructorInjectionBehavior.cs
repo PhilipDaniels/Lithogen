@@ -4,6 +4,7 @@ using System.Reflection;
 
 namespace Lithogen.DI
 {
+    /*
     class ConventionConstructorInjectionBehavior : IConstructorInjectionBehavior
     {
         readonly IConstructorInjectionBehavior Decorated;
@@ -23,4 +24,5 @@ namespace Lithogen.DI
             return Convention.BuildExpression(parameter);
         }
     }
+    */
 }

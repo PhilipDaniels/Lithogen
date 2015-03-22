@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 
@@ -18,7 +19,7 @@ namespace Lithogen.Engine.Implementations
         {
             directory.ThrowIfDirectoryDoesNotExist("directory");
 
-            return from filename in FileUtils.GetAllFilesInDirectoryRecursive(directory)
+            return from filename in FileUtilities.GetAllFilesInDirectoryRecursive(directory)
                    where !ViewFileNameFilter.ShouldIgnore(filename)
                    select filename;
         }

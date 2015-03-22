@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace Lithogen.DI
 {
+    /*
     class ConventionConstructorVerificationBehavior : IConstructorVerificationBehavior
     {
         readonly IConstructorVerificationBehavior Decorated;
@@ -20,4 +21,5 @@ namespace Lithogen.DI
                 Decorated.Verify(parameter);
         }
     }
+    */
 }

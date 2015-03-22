@@ -98,6 +98,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="BassUtils">
+      <HintPath>..\packages\BassUtils.1.1.0.0\lib\BassUtils.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup />

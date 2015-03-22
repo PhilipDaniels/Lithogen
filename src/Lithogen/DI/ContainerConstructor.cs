@@ -1,15 +1,16 @@
-﻿using Lithogen.Core;
-using Lithogen.Core.Interfaces;
-using Lithogen.Engine;
-using Lithogen.Engine.Configuration;
-using Lithogen.Engine.Implementations;
-using SimpleInjector.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Caching;
+using BassUtils;
+using Lithogen.Core;
+using Lithogen.Core.Interfaces;
+using Lithogen.Engine;
+using Lithogen.Engine.Configuration;
+using Lithogen.Engine.Implementations;
+using SimpleInjector.Extensions;
 
 namespace Lithogen.DI
 {
@@ -20,13 +21,14 @@ namespace Lithogen.DI
             const string LOG_PREFIX = "ConfigureIoC: "; 
             
             SimpleInjector.Container container = new SimpleInjector.Container();
-            container.Options.RegisterParameterConvention(new SettingsConvention());
+            //container.Options.RegisterParameterConvention(new SettingsConvention());
 
             container.Options.AllowOverridingRegistrations = true;
             logger.LogMessage(LOG_PREFIX + "IoC Container created.");
 
             RegisterSingletons(container, logger, settings);
-            RegisterImplementations(container, logger, typeof(DirectoryWatcher).Assembly, true);
+            // Any type in Engine will do.
+            RegisterImplementations(container, logger, typeof(CachingModelFactory).Assembly, true);
 
             // Load all plugins, may include overrides of base types and new file processors.
             string pluginDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -140,7 +142,7 @@ namespace Lithogen.DI
                 return;
             }
 
-            var plugins = FileUtils.GetDlls(pluginsDirectory);
+            var plugins = FileUtilities.GetDlls(pluginsDirectory);
             if (plugins.Count() == 0)
             {
                 logger.LogMessage(LOG_PREFIX + "No Plugins found in {0} - the search looks for files named *.dll in the top directory only.", pluginsDirectory);

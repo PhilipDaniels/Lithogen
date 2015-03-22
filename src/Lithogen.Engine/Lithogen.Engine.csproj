@@ -32,6 +32,9 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BassUtils">
+      <HintPath>..\packages\BassUtils.1.1.0.0\lib\BassUtils.dll</HintPath>
+    </Reference>
     <Reference Include="Handlebars, Version=1.0.5554.20810, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Handlebars.Net.1.2.10\lib\Handlebars.dll</HintPath>
@@ -76,7 +79,6 @@
     <Compile Include="CommandLine\StandardBuildSteps.cs" />
     <Compile Include="Configuration\ExtensionConfiguration.cs" />
     <Compile Include="Configuration\YamlMappings.cs" />
-    <Compile Include="DirectoryWatcher.cs" />
     <Compile Include="FileInfo.cs" />
     <Compile Include="CommandHandlers\BuildAssetsCommandHandler.cs" />
     <Compile Include="CommandHandlers\BuildCompleteCommandHandler.cs" />

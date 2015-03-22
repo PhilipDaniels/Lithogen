@@ -1,4 +1,6 @@
-﻿namespace Lithogen.Core.Commands
+﻿using BassUtils;
+
+namespace Lithogen.Core.Commands
 {
     public abstract class PostCommand<T> : IPostCommand<T>
         where T : ICommand

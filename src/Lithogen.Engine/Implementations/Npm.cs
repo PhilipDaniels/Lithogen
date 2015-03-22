@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using Lithogen.Core;
+using BassUtils;
 using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations
