@@ -82,7 +82,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
-    <None Include="Lithogen.nuspec" />
+    <None Include="Lithogen.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="node\bundler.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

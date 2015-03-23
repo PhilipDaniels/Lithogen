@@ -88,10 +88,6 @@
     <Content Include="views\robots.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gitcheatsheet.Model\Gitcheatsheet.Model.csproj">
-      <Project>{bce1aa14-028e-46dd-87eb-d6811341a5ad}</Project>
-      <Name>Gitcheatsheet.Model</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Lithogen.Core\Lithogen.Core.csproj">
       <Project>{ae718a62-41e3-4902-8e04-71611fbb9611}</Project>
       <Name>Lithogen.Core</Name>

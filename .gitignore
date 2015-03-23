@@ -2,10 +2,6 @@
 # Only exclude explicit folders because there are many  folders named "bin", "build" etc inside the npm trees.
 src/Gitcheatsheet/bin
 src/Gitcheatsheet/obj
-src/Gitcheatsheet.Model/bin
-src/Gitcheatsheet.Model/obj
-src/Gitcheatsheet.TestHarness/bin
-src/Gitcheatsheet.TestHarness/obj
 src/Lithogen/bin
 src/Lithogen/obj
 src/Lithogen.Core/bin
