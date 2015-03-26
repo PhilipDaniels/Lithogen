@@ -149,6 +149,7 @@ namespace Lithogen.Engine.Implementations
                 payload.context = MakeViewBag(file);
                 payload.stdoutHook = EdgeSupport.GetStdoutHook();
                 payload.stderrHook = EdgeSupport.GetStderrHook();
+                payload.stdoutHook = (Func<object, Task<object>>)EdgeSupport.GetStdoutHook2;
 
                 dynamic result = func(payload).Result;
                 var msgs = EdgeSupport.UnpackMessages(result.msgs);

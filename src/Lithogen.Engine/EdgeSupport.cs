@@ -49,12 +49,19 @@ namespace Lithogen.Engine
 
         public static Func<object, Task<object>> GetStderrHook()
         {
-            var onMessage = (Func<object, Task<object>>)(async (msg) =>
-            {
-                return "STDERR: " + (string)msg;
-            });
+            //return (Func<object, Task<object>>)((msg) => { return (string)msg; });
 
-            return onMessage;
+            return (msg) =>
+            {
+                return Task.Run(() => (object)("STDERR: " + (string)msg));
+            };
+
+            //return onMessage;
+        }
+
+        public static Task<object> GetStdoutHook2(object message)
+        {
+            return Task.Run(() => (object)("STDOUT2: " + (string)message));
         }
     }
 }
