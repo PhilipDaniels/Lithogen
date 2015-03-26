@@ -1,5 +1,6 @@
 TODO - Next
 ===========
+[ ] How to redirect stdout from Edge.
 [ ] We now need to consider the whole Node/Edge/NuGet design before we start redoing things. Thoughts:
     [ ] Move Node folder into Engine
     [ ] Pull handlebars in via the npm restore rather than explicitly.

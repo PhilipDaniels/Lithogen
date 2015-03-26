@@ -81,10 +81,15 @@ namespace Lithogen.Engine.Implementations
 
             try
             {
+                // see https://gist.github.com/pguillory/729616
+                // and https://github.com/tjanczuk/edge#how-to-handle-nodejs-events-in-net
+                // and http://www.letscodejavascript.com/v3/blog/2014/04/the_remarkable_parts
                 var func = Edge.Func(@"
+                    var hooker = require('./../outputhooker');
+                    hooker.accumulateMessages();
+
                     var handlebars = require('./../handlebars');
                     var helpers = require('./../handlebarshelpers');
- 
                     Object.keys(helpers).forEach(function (helperName) {
                         handlebars.registerHelper(helperName, helpers[helperName]);
                     });
@@ -95,8 +100,10 @@ namespace Lithogen.Engine.Implementations
                         }
 
                         var template = handlebars.compile(payload.source);
-                        var templateResult = template(payload.context);
-                        callback(null, templateResult);
+                        var result = {};
+                        result['templateResult'] = template(payload.context);
+                        result['msgs'] = hooker.getMessages();
+                        callback(null, result);
                     }");
 
 
@@ -130,7 +137,9 @@ namespace Lithogen.Engine.Implementations
                 payload.source = toCompile.Contents;
                 payload.context = MakeViewBag(file);
 
-                file.Contents = func(payload).Result.ToString();
+                dynamic result = func(payload).Result;
+                var msgs = EdgeSupport.UnpackMessages(result.msgs);
+                file.Contents = result.templateResult.ToString();
             }
             catch (AggregateException aex)
             {

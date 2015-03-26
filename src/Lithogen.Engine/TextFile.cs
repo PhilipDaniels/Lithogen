@@ -9,7 +9,7 @@ namespace Lithogen.Engine
     /// Represents a simple text file, such as a partial template, on
     /// which no further processing is required.
     /// </summary>
-    [DebuggerDisplay("{Filename} : {Contents == null ? \"\" : Contents.Substring(0, 40)}")]
+    [DebuggerDisplay("{FileName} : {Contents == null ? \"\" : Contents.Substring(0, 40)}")]
     public class TextFile : ITextFile
     {
         /// <summary>

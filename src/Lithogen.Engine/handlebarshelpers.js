@@ -46,11 +46,10 @@ And the definition in JavaScript. Note we get an options object which contains t
     }
 */
 
-console.log("Node shim working");
 
 // Any function exported by this module gets registered as a helper.
 module.exports = {
-    "phil" : function() {
+    phil : function() {
         return "hello PHIL";
     }
 
