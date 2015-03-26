@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using BassUtils;
 using EdgeJs;
 using Lithogen.Core;
@@ -85,8 +86,8 @@ namespace Lithogen.Engine.Implementations
                 // and https://github.com/tjanczuk/edge#how-to-handle-nodejs-events-in-net
                 // and http://www.letscodejavascript.com/v3/blog/2014/04/the_remarkable_parts
                 var func = Edge.Func(@"
-                    var hooker = require('./../outputhooker');
-                    hooker.accumulateMessages();
+                    //var hooker = require('./../outputhooker');
+                    //hooker.accumulateMessages();
 
                     var handlebars = require('./../handlebars');
                     var helpers = require('./../handlebarshelpers');
@@ -95,6 +96,16 @@ namespace Lithogen.Engine.Implementations
                     });
 
                     return function(payload, callback) {
+                        process.stdout.write = function(string) {
+                            payload.stdoutHook(string);
+                        };
+                        process.stderr.write = function(string) {
+                            payload.stderrHook(string);
+                        };
+
+                        console.log('logging');
+                        console.error('error logging');
+
                         for (key in payload.partials) {
                             handlebars.registerPartial(key, payload.partials[key]);
                         }
@@ -102,7 +113,7 @@ namespace Lithogen.Engine.Implementations
                         var template = handlebars.compile(payload.source);
                         var result = {};
                         result['templateResult'] = template(payload.context);
-                        result['msgs'] = hooker.getMessages();
+                        result['msgs'] = []; //hooker.getMessages();
                         callback(null, result);
                     }");
 
@@ -136,6 +147,8 @@ namespace Lithogen.Engine.Implementations
                 payload.partials = partials;
                 payload.source = toCompile.Contents;
                 payload.context = MakeViewBag(file);
+                payload.stdoutHook = EdgeSupport.GetStdoutHook();
+                payload.stderrHook = EdgeSupport.GetStderrHook();
 
                 dynamic result = func(payload).Result;
                 var msgs = EdgeSupport.UnpackMessages(result.msgs);

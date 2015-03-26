@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Lithogen.Engine
 {
@@ -33,6 +35,26 @@ namespace Lithogen.Engine
             }
 
             return msgs;
+        }
+
+        public static Func<object, Task<object>> GetStdoutHook()
+        {
+            var onMessage = (Func<object, Task<object>>)(async (msg) =>
+            {
+                return "STDOUT: " + (string)msg;
+            });
+
+            return onMessage;
+        }
+
+        public static Func<object, Task<object>> GetStderrHook()
+        {
+            var onMessage = (Func<object, Task<object>>)(async (msg) =>
+            {
+                return "STDERR: " + (string)msg;
+            });
+
+            return onMessage;
         }
     }
 }
