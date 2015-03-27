@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine
 {
@@ -22,7 +23,7 @@ namespace Lithogen.Engine
         }
     }
 
-    public static class EdgeSupport
+    public class EdgeSupport
     {
         public static IEnumerable<NodeMessage> UnpackMessages(dynamic messages)
         {
@@ -37,28 +38,46 @@ namespace Lithogen.Engine
             return msgs;
         }
 
-        public static Func<object, Task<object>> GetStdoutHook()
+        readonly ILogger Logger;
+        public EdgeSupport(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        public Func<object, Task<object>> GetStdoutHook()
         {
             var onMessage = (Func<object, Task<object>>)(async (msg) =>
             {
-                return "STDOUT: " + (string)msg;
+                return Task.Run(() => Logger.LogMessage((string)msg));
             });
 
             return onMessage;
         }
 
-        public static Func<object, Task<object>> GetStderrHook()
+        public Func<object, Task<object>> GetStderrHook()
         {
+            var onMessage = (Func<object, Task<object>>)(async (msg) =>
+            {
+                return Task.Run(() => Logger.LogError((string)msg));
+            });
+
+            return onMessage;
+
+
+
+
             //return (Func<object, Task<object>>)((msg) => { return (string)msg; });
 
-            return (msg) =>
-            {
-                return Task.Run(() => (object)("STDERR: " + (string)msg));
-            };
+            //return (msg) =>
+            //{
+            //    return Task.Run(() => Logger.LogError((string)msg));
+            //    //return Task.Run(() => (object)("STDERR: " + (string)msg));
+            //};
 
             //return onMessage;
         }
 
+        // This one needs a cast.
         public static Task<object> GetStdoutHook2(object message)
         {
             return Task.Run(() => (object)("STDOUT2: " + (string)message));

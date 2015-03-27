@@ -86,22 +86,16 @@ namespace Lithogen.Engine.Implementations
                 // and https://github.com/tjanczuk/edge#how-to-handle-nodejs-events-in-net
                 // and http://www.letscodejavascript.com/v3/blog/2014/04/the_remarkable_parts
                 var func = Edge.Func(@"
-                    //var hooker = require('./../outputhooker');
-                    //hooker.accumulateMessages();
-
+                    var hooker = require('./../hooker');
                     var handlebars = require('./../handlebars');
                     var helpers = require('./../handlebarshelpers');
-                    Object.keys(helpers).forEach(function (helperName) {
-                        handlebars.registerHelper(helperName, helpers[helperName]);
-                    });
 
                     return function(payload, callback) {
-                        process.stdout.write = function(string) {
-                            payload.stdoutHook(string);
-                        };
-                        process.stderr.write = function(string) {
-                            payload.stderrHook(string);
-                        };
+                        hooker.hookStreams(payload);
+
+                        Object.keys(helpers).forEach(function (helperName) {
+                            handlebars.registerHelper(helperName, helpers[helperName]);
+                        });
 
                         console.log('logging');
                         console.error('error logging');
@@ -142,14 +136,16 @@ namespace Lithogen.Engine.Implementations
                     AddPartials(partials, file);
                     toCompile = file;
                 }
-                
+
+                var es = new EdgeSupport(TheLogger);
+
                 dynamic payload = new ExpandoObject();
                 payload.partials = partials;
                 payload.source = toCompile.Contents;
                 payload.context = MakeViewBag(file);
-                payload.stdoutHook = EdgeSupport.GetStdoutHook();
-                payload.stderrHook = EdgeSupport.GetStderrHook();
-                payload.stdoutHook = (Func<object, Task<object>>)EdgeSupport.GetStdoutHook2;
+                payload.stdoutHook = es.GetStdoutHook();
+                payload.stderrHook = es.GetStderrHook();
+                //payload.stdoutHook = (Func<object, Task<object>>)EdgeSupport.GetStdoutHook2;
 
                 dynamic result = func(payload).Result;
                 var msgs = EdgeSupport.UnpackMessages(result.msgs);

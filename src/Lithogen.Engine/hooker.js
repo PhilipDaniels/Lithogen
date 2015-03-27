@@ -21,5 +21,20 @@ module.exports = {
 
     getMessages: function () {
         return msgs;
+    },
+
+    hookStreams : function(payload) {
+        if (typeof(payload.stdoutHook) === 'function') {
+            process.stdout.write = function (string) {
+                payload.stdoutHook(string);
+            };
+        }
+
+        if (typeof (payload.stderrHook) === 'function') {
+            process.stderr.write = function (string) {
+                payload.stderrHook(string);
+            };
+        }
     }
+
 };
