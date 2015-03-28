@@ -79,35 +79,27 @@ namespace Lithogen.Engine.Implementations
             // TODO: Just register all partials in the partial cache?
             // TODO: Allow layouts in layouts.
             // TODO: Allow us to run anything through handlebars without changing the file extension.
-
             try
             {
-                // see https://gist.github.com/pguillory/729616
-                // and https://github.com/tjanczuk/edge#how-to-handle-nodejs-events-in-net
-                // and http://www.letscodejavascript.com/v3/blog/2014/04/the_remarkable_parts
                 var func = Edge.Func(@"
-                    var hooker = require('./../hooker');
-                    var handlebars = require('./../handlebars');
-                    var helpers = require('./../handlebarshelpers');
+                    return function(data, callback) {
+                        var hooker = require('./../hooker');
+                        hooker.hookStreams(data);
 
-                    return function(payload, callback) {
-                        hooker.hookStreams(payload);
+                        var handlebars = require('./../handlebars');
+                        var helpers = require('./../handlebarshelpers');
 
                         Object.keys(helpers).forEach(function (helperName) {
                             handlebars.registerHelper(helperName, helpers[helperName]);
                         });
 
-                        console.log('logging');
-                        console.error('error logging');
-
-                        for (key in payload.partials) {
-                            handlebars.registerPartial(key, payload.partials[key]);
+                        for (key in data.partials) {
+                            handlebars.registerPartial(key, data.partials[key]);
                         }
 
-                        var template = handlebars.compile(payload.source);
-                        var result = {};
-                        result['templateResult'] = template(payload.context);
-                        result['msgs'] = []; //hooker.getMessages();
+                        var template = handlebars.compile(data.source);
+                        var result = template(data.context);
+
                         callback(null, result);
                     }");
 
@@ -144,12 +136,10 @@ namespace Lithogen.Engine.Implementations
                 payload.source = toCompile.Contents;
                 payload.context = MakeViewBag(file);
                 payload.stdoutHook = es.GetStdoutHook();
-                payload.stderrHook = es.GetStderrHook();
-                //payload.stdoutHook = (Func<object, Task<object>>)EdgeSupport.GetStdoutHook2;
+                //payload.stderrHook = es.GetStderrHook();
 
                 dynamic result = func(payload).Result;
-                var msgs = EdgeSupport.UnpackMessages(result.msgs);
-                file.Contents = result.templateResult.ToString();
+                file.Contents = result.ToString();
             }
             catch (AggregateException aex)
             {

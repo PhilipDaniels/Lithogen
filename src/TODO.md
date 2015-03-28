@@ -156,3 +156,67 @@ http://stackoverflow.com/questions/893144/equivalent-in-javascript
       request in them: http://www.philipdaniels.com/site1/images/image1.png
     * If you do this you can install the resultant website anywhere on disk
       just by copying it to a new location, without any fear that Urls will break.
+
+
+Edge Hooking
+============
+// see https://gist.github.com/pguillory/729616
+// and https://github.com/tjanczuk/edge#how-to-handle-nodejs-events-in-net
+
+// Variant 1: collecting messages.
+
+var func = Edge.Func(@"
+return function(payload, callback) {
+    var hooker = require('./../hooker');
+    hooker.hookStreams(payload);
+
+    // Do stuff...
+
+    // Return to caller.
+    var result = {};
+    result['otherResults'] = { some: object };
+    result['STANDARDSTREAMMESSAGES'] = hooker.getMessages();
+    callback(null, result);
+}");
+
+// Variant 2: hooking the streams.
+
+var func = Edge.Func(@"
+return function(payload, callback) {
+    var hooker = require('./../hooker');
+    hooker.hookStreams(payload);
+
+    // Do stuff
+
+    // Return to caller.
+    var result = {};
+    result['otherResults'] = { some: object };
+    callback(null, result);
+}"
+
+
+// Now wrapping other stuff.
+var func = Edge.Func(@"
+    return function(data, callback) {
+        var hooker = require('./../hooker');
+        hooker.hookStreams(data);
+
+        // Do stuff
+        var someTask = require('./../sometask');
+        var result = someTask(data);
+
+        callback(null, result);
+    }");
+
+and in sometask.js:
+
+    "use strict";
+
+    // See http://bites.goodeggs.com/posts/export-this/   (a very good explanation)
+    // and https://quickleft.com/blog/creating-and-publishing-a-node-js-module/
+
+    // You should name your functions so that stack traces are more understandable.
+    module.exports = function mytask(data) {
+        console.log("User task is running");
+        console.log("User task is done");
+    };

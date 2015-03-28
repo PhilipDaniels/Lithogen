@@ -38,22 +38,50 @@ namespace Lithogen.Engine
             return msgs;
         }
 
-        readonly ILogger Logger;
+        
+        
+        
+        
+        readonly ILogger TheLogger;
+
         public EdgeSupport(ILogger logger)
         {
-            Logger = logger;
+            TheLogger = logger;
         }
+
 
         public Func<object, Task<object>> GetStdoutHook()
         {
             var onMessage = (Func<object, Task<object>>)(async (msg) =>
             {
-                return Task.Run(() => Logger.LogMessage((string)msg));
+                var t = Task.Run(() => TheLogger.LogMessage((string)msg));
+                await t;
+                return t;
             });
 
             return onMessage;
         }
+       
+        //async void StdOut(string message)
+        //{
+        //    await Task.Run(() => TheLogger.LogMessage(message));
+        //}
 
+        //public Func<object, Task<object>> GetStdoutHook()
+        //{
+        //    Func<object, Task<object>> f = (msg) => {
+        //        //return await
+        //        //return Task.Run(() => TheLogger.LogMessage((string)msg));
+        //    };
+
+        //    //return Task.Run((object msg) => TheLogger.LogMessage((string)msg));
+        //    //return Task.Run(() => (object)("STDOUT2: " + (string)message));
+        //}
+        
+        
+        
+        /*
+         * 
         public Func<object, Task<object>> GetStderrHook()
         {
             var onMessage = (Func<object, Task<object>>)(async (msg) =>
@@ -76,11 +104,7 @@ namespace Lithogen.Engine
 
             //return onMessage;
         }
+        */
 
-        // This one needs a cast.
-        public static Task<object> GetStdoutHook2(object message)
-        {
-            return Task.Run(() => (object)("STDOUT2: " + (string)message));
-        }
     }
 }
