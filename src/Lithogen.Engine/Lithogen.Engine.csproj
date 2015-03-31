@@ -168,9 +168,9 @@
     <None Include="hooker.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="handlebarshelpers.js">
+    <Content Include="handlebarshelpers.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="handlebars.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

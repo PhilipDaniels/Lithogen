@@ -52,16 +52,76 @@ namespace Lithogen.Engine
 
         public Func<object, Task<object>> GetStdoutHook()
         {
-            var onMessage = (Func<object, Task<object>>)(async (msg) =>
+            Func<object, Task<object>> hook = (message) =>
             {
-                var t = Task.Run(() => TheLogger.LogMessage((string)msg));
-                await t;
-                return t;
-            });
+                TheLogger.LogMessage((message as string).Trim());
+                return Task.FromResult<object>(null);
+            };
 
-            return onMessage;
+            return hook;
         }
-       
+
+        //public Func<object, Task<object>> GetStdoutHook2()
+        //{
+        //    Func<object, Task<object>> hook = (message) =>
+        //    {
+        //        Task<object> t = Task.Factory.StartNew<object>(() => {
+        //                TheLogger.LogMessage((message as string).Trim());
+        //                return null;
+        //            });
+
+        //        return t;
+        //    };
+
+        //    return hook;
+        //}
+
+        //public Func<object, Task<object>> GetStdoutHook2()
+        //{
+        //    Func<object, Task<object>> hook = (message) =>
+        //    {
+        //        Task<object> t = Task.Factory.StartNew<object>(() =>
+        //        {
+        //            TheLogger.LogMessage((message as string).Trim());
+        //            return null;
+        //        });
+
+        //        return t;
+        //    };
+
+        //    return hook;
+        //}
+
+
+
+
+
+
+        //public Func<object, object> GetStdoutHook2()
+        //{
+        //    // Does not work, does not get hooked by Edge.
+        //    Func<object, object> hook = (message) =>
+        //    {
+        //        TheLogger.LogMessage("2 " + (message as string).Trim());
+        //        return null;
+        //    };
+
+        //    return hook;
+        //}
+
+        //public Action<object> GetStdoutHook3()
+        //{
+        //    // Does not work, does not get hooked by Edge.
+        //    Action<object> hook = (message) =>
+        //    {
+        //        TheLogger.LogMessage("3 " + (message as string).Trim());
+        //    };
+
+        //    return hook;
+        //}
+
+
+
         //async void StdOut(string message)
         //{
         //    await Task.Run(() => TheLogger.LogMessage(message));
