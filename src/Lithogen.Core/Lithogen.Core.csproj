@@ -33,8 +33,9 @@
     <CodeAnalysisRuleSet>..\Lithogen.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BassUtils">
-      <HintPath>..\packages\BassUtils.1.1.0.0\lib\BassUtils.dll</HintPath>
+    <Reference Include="BassUtils, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\BassUtils.2.0.0.0\lib\BassUtils.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -92,6 +93,7 @@
     <Compile Include="Commands\PreBuildAssetsCommand.cs" />
     <Compile Include="Commands\PreCommand.cs" />
     <Compile Include="Commands\UnknownFileCommand.cs" />
+    <Compile Include="Interfaces\IEdgeHelper.cs" />
     <Compile Include="IPostCommand.cs" />
     <Compile Include="FileClass.cs" />
     <Compile Include="FileNotification.cs" />
@@ -110,7 +112,7 @@
     <Compile Include="Interfaces\ISideBySide.cs" />
     <Compile Include="Interfaces\ICompositeModelInjector.cs" />
     <Compile Include="Interfaces\IModelInjector.cs" />
-    <Compile Include="Interfaces\INpm.cs" />
+    <Compile Include="Interfaces\INpmHelper.cs" />
     <Compile Include="Interfaces\IStandardBuildSteps.cs" />
     <Compile Include="IPreCommand.cs" />
     <Compile Include="ISettings.cs" />

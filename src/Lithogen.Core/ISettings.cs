@@ -132,5 +132,7 @@ namespace Lithogen.Core
         /// Specifies the degree of parallelism to use when compiling views.
         /// </summary>
         int ViewDOP { get; set; }
+
+        string ProjectLithogenDirectory { get; }
     }
 }

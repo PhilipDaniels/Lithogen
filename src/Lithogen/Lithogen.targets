@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <LithogenAssemblyLoadDirectories Include="$(TargetDir)" />
+    <LithogenAssemblyLoadDirectories Include="$(MSBuildProjectDirectory)\Lithogen\Plugins" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -16,8 +17,8 @@
     <LithogenThisFile>$(MSBuildThisFileDirectory)</LithogenThisFile>
     <LithogenInstallationDirectory Condition="'$(LithogenInstallationDirectory)'==''">$(MSBuildThisFileDirectory)\..\tools\Lithogen</LithogenInstallationDirectory>
     <LithogenExePath Condition="'$(LithogenExePath)'==''">$(LithogenInstallationDirectory)\Lithogen.exe</LithogenExePath>
-    <LithogenNodeExePath Condition="'$(LithogenNodeExePath)'==''">$(LithogenInstallationDirectory)\node\node.exe</LithogenNodeExePath>
-    <LithogenNpmExePath Condition="'$(LithogenNpmExePath)'==''">$(LithogenInstallationDirectory)\node\npm.cmd</LithogenNpmExePath>
+    <LithogenNodeExePath Condition="'$(LithogenNodeExePath)'==''">$(MSBuildProjectDirectory)\Lithogen\node\node.exe</LithogenNodeExePath>
+    <LithogenNpmExePath Condition="'$(LithogenNpmExePath)'==''">$(MSBuildProjectDirectory)\Lithogen\node\npm.cmd</LithogenNpmExePath>
     <!-- Where to get things from. Based on MVC defaults. -->
     <LithogenContentDirectory Condition="'$(LithogenContentDirectory)'==''">$(MSBuildProjectDirectory)\content</LithogenContentDirectory>
     <LithogenImagesDirectory Condition="'$(LithogenImagesDirectory)'==''">$(MSBuildProjectDirectory)\images</LithogenImagesDirectory>

@@ -2,6 +2,7 @@
 # Only exclude explicit folders because there are many  folders named "bin", "build" etc inside the npm trees.
 src/Gitcheatsheet/bin
 src/Gitcheatsheet/obj
+src/Gitcheatsheet/Lithogen
 src/Lithogen/bin
 src/Lithogen/obj
 src/Lithogen.Core/bin
@@ -25,6 +26,9 @@ src/Lithogen.TestSite*/obj
 # node during its install and node is not on the path.
 src/Lithogen/node/node_modules/*
 !src/Lithogen/node/node_modules/npm
+src/Lithogen.Engine/node/node_modules/*
+!src/Lithogen.Engine/node/node_modules/npm
+
 
 #################################################################################
 # Everything after here is commented out.

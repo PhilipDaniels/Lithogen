@@ -39,6 +39,7 @@ namespace Lithogen.Engine.Implementations
         readonly ISettings TheSettings;
         readonly IModelFactory ModelFactory;
         readonly IPartialCache PartialCache;
+        readonly IEdgeHelper EdgeHelper;
         readonly string[] HandleBarsExtensions;
 
         public HandlebarsProcessor
@@ -46,13 +47,15 @@ namespace Lithogen.Engine.Implementations
             ILogger logger,
             ISettings settings,
             IModelFactory modelFactory,
-            IPartialCache partialCache
+            IPartialCache partialCache,
+            IEdgeHelper edgeHelper
             )
         {
             TheLogger = logger.ThrowIfNull("logger");
             TheSettings = settings.ThrowIfNull("settings");
             ModelFactory = modelFactory.ThrowIfNull("modelFactory");
             PartialCache = partialCache.ThrowIfNull("partialCache");
+            EdgeHelper = edgeHelper.ThrowIfNull("edgeHelper");
             HandleBarsExtensions = new string[] { "hbs", "hb", "handlebars" };
         }
 
@@ -81,13 +84,13 @@ namespace Lithogen.Engine.Implementations
             // TODO: Allow us to run anything through handlebars without changing the file extension.
             try
             {
-                var func = Edge.Func(@"
+                string js = @"
                     return function(data, callback) {
-                        var hooker = require('./../hooker');
+                        var hooker = require('PROJLITHDIR/node/hooker');
                         hooker.hookStreams(data);
 
-                        var handlebars = require('./../handlebars');
-                        var helpers = require('./../handlebarshelpers');
+                        var handlebars = require('PROJLITHDIR/node/handlebars');
+                        var helpers = require('PROJLITHDIR/node/handlebarshelpers');
 
                         Object.keys(helpers).forEach(function (helperName) {
                             handlebars.registerHelper(helperName, helpers[helperName]);
@@ -99,10 +102,11 @@ namespace Lithogen.Engine.Implementations
 
                         var template = handlebars.compile(data.source);
                         var result = template(data.context);
-
                         callback(null, result);
-                    }");
+                    }";
 
+                js = EdgeHelper.ReplaceLithogenNodeRoot(js);
+                var edge = Edge.Func(js);
 
                 var partials = new Dictionary<string, string>();
 
@@ -129,16 +133,12 @@ namespace Lithogen.Engine.Implementations
                     toCompile = file;
                 }
 
-                var es = new EdgeSupport(TheLogger);
-
-                dynamic payload = new ExpandoObject();
+                dynamic payload = EdgeHelper.MakeHookedExpando();
                 payload.partials = partials;
                 payload.source = toCompile.Contents;
                 payload.context = MakeViewBag(file);
-                payload.stdoutHook = es.GetStdoutHook();
-                //payload.stderrHook = es.GetStderrHook();
 
-                dynamic result = func(payload).Result;
+                dynamic result = edge(payload).Result;
                 file.Contents = result.ToString();
             }
             catch (AggregateException aex)

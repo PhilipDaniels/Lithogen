@@ -283,5 +283,16 @@ namespace Lithogen.Core
             string json = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(fileName, json, Encoding.UTF8);
         }
+
+
+        public string ProjectLithogenDirectory
+        {
+            get
+            {
+                string dir = Path.GetDirectoryName(NodeExePath);
+                dir = Path.GetDirectoryName(dir);
+                return dir;
+            }
+        }
     }
 }

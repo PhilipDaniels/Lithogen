@@ -32,8 +32,9 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BassUtils">
-      <HintPath>..\packages\BassUtils.1.1.0.0\lib\BassUtils.dll</HintPath>
+    <Reference Include="BassUtils, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\BassUtils.2.0.0.0\lib\BassUtils.dll</HintPath>
     </Reference>
     <Reference Include="EdgeJs">
       <HintPath>..\packages\Edge.js.0.10.0\lib\EdgeJs.dll</HintPath>
@@ -78,7 +79,6 @@
     <Compile Include="CommandLine\StandardBuildSteps.cs" />
     <Compile Include="Configuration\ExtensionConfiguration.cs" />
     <Compile Include="Configuration\YamlMappings.cs" />
-    <Compile Include="EdgeSupport.cs" />
     <Compile Include="FileInfo.cs" />
     <Compile Include="CommandHandlers\BuildAssetsCommandHandler.cs" />
     <Compile Include="CommandHandlers\BuildCompleteCommandHandler.cs" />
@@ -101,14 +101,16 @@
     <Compile Include="Implementations\CompositeModelInjector.cs" />
     <Compile Include="Configuration\DirectoryConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationResolver.cs" />
+    <Compile Include="Implementations\EdgeHelper.cs" />
     <Compile Include="Implementations\HandlebarsProcessor.cs" />
     <Compile Include="Implementations\HJsonModelInjector.cs" />
     <Compile Include="Implementations\JsonModelInjector.cs" />
     <Compile Include="Implementations\MarkdownProcessor.cs" />
+    <Compile Include="Implementations\NodeMessage.cs" />
     <Compile Include="Implementations\PipelineFileLoader.cs" />
     <Compile Include="Implementations\ProcessorException.cs" />
     <Compile Include="ModelFactory.cs" />
-    <Compile Include="Implementations\Npm.cs" />
+    <Compile Include="Implementations\NpmHelper.cs" />
     <Compile Include="Implementations\OutputFileWriter.cs" />
     <Compile Include="Implementations\PartialCache.cs" />
     <Compile Include="Implementations\ProcessRunner.cs" />
@@ -141,6 +143,27 @@
     <None Include="edge\x86\edge.node">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="node\node_modules\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="node\bundler.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="node\nodevars.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="node\npm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="node\npm.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="node\package.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="node\readme.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <EmbeddedResource Include="Configuration\_config.lit" />
   </ItemGroup>
@@ -165,16 +188,23 @@
     <Content Include="edge\x86\node.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="hooker.js">
+    <Content Include="node\bundler.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="node\node.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="node\hooker.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="handlebarshelpers.js">
+    <Content Include="node\handlebarshelpers.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="handlebars.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

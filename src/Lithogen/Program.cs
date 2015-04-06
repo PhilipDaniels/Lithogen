@@ -342,11 +342,11 @@ namespace Lithogen
             string dir = Path.GetDirectoryName(TheSettings.NodeExePath);
             string packageJsonFilename = Path.Combine(dir, "package.json");
 
-            var npm = Container.GetInstance<INpm>();
+            var npm = Container.GetInstance<INpmHelper>();
             if (npm.InstallIsRequired(packageJsonFilename))
             {
                 TheLogger.LogMessage("Downloading npm packages, please wait...");
-                npm.PerformInstall(TheSettings.NodeExePath, packageJsonFilename);
+                npm.PerformInstall(packageJsonFilename);
             }
         }
     }

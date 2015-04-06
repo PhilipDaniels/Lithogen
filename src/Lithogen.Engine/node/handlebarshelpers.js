@@ -46,12 +46,6 @@ And the definition in JavaScript. Note we get an options object which contains t
     }
 */
 
-console.log("shim working");
-console.log("shim working");
-console.log("shim working");
-console.log("shim working");
-
-
 // Any function exported by this module gets registered as a helper.
 exports = {
     phil : function() {

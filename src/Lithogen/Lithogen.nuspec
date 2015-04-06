@@ -16,10 +16,25 @@
   </metadata>
   <files>
     <!-- Files are relative to the nuspec file. -->
+    
+    <!-- Tools\ is for Powershell scripts and programs accessible from the Package Manager Console -->
     <file src="bin\$configuration$\" target="tools\Lithogen" />
+
+    <!-- Targets files in Build\ are added to the csproj when you install the package.
+         DLLs are not - but we need them to run the shim, so they also go in here.
+         And keeping the shim small is the reason that we cannot merge the Core and Engine. -->
     <file src="Lithogen.targets" target="build\Lithogen.targets" />
+    <file src="..\Lithogen.Core\bin\$configuration$\BassUtils.dll" target="build\BassUtils.dll" />
     <file src="..\Lithogen.Core\bin\$configuration$\Lithogen.Core.dll" target="build\Lithogen.Core.dll" />
     <file src="..\Lithogen.TaskShim\bin\$configuration$\Lithogen.TaskShim.dll" target="build\Lithogen.TaskShim.dll" />
     <file src="..\Lithogen.TaskShim\bin\$configuration$\Newtonsoft.Json.dll" target="build\Newtonsoft.Json.dll" />
+
+    <!-- Content\ files are added to the root of the project when you install the package. -->
+    <file src="..\Lithogen.Engine\node\**\*" target="Content\Lithogen\node" />
+    <file src="bin\$configuration$\Plugins\**\*" target="Content\Lithogen\Plugins" />
+    
+    <!-- Lib\ files are added to the target project as a reference. We need Lithogen.Core.dll 
+         so that people can write command handlers, but not Engine, it will bring in too many. -->
+    <file src="..\Lithogen.Core\bin\$configuration$\Lithogen.Core.dll" target="lib\Lithogen.Core.dll" />
   </files>
 </package>
