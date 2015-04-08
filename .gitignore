@@ -20,10 +20,10 @@ src/Lithogen.TaskShim/obj
 src/Lithogen.TestSite*/bin
 src/Lithogen.TestSite*/obj
 
-# Under node_modules, we install everything using npm, EXCEPT npm itself,
-# which we must take care to keep, so we can do the bootstrap.
+# Under node_modules, we install everything using npm, EXCEPT npm itself, and the utility library npmi,
+# both of which we must take care to keep, so we can do the bootstrap.
 # And node-sass, which just won't install this way, 'cos it tries to run
-# node during its install and node is not on the path.
+# node during its install and node is not on the path. See NCAPSULATE SETLOCAL
 src/Lithogen/node/node_modules/*
 !src/Lithogen/node/node_modules/npm
 src/Lithogen.Engine/node/node_modules/*

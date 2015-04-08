@@ -86,11 +86,11 @@ namespace Lithogen.Engine.Implementations
             {
                 string js = @"
                     return function(data, callback) {
-                        var hooker = require('PROJLITHDIR/node/hooker');
+                        var hooker = require('$PROJECTNODEDIR$/hooker');
                         hooker.hookStreams(data);
 
-                        var handlebars = require('PROJLITHDIR/node/handlebars');
-                        var helpers = require('PROJLITHDIR/node/handlebarshelpers');
+                        var handlebars = require('$PROJECTNODEDIR$/node_modules/handlebars');
+                        var helpers = require('$PROJECTNODEDIR$/handlebarshelpers');
 
                         Object.keys(helpers).forEach(function (helperName) {
                             handlebars.registerHelper(helperName, helpers[helperName]);

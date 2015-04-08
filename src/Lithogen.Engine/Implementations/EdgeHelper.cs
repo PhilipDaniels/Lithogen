@@ -12,11 +12,13 @@ namespace Lithogen.Engine.Implementations
     {
         readonly ISettings TheSettings;
         readonly ILogger TheLogger;
+        readonly string ProjectNodeDir;
 
         public EdgeHelper(ILogger logger, ISettings settings)
         {
             TheLogger = logger.ThrowIfNull("logger");
             TheSettings = settings.ThrowIfNull("settings");
+            ProjectNodeDir = Path.GetDirectoryName(TheSettings.NodeExePath).Replace("\\", "/");
         }
 
         /// <summary>
@@ -29,9 +31,7 @@ namespace Lithogen.Engine.Implementations
         {
             javascript.ThrowIfNull("javascript");
 
-            string dir = TheSettings.ProjectLithogenDirectory;
-            dir = dir.Replace("\\", "/");
-            javascript = javascript.Replace("PROJLITHDIR", dir);
+            javascript = javascript.Replace("$PROJECTNODEDIR$", ProjectNodeDir);
             return javascript;
         }
 

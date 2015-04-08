@@ -13,26 +13,29 @@
 
 var msgs = [];
 
-exports = {
-    accumulateMessages : function() {
-        process.stdout.write = function(string) {
-            msgs.push({ stream: 'o', message : string });
-        };
-        process.stderr.write = function(string) {
-            msgs.push({ stream: 'e', message: string });
-        };
-    },
+exports.accumulateMessages = function() {
+    process.stdout.write = function(string) {
+        msgs.push({ stream: 'o', message : string });
+    };
+    process.stderr.write = function(string) {
+        msgs.push({ stream: 'e', message: string });
+    };
+};
 
-    getMessages: function () {
-        return msgs;
-    },
+exports.getMessages = function () {
+    return msgs;
+};
 
-    hookStreams : function(payload) {
-        if (typeof (payload.stdoutHook) === 'function') {
-            process.stdout.write = payload.stdoutHook;
-        }
-        if (typeof (payload.stderrHook) === 'function') {
-            process.stderr.write = payload.stderrHook;
-        }
+exports.hookStreams = function(payload) {
+    if (typeof (payload.stdoutHook) === 'function') {
+        process.stdout.write = payload.stdoutHook;
+    } else {
+        //console.log('No stdoutHook is defined, typeof returns ' + typeof(payload.stdoutHook));
+    }
+
+    if (typeof (payload.stderrHook) === 'function') {
+        process.stderr.write = payload.stderrHook;
+    } else {
+        //console.log('No stderrHook is defined, typeof returns ' + typeof(payload.stdoutHook));
     }
 };

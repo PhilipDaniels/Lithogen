@@ -107,6 +107,7 @@
     <Compile Include="Implementations\JsonModelInjector.cs" />
     <Compile Include="Implementations\MarkdownProcessor.cs" />
     <Compile Include="Implementations\NodeMessage.cs" />
+    <Compile Include="Implementations\EdgeBasedNpmHelper.cs" />
     <Compile Include="Implementations\PipelineFileLoader.cs" />
     <Compile Include="Implementations\ProcessorException.cs" />
     <Compile Include="ModelFactory.cs" />

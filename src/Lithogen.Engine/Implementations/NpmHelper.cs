@@ -2,18 +2,20 @@
 using System.Globalization;
 using System.IO;
 using BassUtils;
-using EdgeJs;
+using Lithogen.Core;
 using Lithogen.Core.Interfaces;
 
 namespace Lithogen.Engine.Implementations
 {
     public class NpmHelper : INpmHelper
     {
-        readonly IEdgeHelper EdgeHelper;
+        readonly ISettings TheSettings;
+        readonly IProcessRunner ProcessRunner;
 
-        public NpmHelper(IEdgeHelper edgeHelper)
+        public NpmHelper(ISettings settings, IProcessRunner processRunner)
         {
-            EdgeHelper = edgeHelper.ThrowIfNull("edgeHelper");
+            TheSettings = settings.ThrowIfNull("settings");
+            ProcessRunner = processRunner.ThrowIfNull("processRunner");
         }
 
         /// <summary>
@@ -43,36 +45,10 @@ namespace Lithogen.Engine.Implementations
         {
             packageJsonFileName.ThrowIfFileDoesNotExist("packageJsonFileName");
 
-            var edge = Edge.Func(@"
-                return function(data, callback) {
-                    var hooker = require('./../node/hooker');
-                    hooker.hookStreams(data);
-                    console.log('Performing npm install...');
-
-                    // Based on http://stackoverflow.com/questions/15957529/can-i-install-a-npm-package-from-javascript-running-in-node-js
-                    // and the README at https://github.com/npm/npm#using-npm-programmatically
-                    var npm = require('./../node/npm/bin/npm-cli.js');
-
-                    npm.load(function(err) {
-                        npm.commands.install(function(er, data) {
-                            if (er) console.log('Got an install error');
-                            else console.log('Install appears to have worked correctly.');
-                        });
-                        npm.registry.log.on('log', function (message) {
-                            console.log(message);
-                        });
-                    });
-
-                    callback(null, result);
-                }");
-
-            var payload = EdgeHelper.MakeHookedExpando();
-            edge(payload);
-            
-            //using (var p = ProcessRunner.MakeProcess(nodeExePath, @"node_modules\npm\bin\npm-cli.js install"))
-            //{
-            //    ProcessRunner.Execute(p);
-            //}
+            using (var p = ProcessRunner.MakeProcess(TheSettings.NodeExePath, @"node_modules\npm\bin\npm-cli.js install"))
+            {
+                ProcessRunner.Execute(p);
+            }
 
             string lastRunFilename = LastRunFileName(packageJsonFileName);
             string msg = String.Format(CultureInfo.InvariantCulture, "Lithogen last ran 'npm install' at the LastModifiedTime of this file.");
