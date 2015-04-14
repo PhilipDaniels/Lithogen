@@ -865,11 +865,11 @@ Sections:
   SubSections:
   - Title: Comparing
     Cheats:
-    - Text: diff [-- path] [--stat]
+    - Text: diff [--check] [--stat] [-- path] 
       Affected: WI
       Url: http://git-scm.com/docs/git-diff
       Hint: Compare the workspace to the index. This form shows the unstaged changes. --stat draws the file modification
-        histogram and can be used with any diff command.
+        histogram and can be used with any diff command. --check only prints lines with whitespace errors.
     - Text: diff --cached [sha] [-- path]
       Affected: IL
       Url: http://git-scm.com/docs/git-diff
