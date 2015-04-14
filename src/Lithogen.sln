@@ -39,6 +39,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{EAD76EE3-0930-47D7-A371-A742D3CA9F58}"
 	ProjectSection(SolutionItems) = preProject
 		..\nuget\build.ps1 = ..\nuget\build.ps1
+		..\nuget\nugetbuild.psm1 = ..\nuget\nugetbuild.psm1
 		..\nuget\pushinternet.ps1 = ..\nuget\pushinternet.ps1
 		..\nuget\pushlocal.ps1 = ..\nuget\pushlocal.ps1
 	EndProjectSection
