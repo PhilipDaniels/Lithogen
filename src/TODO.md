@@ -31,6 +31,7 @@ Bugs
 [ ] Old versions of the GCS are cached by Chrome.
 [ ] If there are errors processing in the view pipeline the website still gets served.
     We should report the error count.
+[ ] Upgrading Lithogen causes the node_modules folder to be added to the project file. Large and takes a long time.
 
 TODO
 ====

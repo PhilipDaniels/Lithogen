@@ -31,8 +31,7 @@ namespace Lithogen.DI
             RegisterImplementations(container, logger, typeof(CachingModelFactory).Assembly, true);
 
             // Load all plugins, may include overrides of base types and new file processors.
-            string pluginDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            pluginDir = Path.Combine(pluginDir, "Plugins");
+            string pluginDir = Path.Combine(settings.ProjectDirectory, @"Lithogen\Plugins");
             LoadPlugins(container, logger, pluginDir);
 
             // Load all assemblies into the current domain. This is needed to get RazorEngine to

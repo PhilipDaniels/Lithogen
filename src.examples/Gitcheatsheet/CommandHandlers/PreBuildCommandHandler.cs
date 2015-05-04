@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 using BassUtils;
 using Lithogen.Core;
 using Lithogen.Core.Commands;
@@ -31,9 +30,8 @@ namespace Gitcheatsheet.CommandHandlers
                 string destThemeFile = Rebaser.RebaseFileNameIntoOutputDirectory(themeFile);
                 FileUtils.EnsureParentDirectory(destThemeFile);
                 File.Copy(themeFile, destThemeFile, true);
+                TheLogger.LogMessage(LOG_PREFIX + "Copied {0} to {1}", themeFile, destThemeFile);
             }
-
-            TheLogger.LogMessage(LOG_PREFIX + "Copied {0} themes to {1}", themes.Count(), TheSettings.ContentDirectory);
         }
     }
 }

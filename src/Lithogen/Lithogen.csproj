@@ -80,9 +80,6 @@
     <None Include="Lithogen.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Lithogen.user.targets">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Lithogen.targets">
       <SubType>Designer</SubType>
     </Content>

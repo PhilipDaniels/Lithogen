@@ -26,7 +26,7 @@
     <LithogenViewsDirectory Condition="'$(LithogenViewsDirectory)'==''">$(MSBuildProjectDirectory)\views</LithogenViewsDirectory>
     <LithogenPartialsDirectory Condition="'$(LithogenPartialsDirectory)'==''">$(LithogenViewsDirectory)\shared</LithogenPartialsDirectory>
     <!-- Where to put the finished static web site. -->
-    <LithogenWebsiteDirectory Condition="'$(LithogenWebsiteDirectory)'==''">$(TargetDir)Lithogen.website</LithogenWebsiteDirectory>
+    <LithogenWebsiteDirectory Condition="'$(LithogenWebsiteDirectory)'==''">$(MSBuildProjectDirectory)\bin\Lithogen.website</LithogenWebsiteDirectory>
     <!-- The config/log files we generate. -->
     <LithogenXmlConfigFile Condition="'$(LithogenXmlConfigFile)'==''">$(TargetDir)Lithogen.xml</LithogenXmlConfigFile>
     <LithogenJsonConfigFile Condition="'$(LithogenJsonConfigFile)'==''">$(TargetDir)Lithogen.json</LithogenJsonConfigFile>

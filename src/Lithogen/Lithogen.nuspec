@@ -38,7 +38,7 @@
 
     <!-- The Lithogen folder is where we install the main Lithogen executable.
          There is no need for the user to ever edit anything in here. -->
-    <file src="bin\$configuration$\" target="Lithogen\$configuration$\" />
+    <file src="bin\$configuration$\" target="Lithogen\" />
     
     <!-- Content is where we install the node/npm infrastructure; it is added to the root of the
          project you are installing Lithogen into. Users will often want to edit these things
