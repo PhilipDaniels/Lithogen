@@ -30,8 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BassUtils">
-      <HintPath>..\packages\BassUtils.2.0.0.0\lib\BassUtils.dll</HintPath>
+    <Reference Include="BassUtils, Version=2.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BassUtils.2.2.1.0\lib\Net45\BassUtils.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

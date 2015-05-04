@@ -172,7 +172,7 @@ namespace Lithogen.Engine.Implementations
             var s = (IDictionary<string, object>)source;
 
             foreach (var kvp in s)
-                dynamicViewBag.SetValue(kvp.Key, kvp.Value);
+                dynamicViewBag.AddValue(kvp.Key, kvp.Value);
         }
 
         /// <summary>

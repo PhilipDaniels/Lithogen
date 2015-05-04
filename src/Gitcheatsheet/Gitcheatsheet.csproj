@@ -2123,9 +2123,9 @@
     <Content Include="views\robots.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="BassUtils, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\BassUtils.2.0.0.0\lib\BassUtils.dll</HintPath>
+    <Reference Include="BassUtils, Version=2.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BassUtils.2.2.1.0\lib\Net45\BassUtils.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Lithogen.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -36,17 +36,16 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Lithogen.TestSite3", "Litho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lithogen.Engine", "Lithogen.Engine\Lithogen.Engine.csproj", "{3EBB1727-DCBD-4811-BCE3-6F0ECD73E2F3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{EAD76EE3-0930-47D7-A371-A742D3CA9F58}"
-	ProjectSection(SolutionItems) = preProject
-		..\nuget\build.ps1 = ..\nuget\build.ps1
-		..\nuget\nugetbuild.psm1 = ..\nuget\nugetbuild.psm1
-		..\nuget\pushinternet.ps1 = ..\nuget\pushinternet.ps1
-		..\nuget\pushlocal.ps1 = ..\nuget\pushlocal.ps1
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitcheatsheet", "Gitcheatsheet\Gitcheatsheet.csproj", "{85384454-BC7B-4E0B-A825-5E696958C620}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lithogen.Engine.Tests", "Lithogen.Engine.Tests\Lithogen.Engine.Tests.csproj", "{10C70F58-FC01-48DD-ABE8-FDD331F14AC3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{09194B06-B37D-4A21-8C88-059AF577A262}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+		.nuget\PackMe.ps1 = .nuget\PackMe.ps1
+		.nuget\PowerPack.psm1 = .nuget\PowerPack.psm1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,8 +104,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{EAD76EE3-0930-47D7-A371-A742D3CA9F58} = {FC91A3D3-5F40-4FE9-A618-696E5DB248DC}
 	EndGlobalSection
 EndGlobal

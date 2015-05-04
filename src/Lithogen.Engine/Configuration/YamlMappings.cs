@@ -13,7 +13,7 @@ namespace Lithogen.Engine.Configuration
         public bool? Publish { get; set; }
         public string Layout { get; set; }
         public string Model { get; set; }
-        [YamlAlias("extout")]
+        [YamlMember(Alias="extout")]
         public string ExtOut { get; set; }
     }
 
