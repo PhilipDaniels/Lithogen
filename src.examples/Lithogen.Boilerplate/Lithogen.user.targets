@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <!-- Run Lithogen from the bin folder of its solution. This means that during development we can just recompile
-         the Lithogen project and then rebuild this project to pick up the latest changes, without having to repackage
-         Lithogen every time. -->
-    <LithogenInstallationDirectory>$(SolutionDir)Lithogen\bin\$(Configuration)</LithogenInstallationDirectory>
-</PropertyGroup>
-</Project>
