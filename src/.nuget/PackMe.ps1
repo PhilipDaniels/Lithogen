@@ -3,9 +3,22 @@
 Import-Module .\PowerPack -Force
 
 # Get latest version of NuGet into this folder: nuget restore requires at least v2.7.
-Invoke-NuGetDownload
+if (!(Test-Path "NuGet.exe"))
+{
+	Invoke-NuGetDownload
+}
 
 Find-File "*.sln" | Invoke-NuGetRestore
 
-Find-Project "Lithogen" | Get-Project | Update-NuSpecDependencies | Invoke-DeepClean |
-    Invoke-MSBuild #| Invoke-NuGetPack | Invoke-NuGetPush -NuGetFeed "LocalNuGetFeed"
+
+$version = "0.1.208.0"
+$configs = "Release"
+$feed = "LocalNuGetFeed"
+#$feed = $null
+
+Find-Project "Lithogen" | Get-Project | % { $_.VersionNumber = $version; $_ } |
+	Invoke-DeepClean | 
+	% { $project = $_ ; $configs | % { Invoke-MSBuild $project -Configuration $_ } } |
+	Sort -Unique | 
+	Invoke-NuGetPack -Version $version -Properties @("Configuration=Release") |
+	Invoke-NuGetPush -NuGetFeed $feed

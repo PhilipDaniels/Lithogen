@@ -12,35 +12,38 @@
     <description>A static site generator for .Net, with a side-salad of Node.js goodness.</description>
     <releaseNotes>Initial version.</releaseNotes>
     <copyright>Copyright 2015</copyright>
-    <tags>Static HTML CSS JS Handlebars Razor</tags>
-    <dependencies>
-      <dependency id="BassUtils" version="2.2.1.0" />
-      <dependency id="EmbedIO" version="1.0.3" />
-      <dependency id="Newtonsoft.Json" version="6.0.8" />
-      <dependency id="SimpleInjector" version="2.8.0" />
-    </dependencies>
+    <tags>Static site generator HTML CSS JS Handlebars Razor YAML</tags>
+    <!-- No dependencies. We are installing our entire bin directory, so we do not add these dependencies
+         to the project that we are installing into.
+         <dependencies />
+         -->
   </metadata>
   <files>
     <!-- Files are relative to the nuspec file. -->
-    
-    <!-- Tools\ is for Powershell scripts and programs accessible from the Package Manager Console -->
-    <file src="bin\$configuration$\" target="tools\Lithogen" />
 
-    <!-- Targets files in Build\ are added to the csproj when you install the package.
-         DLLs are not - but we need them to run the shim, so they also go in here.
+    <!-- This is what we need to run the TaskShim.
+         The .targets file will be added to the project when you install Lithogen.
+         The other files are supporting DLLs necessary to run the shim.
          And keeping the shim small is the reason that we cannot merge the Core and Engine. -->
-    <file src="Lithogen.targets" target="build\Lithogen.targets" />
-    <file src="..\Lithogen.Core\bin\$configuration$\BassUtils.dll" target="build\BassUtils.dll" />
-    <file src="..\Lithogen.Core\bin\$configuration$\Lithogen.Core.dll" target="build\Lithogen.Core.dll" />
+    <file src="Lithogen.targets"                                               target="build\Lithogen.targets" />
+    <file src="..\Lithogen.Core\bin\$configuration$\BassUtils.dll"             target="build\BassUtils.dll" />
+    <file src="..\Lithogen.Core\bin\$configuration$\Lithogen.Core.dll"         target="build\Lithogen.Core.dll" />
     <file src="..\Lithogen.TaskShim\bin\$configuration$\Lithogen.TaskShim.dll" target="build\Lithogen.TaskShim.dll" />
-    <file src="..\Lithogen.TaskShim\bin\$configuration$\Newtonsoft.Json.dll" target="build\Newtonsoft.Json.dll" />
+    <file src="..\Lithogen.TaskShim\bin\$configuration$\Newtonsoft.Json.dll"   target="build\Newtonsoft.Json.dll" />
 
-    <!-- Content\ files are added to the root of the project when you install the package. -->
+    <!-- Lib files are added to the target project as a reference.
+         We need Lithogen.Core.dll so that people can write command handlers, but not Engine,
+         it will bring in too much stuff. -->
+    <file src="..\Lithogen.Core\bin\$configuration$\Lithogen.Core.dll" target="lib\Lithogen.Core.dll" />
+
+    <!-- The Lithogen folder is where we install the main Lithogen executable.
+         There is no need for the user to ever edit anything in here. -->
+    <file src="bin\$configuration$\" target="Lithogen\$configuration$\" />
+    
+    <!-- Content is where we install the node/npm infrastructure; it is added to the root of the
+         project you are installing Lithogen into. Users will often want to edit these things
+         so that they can extend the build process by adding extra npm modules, etc. -->
     <file src="..\Lithogen.Engine\node\**\*" target="Content\Lithogen\node" />
     <file src="bin\$configuration$\Plugins\**\*" target="Content\Lithogen\Plugins" />
-    
-    <!-- Lib\ files are added to the target project as a reference. We need Lithogen.Core.dll 
-         so that people can write command handlers, but not Engine, it will bring in too many. -->
-    <file src="..\Lithogen.Core\bin\$configuration$\Lithogen.Core.dll" target="lib\Lithogen.Core.dll" />
   </files>
 </package>

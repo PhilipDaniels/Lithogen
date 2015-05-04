@@ -15,7 +15,7 @@
     <LithogenMessageImportance Condition="'$(LithogenMessageImportance)'==''">Normal</LithogenMessageImportance>
     <!-- Where to find things. -->
     <LithogenThisFile>$(MSBuildThisFileDirectory)</LithogenThisFile>
-    <LithogenInstallationDirectory Condition="'$(LithogenInstallationDirectory)'==''">$(MSBuildThisFileDirectory)\..\tools\Lithogen</LithogenInstallationDirectory>
+    <LithogenInstallationDirectory Condition="'$(LithogenInstallationDirectory)'==''">$(MSBuildThisFileDirectory)\..\Lithogen</LithogenInstallationDirectory>
     <LithogenExePath Condition="'$(LithogenExePath)'==''">$(LithogenInstallationDirectory)\Lithogen.exe</LithogenExePath>
     <LithogenNodeExePath Condition="'$(LithogenNodeExePath)'==''">$(MSBuildProjectDirectory)\Lithogen\node\node.exe</LithogenNodeExePath>
     <LithogenNpmExePath Condition="'$(LithogenNpmExePath)'==''">$(MSBuildProjectDirectory)\Lithogen\node\npm.cmd</LithogenNpmExePath>
